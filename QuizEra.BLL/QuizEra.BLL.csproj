@@ -15,4 +15,8 @@
 		</PackageReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\QuizEra.DAL\QuizEra.DAL.csproj" />
+	</ItemGroup>
+
 </Project>
