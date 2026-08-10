@@ -1,4 +1,4 @@
-﻿namespace QuizEra.DAL
+﻿namespace QuizEra.BLL
 {
     public class Class1
     {
