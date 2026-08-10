@@ -1,4 +1,5 @@
-
+using Microsoft.EntityFrameworkCore;
+using QuizEra.DAL.DataBase;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,8 @@ var connectionString =
     builder.Configuration.GetConnectionString("Zanatii");
 
 
-
+builder.Services.AddDbContext<QuizEraDBContext>(options =>
+    options.UseSqlServer(connectionString));
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
