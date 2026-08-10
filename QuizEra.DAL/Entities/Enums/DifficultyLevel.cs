@@ -4,7 +4,10 @@ using System.Text;
 
 namespace QuizEra.DAL.Entities.Enums
 {
-    internal class DifficultyLevel
+    public enum DifficultyLevel
     {
+        Eazy,
+        Medium,
+        Hard
     }
 }
