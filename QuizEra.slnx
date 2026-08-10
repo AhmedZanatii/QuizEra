@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="QuizEra.DAL/QuizEra.DAL.csproj" />
+  <Project Path="QuizEra/QuizEra.csproj" />
+</Solution>
