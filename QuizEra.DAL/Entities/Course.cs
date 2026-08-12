@@ -17,7 +17,6 @@ namespace QuizEra.DAL.Entities
         public ICollection<StudentCourse> StudentCourses { get; private set; } = new List<StudentCourse>();
         public ICollection<Feedback> Feedbacks { get; private set; } = new List<Feedback>();
 
-        // Constructor for EF Core (parameterless required by some versions/configs)
         protected Course() { }
 
         public Course(int instructorID, string courseName, string courseLevel)
@@ -27,11 +26,11 @@ namespace QuizEra.DAL.Entities
             CourseLevel = courseLevel;
         }
 
-        public void Update(string courseName, string courseLevel, int instructorID)
+        public void Update(int instructorID, string courseName, string courseLevel)
         {
+            InstructorID = instructorID;
             CourseName = courseName;
             CourseLevel = courseLevel;
-            InstructorID = instructorID;
         }
     }
 }

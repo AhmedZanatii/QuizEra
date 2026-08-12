@@ -8,26 +8,25 @@ namespace QuizEra.DAL.Entities
     {
         public int InstructorID { get; private set; }
         public string Name { get; private set; }
-        public string Email { get; private set; }
-        public string Password { get; private set; }
+
+        // Identity (1-to-1)
+        public string AppUserId { get; private set; }
+        public ApplicationUser AppUser { get; private set; }
 
         // Navigation Property
         public ICollection<Course> Courses { get; private set; } = new List<Course>();
 
         protected Instructor() { }
 
-        public Instructor(string name, string email, string password)
+        public Instructor(string appUserId, string name)
         {
+            AppUserId = appUserId;
             Name = name;
-            Email = email;
-            Password = password;
         }
-
-        public void Update(string name, string email, string password)
+        public void Update(string name)
         {
             Name = name;
-            Email = email;
-            Password = password;
         }
     }
 }
+

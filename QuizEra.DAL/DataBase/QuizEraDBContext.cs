@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using QuizEra.DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace QuizEra.DAL.DataBase
 {
-    public class QuizEraDBContext:DbContext
+    public class QuizEraDBContext: IdentityDbContext<ApplicationUser>
     {
 
         public DbSet<Student> Students { get; set; }
@@ -32,11 +33,27 @@ namespace QuizEra.DAL.DataBase
             modelBuilder.Entity<Student>()
                 .HasKey(s => s.StudentID);
 
+            modelBuilder.Entity<Student>()
+            .HasOne(s => s.AppUser)
+            .WithOne()
+            .HasForeignKey<Student>(s => s.AppUserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Instructor>()
                 .HasKey(i => i.InstructorID);
 
+            modelBuilder.Entity<Instructor>()
+            .HasOne(i => i.AppUser)
+            .WithOne()
+            .HasForeignKey<Instructor>(i => i.AppUserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Course>()
                 .HasKey(c => c.CourseID);
+
+            modelBuilder.Entity<Course>()
+                .HasIndex(c => new { c.CourseName, c.InstructorID })
+                 .IsUnique();
 
             modelBuilder.Entity<Topic>()
                 .HasKey(t => t.TopicID);
@@ -44,17 +61,58 @@ namespace QuizEra.DAL.DataBase
             modelBuilder.Entity<Feedback>()
                 .HasKey(f => f.FeedbackID);
 
+            modelBuilder.Entity<Feedback>()
+                .HasOne(f => f.Student)
+                .WithMany(s => s.Feedbacks)
+                .HasForeignKey(f => f.StudentID)
+                .OnDelete(DeleteBehavior.Restrict); // يفضل Restrict عشان ميعملش Multiple Cascade Paths
+
+            modelBuilder.Entity<Feedback>()
+                .HasOne(f => f.Course)
+                .WithMany(c => c.Feedbacks)
+                .HasForeignKey(f => f.CourseID)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Exam>()
                 .HasKey(e => e.ExamID);
 
             modelBuilder.Entity<Question>()
                 .HasKey(q => q.QuestionID);
 
+            modelBuilder.Entity<Question>()
+                .HasOne(q => q.Topic)
+                .WithMany(t => t.Questions)
+                .HasForeignKey(q => q.TopicID)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<ExamQuestions>()
                 .HasKey(eq => eq.ExamQID);
 
+            modelBuilder.Entity<ExamQuestions>()
+                .HasOne(eq => eq.Question)
+                .WithMany(q => q.ExamQuestions)
+                .HasForeignKey(eq => eq.QuestionID);
+
+            modelBuilder.Entity<ExamQuestions>()
+                .HasOne(eq => eq.Exam)
+                .WithMany(e => e.ExamQuestions)
+                .HasForeignKey(eq => eq.ExamID)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<StudentExamAttempt>()
-                .HasKey(sea => sea.StudExamID); // <--- This fixes your current error!
+                .HasKey(sea => sea.StudExamID); 
+
+            modelBuilder.Entity<StudentExamAttempt>()
+                .HasOne(sea => sea.Exam)
+                .WithMany(e => e.StudentExamAttempts)
+                .HasForeignKey(sea => sea.ExamID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StudentExamAttempt>()
+                .HasOne(sea => sea.Student)
+                .WithMany(s => s.StudentExamAttempts)
+                .HasForeignKey(sea => sea.StudentID)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
             // 2. Composite Primary Keys for Junction/Relationship tables
