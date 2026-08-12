@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace QuizEra.DAL.Entities
 {
@@ -9,8 +10,10 @@ namespace QuizEra.DAL.Entities
         public int StudentID { get; private set; }
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
-        public string Email { get; private set; }
-        public string Password { get; private set; }
+
+        // Identity (1-to-1)
+        public string AppUserId { get; private set; }
+        public ApplicationUser AppUser { get; private set; }
 
         // Navigation Properties
         public ICollection<StudentCourse> StudentCourses { get; private set; } = new List<StudentCourse>();
@@ -19,20 +22,17 @@ namespace QuizEra.DAL.Entities
 
         protected Student() { }
 
-        public Student(string firstName, string lastName, string email, string password)
+        public Student(string appUserId, string firstName, string lastName)
         {
+            AppUserId = appUserId;
             FirstName = firstName;
             LastName = lastName;
-            Email = email;
-            Password = password;
         }
 
-        public void Update(string firstName, string lastName, string email, string password)
+        public void Update(string firstName, string lastName)
         {
             FirstName = firstName;
             LastName = lastName;
-            Email = email;
-            Password = password;
         }
     }
 }
