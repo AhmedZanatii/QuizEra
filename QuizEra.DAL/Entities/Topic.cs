@@ -13,6 +13,7 @@ namespace QuizEra.DAL.Entities
         // Navigation Properties
         public Course Course { get; private set; }
         public ICollection<Exam> Exams { get; private set; } = new List<Exam>();
+        public ICollection<Question> Questions { get; private set; } = new List<Question>(); // التعديل الجديد
 
         protected Topic() { }
 
@@ -22,10 +23,10 @@ namespace QuizEra.DAL.Entities
             Name = name;
         }
 
-        public void Update(string name, int courseID)
+        public void Update(int courseID, string name)
         {
-            Name = name;
             CourseID = courseID;
+            Name = name;
         }
     }
 }

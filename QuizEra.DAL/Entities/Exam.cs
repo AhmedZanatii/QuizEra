@@ -17,7 +17,7 @@ namespace QuizEra.DAL.Entities
         public ICollection<ExamQuestions> ExamQuestions { get; private set; } = new List<ExamQuestions>();
         public ICollection<StudentExamAttempt> StudentExamAttempts { get; private set; } = new List<StudentExamAttempt>();
 
-        protected Exam() { } // (أو Exam)
+        protected Exam() { } 
 
         public Exam(int topicID, string title, int duration, int totalMarks)
         {
