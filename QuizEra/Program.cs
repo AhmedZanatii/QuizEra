@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QuizEra.DAL.DataBase;
+using QuizEra.DAL.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,31 @@ var connectionString =
 
 builder.Services.AddDbContext<QuizEraDBContext>(options =>
     options.UseSqlServer(connectionString));
+
+// 1. Auth & Cookie Config 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+    {
+        options.LoginPath = new PathString("/Account/Login");
+        options.AccessDeniedPath = new PathString("/Account/Login");
+    });
+
+// 2. Identity & Password Config 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    // SignIn Config
+    options.SignIn.RequireConfirmedAccount = true;
+
+    // Default Password settings 
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 0;
+})
+.AddEntityFrameworkStores<QuizEraDBContext>() 
+.AddDefaultTokenProviders();
 
 var app = builder.Build();
 
