@@ -29,24 +29,24 @@ namespace QuizEra.DAL.DataBase
         {
             base.OnModelCreating(modelBuilder);
 
-            // 1. Primary Keys for entities where the ID name doesn't match standard EF Core naming (like Id)
             modelBuilder.Entity<Student>()
-                .HasKey(s => s.StudentID);
+                  .HasKey(s => s.StudentID);
 
             modelBuilder.Entity<Student>()
-            .HasOne(s => s.AppUser)
-            .WithOne()
-            .HasForeignKey<Student>(s => s.AppUserId)
-            .OnDelete(DeleteBehavior.Cascade);
+                .HasOne(s => s.AppUser)
+                .WithOne(u => u.Student)
+                .HasForeignKey<Student>(s => s.AppUserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Instructor>()
                 .HasKey(i => i.InstructorID);
 
             modelBuilder.Entity<Instructor>()
-            .HasOne(i => i.AppUser)
-            .WithOne()
-            .HasForeignKey<Instructor>(i => i.AppUserId)
-            .OnDelete(DeleteBehavior.Cascade);
+                .HasOne(i => i.AppUser)
+                .WithOne(u => u.Instructor)
+                .HasForeignKey<Instructor>(i => i.AppUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
 
             modelBuilder.Entity<Course>()
                 .HasKey(c => c.CourseID);
@@ -65,7 +65,7 @@ namespace QuizEra.DAL.DataBase
                 .HasOne(f => f.Student)
                 .WithMany(s => s.Feedbacks)
                 .HasForeignKey(f => f.StudentID)
-                .OnDelete(DeleteBehavior.Restrict); // يفضل Restrict عشان ميعملش Multiple Cascade Paths
+                .OnDelete(DeleteBehavior.Restrict); 
 
             modelBuilder.Entity<Feedback>()
                 .HasOne(f => f.Course)
