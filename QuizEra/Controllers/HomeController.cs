@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizEra.Models;
 using System.Diagnostics;
 
 namespace QuizEra.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         public IActionResult Index()
