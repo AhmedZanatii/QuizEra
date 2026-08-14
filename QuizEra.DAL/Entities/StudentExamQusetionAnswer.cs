@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace QuizEra.DAL.Entities
+﻿namespace QuizEra.DAL.Entities
 {
     public class StudentExamQuestionAnswer
     {
-        public int ExamQID { get; private set; }
-        public int StudExamID { get; private set; }
+        public int ExamQuestionsId { get; private set; }
+        public int StudentExamAttemptId { get; private set; }
+
         public int StudQMarks { get; private set; }
         public string QuestionAnswer { get; private set; }
 
@@ -17,10 +14,14 @@ namespace QuizEra.DAL.Entities
 
         protected StudentExamQuestionAnswer() { }
 
-        public StudentExamQuestionAnswer(int examQID, int studExamID, int studQMarks, string questionAnswer)
+        public StudentExamQuestionAnswer(
+            int examQuestionsId,
+            int studentExamAttemptId,
+            int studQMarks,
+            string questionAnswer)
         {
-            ExamQID = examQID;
-            StudExamID = studExamID;
+            ExamQuestionsId = examQuestionsId;
+            StudentExamAttemptId = studentExamAttemptId;
             StudQMarks = studQMarks;
             QuestionAnswer = questionAnswer;
         }

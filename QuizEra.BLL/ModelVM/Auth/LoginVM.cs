@@ -1,6 +1,7 @@
-﻿namespace QuizEra.BLL.DTOs.Auth
+﻿namespace QuizEra.BLL.ModelVM.Auth
 {
-    public class LoginDto
+    public class LoginVM
+
     {
         public string Email { get; set; }
 

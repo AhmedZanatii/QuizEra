@@ -1,22 +1,22 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using QuizEra.BLL.DTOs.Auth;
+﻿using Microsoft.AspNetCore.Mvc;
+using QuizEra.BLL.ModelVM.Auth;
 using QuizEra.BLL.Services.Auth;
-using QuizEra.DAL.Entities;
+using QuizEra.BLL.Services.Auth.Abstraction;
 
 namespace QuizEra.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly AuthService _authService;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        public AccountController(
-      AuthService authService,
-      SignInManager<ApplicationUser> signInManager)
+        private readonly IAuthService _authService;
+
+        public AccountController(IAuthService authService)
         {
             _authService = authService;
-            _signInManager = signInManager;
         }
+
+        // =========================
+        // Register Student
+        // =========================
 
         [HttpGet]
         public IActionResult Register()
@@ -25,14 +25,14 @@ namespace QuizEra.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterStudentDto dto)
+        public async Task<IActionResult> Register(RegisterStudentVM vm)
         {
             if (!ModelState.IsValid)
             {
-                return View(dto);
+                return View(vm);
             }
 
-            var result = await _authService.RegisterStudentAsync(dto);
+            var result = await _authService.RegisterStudentAsync(vm);
 
             if (!result.Succeeded)
             {
@@ -43,11 +43,16 @@ namespace QuizEra.Controllers
                         error.Description);
                 }
 
-                return View(dto);
+                return View(vm);
             }
 
             return RedirectToAction("Login");
         }
+
+
+        // =========================
+        // Login
+        // =========================
 
         [HttpGet]
         public IActionResult Login()
@@ -56,21 +61,31 @@ namespace QuizEra.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginDto dto)
+        public async Task<IActionResult> Login(LoginVM vm)
         {
             if (!ModelState.IsValid)
-                return View(dto);
+            {
+                return View(vm);
+            }
 
-            var result = await _authService.LoginAsync(dto);
+            var result = await _authService.LoginAsync(vm);
 
             if (!result)
             {
-                ModelState.AddModelError("", "Invalid email or password.");
-                return View(dto);
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Invalid email or password.");
+
+                return View(vm);
             }
 
             return RedirectToAction("Index", "Home");
         }
+
+
+        // =========================
+        // Access Denied
+        // =========================
 
         [HttpGet]
         public IActionResult AccessDenied()
@@ -78,6 +93,10 @@ namespace QuizEra.Controllers
             return View();
         }
 
+
+        // =========================
+        // Register Instructor
+        // =========================
 
         [HttpGet]
         public IActionResult RegisterInstructor()
@@ -87,12 +106,14 @@ namespace QuizEra.Controllers
 
         [HttpPost]
         public async Task<IActionResult> RegisterInstructor(
-            RegisterInstructorDto dto)
+            RegisterInstructorVM vm)
         {
             if (!ModelState.IsValid)
-                return View(dto);
+            {
+                return View(vm);
+            }
 
-            var result = await _authService.RegisterInstructorAsync(dto);
+            var result = await _authService.RegisterInstructorAsync(vm);
 
             if (!result)
             {
@@ -100,16 +121,21 @@ namespace QuizEra.Controllers
                     string.Empty,
                     "Registration failed. Email may already exist.");
 
-                return View(dto);
+                return View(vm);
             }
 
             return RedirectToAction("Login");
         }
-    
-    [HttpPost]
+
+
+        // =========================
+        // Logout
+        // =========================
+
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            await _authService.LogoutAsync();
 
             return RedirectToAction("Login");
         }

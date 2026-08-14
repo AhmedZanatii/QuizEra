@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using QuizEra.BLL.Services.Auth;
+using QuizEra.BLL.Services.Auth.Abstraction;
+using QuizEra.BLL.Services.Auth.Implementation;
 using QuizEra.DAL.DataBase;
 using QuizEra.DAL.Entities;
+using QuizEra.DAL.Repositories.Abstraction;
+using QuizEra.DAL.Repositories.Implementation;
 using QuizEra.Data;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +38,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<QuizEraDBContext>()
 .AddDefaultTokenProviders();
 
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -41,7 +46,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = new PathString("/Account/AccessDenied");
     });
 
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 var app = builder.Build();
 //role (authentication) seeding

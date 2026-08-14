@@ -1,27 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace QuizEra.DAL.Entities
+﻿namespace QuizEra.DAL.Entities
 {
     public class ExamQuestions
     {
-        public int ExamQID { get; private set; }
-        public int QuestionID { get; private set; }
-        public int ExamID { get; private set; }
+        public int Id { get; private set; }
+
+        public int QuestionId { get; private set; }
+        public int ExamId { get; private set; }
+
         public int ActualMark { get; private set; }
 
         // Navigation Properties
         public Question Question { get; private set; }
         public Exam Exam { get; private set; }
-        public ICollection<StudentExamQuestionAnswer> StudentExamQuestionAnswers { get; private set; } = new List<StudentExamQuestionAnswer>();
+
+        public ICollection<StudentExamQuestionAnswer> StudentExamQuestionAnswers
+        { get; private set; } = new List<StudentExamQuestionAnswer>();
 
         protected ExamQuestions() { }
 
-        public ExamQuestions(int questionID, int examID, int actualMark)
+        public ExamQuestions(
+            int questionId,
+            int examId,
+            int actualMark)
         {
-            QuestionID = questionID;
-            ExamID = examID;
+            QuestionId = questionId;
+            ExamId = examId;
             ActualMark = actualMark;
         }
 

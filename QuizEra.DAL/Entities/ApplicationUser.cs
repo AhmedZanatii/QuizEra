@@ -4,7 +4,12 @@ namespace QuizEra.DAL.Entities
 {
     public class ApplicationUser : IdentityUser
     {
-        public Student? Student { get; private set; }
-        public Instructor? Instructor { get; private set; }
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public Student Student { get; set; }
+
+        public Instructor Instructor { get; set; }
     }
 }
