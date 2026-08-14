@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuizEra.BLL.ModelVM.Auth;
-using QuizEra.BLL.Services.Auth;
-using QuizEra.BLL.Services.Auth.Abstraction;
+using QuizEra.BLL.ModelVMs.Auth;
+using QuizEra.BLL.Services.Abstraction;
 
 namespace QuizEra.Controllers
 {
@@ -46,7 +46,22 @@ namespace QuizEra.Controllers
                 return View(vm);
             }
 
-            return RedirectToAction("Login");
+            return RedirectToAction(
+                nameof(ConfirmYourEmail),
+                new { email = vm.Email });
+        }
+
+
+        // =========================
+        // Confirm Your Email Page
+        // =========================
+
+        [HttpGet]
+        public IActionResult ConfirmYourEmail(string email)
+        {
+            ViewBag.Email = email;
+
+            return View();
         }
 
 
@@ -113,7 +128,8 @@ namespace QuizEra.Controllers
                 return View(vm);
             }
 
-            var result = await _authService.RegisterInstructorAsync(vm);
+            var result =
+                await _authService.RegisterInstructorAsync(vm);
 
             if (!result)
             {
@@ -124,7 +140,36 @@ namespace QuizEra.Controllers
                 return View(vm);
             }
 
-            return RedirectToAction("Login");
+            return RedirectToAction(
+                nameof(ConfirmYourEmail),
+                new { email = vm.Email });
+        }
+
+
+        // =========================
+        // Confirm Email
+        // =========================
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(
+            ConfirmEmailVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var result =
+                await _authService.ConfirmEmailAsync(
+                    vm.UserId!,
+                    vm.Token!);
+
+            if (!result)
+            {
+                return View("EmailConfirmationFailed");
+            }
+
+            return View("EmailConfirmed");
         }
 
 
