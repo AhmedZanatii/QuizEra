@@ -1,22 +1,24 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using QuizEra.BLL.Services.Auth.Abstraction;
-using QuizEra.BLL.Services.Auth.Implementation;
+using QuizEra.BLL.Services.Abstraction;
+using QuizEra.BLL.Services.Implementation;
 using QuizEra.DAL.DataBase;
 using QuizEra.DAL.Entities;
 using QuizEra.DAL.Repositories.Abstraction;
 using QuizEra.DAL.Repositories.Implementation;
 using QuizEra.Data;
+using Resend;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddOptions();
 
 var connectionString =
-    builder.Configuration.GetConnectionString("Zanatii");
+    builder.Configuration.GetConnectionString("Mostafa");
 
 builder.Services.AddDbContext<QuizEraDBContext>(options =>
     options.UseSqlServer(connectionString));
@@ -25,7 +27,7 @@ builder.Services.AddDbContext<QuizEraDBContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     // SignIn Configuration
-    options.SignIn.RequireConfirmedAccount = false;
+    options.SignIn.RequireConfirmedAccount = true;
 
     // Password Configuration
     options.Password.RequireDigit = true;
@@ -46,8 +48,19 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = new PathString("/Account/AccessDenied");
     });
 
+// Email Configuration
+builder.Services.AddHttpClient<ResendClient>();
+
+builder.Services.Configure<ResendClientOptions>(options =>
+{
+    options.ApiToken = builder.Configuration["Resend:ApiKey"]!;
+});
+builder.Services.AddTransient<IResend, ResendClient>();
+
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 //role (authentication) seeding
