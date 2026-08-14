@@ -6,7 +6,7 @@ namespace QuizEra.DAL.Entities
 {
     public class Feedback
     {
-        public int FeedbackID { get; private set; }
+        public int Id { get; private set; }
         public int StudentID { get; private set; }
         public int CourseID { get; private set; }
         public string Comment { get; private set; }

@@ -6,7 +6,7 @@ namespace QuizEra.DAL.Entities
 {
     public class Exam
     {
-        public int ExamID { get; private set; }
+        public int Id { get; private set; }
         public int TopicID { get; private set; }
         public string Title { get; private set; }
         public int Duration { get; private set; }

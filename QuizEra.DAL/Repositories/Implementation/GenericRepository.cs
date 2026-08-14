@@ -8,7 +8,9 @@ using System.Text;
 
 namespace QuizEra.DAL.Repositories.Implementation
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, new()
+    public class GenericRepository<TEntity>
+        : IGenericRepository<TEntity>
+        where TEntity : class
     {
         QuizEraDBContext _db;
         IQueryable<TEntity> _dbSet;

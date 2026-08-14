@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace QuizEra.DAL.Entities
+﻿namespace QuizEra.DAL.Entities
 {
     public class StudentCourse
     {
-        public int StudentID { get; private set; }
-        public int CourseID { get; private set; }
+        public int StudentId { get; private set; }
+        public int CourseId { get; private set; }
 
         // Navigation Properties
         public Student Student { get; private set; }
@@ -15,10 +11,10 @@ namespace QuizEra.DAL.Entities
 
         protected StudentCourse() { }
 
-        public StudentCourse(int studentID, int courseID)
+        public StudentCourse(int studentId, int courseId)
         {
-            StudentID = studentID;
-            CourseID = courseID;
+            StudentId = studentId;
+            CourseId = courseId;
         }
     }
 }

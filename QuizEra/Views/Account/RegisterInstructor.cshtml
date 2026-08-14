@@ -1,4 +1,4 @@
-﻿@model QuizEra.BLL.DTOs.Auth.RegisterInstructorDto
+﻿@model QuizEra.BLL.ModelVM.Auth.RegisterInstructorVM
 
 @{
     ViewData["Title"] = "Register Instructor";
@@ -9,9 +9,15 @@
 <form asp-action="RegisterInstructor" method="post">
 
     <div>
-        <label asp-for="Name"></label>
-        <input asp-for="Name" />
-        <span asp-validation-for="Name"></span>
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" />
+        <span asp-validation-for="FirstName"></span>
+    </div>
+
+    <div>
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" />
+        <span asp-validation-for="LastName"></span>
     </div>
 
     <div>
