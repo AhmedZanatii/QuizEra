@@ -2,10 +2,106 @@
     ViewData["Title"] = "Access Denied";
 }
 
-<h2>Access Denied</h2>
+<style>
+    .access-denied-page {
+        min-height: calc(100vh - 56px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        padding: 40px 20px;
+    }
 
-<p>You don't have permission to access this page.</p>
+    .access-denied-container {
+        width: 100%;
+        max-width: 600px;
+    }
 
-<a asp-controller="Home" asp-action="Index">
-    Back to Home
-</a>
+    .access-denied-card {
+        background: white;
+        border-radius: 15px;
+        padding: 50px 40px;
+        text-align: center;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .access-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+    }
+
+    .access-code {
+        font-size: 70px;
+        font-weight: 800;
+        color: #0d6efd;
+        line-height: 1;
+        margin-bottom: 15px;
+    }
+
+    .access-title {
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 12px;
+    }
+
+    .access-description {
+        color: #6c757d;
+        font-size: 1.05rem;
+        margin-bottom: 30px;
+    }
+
+    .access-btn {
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 600;
+    }
+</style>
+
+
+<div class="access-denied-page">
+
+    <div class="access-denied-container">
+
+        <div class="access-denied-card">
+
+            <!-- Icon -->
+
+            <div class="access-icon">
+                🔒
+            </div>
+
+
+            <!-- Error Code -->
+
+            <div class="access-code">
+                403
+            </div>
+
+
+            <!-- Title -->
+
+            <h1 class="access-title">
+                Access Denied
+            </h1>
+
+
+            <!-- Description -->
+
+            <p class="access-description">
+                Sorry, you don't have permission to access this page.
+            </p>
+
+
+            <!-- Button -->
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn btn-primary access-btn">
+                Back to Home
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

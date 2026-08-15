@@ -4,40 +4,231 @@
     ViewData["Title"] = "Login";
 }
 
-<h2>Login</h2>
+<style>
+    .login-page {
+        min-height: calc(100vh - 56px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+    }
 
-<form asp-action="Login" method="post">
+    .login-container {
+        width: 100%;
+        max-width: 1200px;
+        padding: 30px;
+    }
 
-    <div>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" type="email" />
-        <span asp-validation-for="Email"></span>
-    </div>
+    .login-image {
+        max-width: 100%;
+        height: auto;
+    }
 
-    <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" />
-        <span asp-validation-for="Password"></span>
-    </div>
+    .login-title {
+        color: #212529;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
 
-    <button type="submit">Login</button>
-    <div>
-        <a class="btn btn-primary" asp-controller="Account" asp-action="Register">Register</a>
-    </div>
-
-</form>
-
-@if (!ViewData.ModelState.IsValid)
-{
-    <div>
-        @foreach (var error in ViewData.ModelState.Values
-            .SelectMany(v => v.Errors))
-        {
-            <p>@error.ErrorMessage</p>
-        }
-    </div>
+.login-subtitle {
+    color: #6c757d;
+    margin-bottom: 30px;
 }
 
+    .form-control {
+        border-radius: 8px;
+        padding: 12px 15px;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+    }
+
+    .login-btn {
+        border-radius: 8px;
+        padding: 12px;
+        font-weight: 600;
+    }
+
+    .register-link {
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .login-footer {
+        margin-top: 30px;
+        padding: 20px;
+        text-align: center;
+        background: #0d6efd;
+        color: white;
+        border-radius: 10px;
+    }
+
+    .validation-error {
+        color: #dc3545;
+        font-size: 0.9rem;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .login-error {
+        border-radius: 8px;
+    }
+
+    
+        .login-container {
+            padding: 20px;
+        }
+    }
+</style>
+
+
+<div class="login-page">
+
+    <div class="container login-container">
+
+        <div class="row align-items-center justify-content-center">
+
+            <!-- Image -->
+            <div class="col-md-6 col-lg-5 login-image-container text-center">
+
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+                     class="login-image"
+                     alt="QuizEra Login">
+
+            </div>
+
+
+            <!-- Login Form -->
+            <div class="col-md-8 col-lg-5 offset-lg-1">
+
+                <div class="text-center">
+
+                    <h1 class="login-title">
+                        Welcome to QuizEra
+                    </h1>
+
+                    <p class="login-subtitle">
+                        Login to continue your learning journey
+                    </p>
+
+                </div>
+
+
+                <form asp-action="Login" method="post">
+
+                    <!-- Email -->
+                    <div class="mb-4">
+
+                        <label asp-for="Email" class="form-label">
+                            Email Address
+                        </label>
+
+                        <input asp-for="Email"
+                               type="email"
+                               class="form-control form-control-lg"
+                               placeholder="Enter your email" />
+
+                        <span asp-validation-for="Email"
+                              class="validation-error">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Password -->
+                    <div class="mb-3">
+
+                        <label asp-for="Password" class="form-label">
+                            Password
+                        </label>
+
+                        <input asp-for="Password"
+                               type="password"
+                               class="form-control form-control-lg"
+                               placeholder="Enter your password" />
+
+                        <span asp-validation-for="Password"
+                              class="validation-error">
+                        </span>
+
+                    </div>
+
+
+                    <!-- General Errors -->
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger login-error">
+
+                            @foreach (var error in ViewData.ModelState.Values
+                                .SelectMany(v => v.Errors))
+                            {
+                                <div>
+                                    @error.ErrorMessage
+                                </div>
+                            }
+
+                        </div>
+                    }
+
+
+                    <!-- Login Button -->
+                    <div class="d-grid mt-4">
+
+                        <button type="submit"
+                                class="btn btn-primary btn-lg login-btn">
+                            Login
+                        </button>
+
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <div class="text-muted mb-3">OR</div>
+
+                        <a asp-controller="Account"
+                           asp-action="ExternalLogin"
+                           asp-route-provider="Google"
+                           class="btn btn-outline-danger w-100">
+                            <i class="fab fa-google me-2"></i>
+                            Continue with Google
+                        </a>
+                    </div>
+
+                    <!-- Register -->
+                    <p class="text-center mt-4 mb-0">
+
+                        Don't have an account?
+
+                       <a asp-controller="Account"
+   asp-action="ChooseRole"
+   class="register-link">
+    Register
+</a>
+                        
+
+                    </p>
+
+                </form>
+
+
+                <!-- Footer -->
+                <div class="login-footer">
+
+                    © 2026 QuizEra. All rights reserved.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 @section Scripts {
+
     <partial name="_ValidationScriptsPartial" />
+
 }

@@ -1,7 +1,7 @@
-﻿@model QuizEra.BLL.ModelVM.Auth.RegisterInstructorVM
+﻿@model QuizEra.BLL.ModelVM.Auth.RegisterStudentVM
 
 @{
-    ViewData["Title"] = "Register as Instructor";
+    ViewData["Title"] = "Register as Student";
 }
 
 <style>
@@ -86,15 +86,15 @@
             <div class="text-center">
 
                 <div class="role-icon">
-                    👨‍🏫
+                    🎓
                 </div>
 
                 <h1 class="register-title">
-                    Instructor Registration
+                    Student Registration
                 </h1>
 
                 <p class="register-subtitle">
-                    Create your QuizEra instructor account
+                    Create your QuizEra student account
                 </p>
 
             </div>
@@ -103,7 +103,7 @@
             <!-- Registration Form -->
 
             <form asp-controller="Account"
-                  asp-action="RegisterInstructor"
+                  asp-action="RegisterStudent"
                   method="post">
 
                 <!-- First Name -->
@@ -211,7 +211,7 @@
 
                     <button type="submit"
                             class="btn btn-primary btn-lg register-btn">
-                        Create Instructor Account
+                        Create Student Account
                     </button>
 
                 </div>
@@ -255,3 +255,4 @@
     <partial name="_ValidationScriptsPartial" />
 
 }
+
