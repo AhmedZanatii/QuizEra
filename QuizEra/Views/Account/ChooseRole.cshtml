@@ -1,0 +1,187 @@
+﻿@{
+    ViewData["Title"] = "Choose Your Role";
+}
+
+<style>
+    .role-page {
+        min-height: calc(100vh - 56px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        padding: 40px 20px;
+    }
+
+    .role-container {
+        width: 100%;
+        max-width: 850px;
+    }
+
+    .role-title {
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 10px;
+    }
+
+    .role-subtitle {
+        color: #6c757d;
+        margin-bottom: 35px;
+    }
+
+    .role-card {
+        background: white;
+        border-radius: 15px;
+        padding: 40px 25px;
+        text-align: center;
+        height: 100%;
+        border: 1px solid #dee2e6;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+        transition: 0.3s;
+    }
+
+        .role-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+    .role-icon {
+        font-size: 60px;
+        margin-bottom: 20px;
+    }
+
+    .role-card h3 {
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .role-card p {
+        color: #6c757d;
+        min-height: 48px;
+    }
+
+    .role-btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        margin-top: 15px;
+    }
+
+    .choose-error {
+        border-radius: 8px;
+    }
+</style>
+
+<div class="role-page">
+
+    <div class="container role-container">
+
+        <div class="text-center">
+
+            <h1 class="role-title">
+                Welcome to QuizEra!
+            </h1>
+
+            <p class="role-subtitle">
+                How would you like to use QuizEra?
+            </p>
+
+        </div>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger choose-error">
+
+                @foreach (var error in ViewData.ModelState.Values
+                    .SelectMany(v => v.Errors))
+                {
+                    <div>
+                        @error.ErrorMessage
+                    </div>
+                }
+
+            </div>
+        }
+
+        <div class="row justify-content-center g-4">
+
+            <!-- Student -->
+
+            <div class="col-md-5">
+
+                <div class="role-card">
+
+                    <div class="role-icon">
+                        🎓
+                    </div>
+
+                    <h3>
+                        Student
+                    </h3>
+
+                    <p>
+                        Join courses, take exams and track your progress.
+                    </p>
+
+                    <form asp-controller="Account"
+                          asp-action="ChooseRole"
+                          method="post">
+
+                        <input type="hidden"
+                               name="role"
+                               value="Student" />
+
+                        <button type="submit"
+                                class="btn btn-primary role-btn">
+                            Continue as Student
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- Instructor -->
+
+            <div class="col-md-5">
+
+                <div class="role-card">
+
+                    <div class="role-icon">
+                        👨‍🏫
+                    </div>
+
+                    <h3>
+                        Instructor
+                    </h3>
+
+                    <p>
+                        Create courses, manage exams and help students learn.
+                    </p>
+
+                    <form asp-controller="Account"
+                          asp-action="ChooseRole"
+                          method="post">
+
+                        <input type="hidden"
+                               name="role"
+                               value="Instructor" />
+
+                        <button type="submit"
+                                class="btn btn-outline-primary role-btn">
+                            Continue as Instructor
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

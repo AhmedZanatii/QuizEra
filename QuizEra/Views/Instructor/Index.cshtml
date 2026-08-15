@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Instructor Home";
+}
+
+<style>
+    .home-page {
+        min-height: calc(100vh - 56px);
+        background: #f8f9fa;
+        padding: 60px 20px;
+    }
+
+    .welcome-card {
+        background: white;
+        border-radius: 15px;
+        padding: 50px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    }
+
+    .home-icon {
+        font-size: 70px;
+        margin-bottom: 20px;
+    }
+
+    .welcome-title {
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .welcome-text {
+        color: #6c757d;
+        font-size: 18px;
+    }
+</style>
+
+<div class="home-page">
+
+    <div class="container">
+
+        <div class="welcome-card">
+
+            <div class="home-icon">
+                👨‍🏫
+            </div>
+
+            <h1 class="welcome-title">
+                Welcome to QuizEra!
+            </h1>
+
+            <p class="welcome-text">
+                You're logged in as an Instructor.
+            </p>
+
+            <p class="welcome-text">
+                Create courses, manage exams and help students learn.
+            </p>
+
+        </div>
+
+    </div>
+    <form asp-controller="Account"
+          asp-action="Logout"
+          method="post">
+
+        <button type="submit" class="btn btn-danger">
+            Logout
+        </button>
+
+    </form>
+
+</div>

@@ -24,10 +24,8 @@ builder.Services.AddDbContext<QuizEraDBContext>(options =>
 // Identity Configuration
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    // SignIn Configuration
     options.SignIn.RequireConfirmedAccount = false;
 
-    // Password Configuration
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireNonAlphanumeric = true;
@@ -39,11 +37,15 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+// Google Authentication
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
     {
-        options.LoginPath = new PathString("/Account/Login");
-        options.AccessDeniedPath = new PathString("/Account/AccessDenied");
+        options.ClientId =
+            builder.Configuration["Authentication:Google:ClientId"];
+
+        options.ClientSecret =
+            builder.Configuration["Authentication:Google:ClientSecret"];
     });
 
 builder.Services.AddScoped<IAuthService, AuthService>();

@@ -8,7 +8,7 @@ namespace QuizEra.Controllers
     {
         public IActionResult Index()
         {
-            return Content("Welcome Instructor! You are authorized.");
+            return View();
         }
     }
 }
