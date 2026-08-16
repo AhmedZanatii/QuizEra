@@ -18,7 +18,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddOptions();
 
 var connectionString =
-    builder.Configuration.GetConnectionString("Mostafa");
+    builder.Configuration.GetConnectionString("Zanatii");
 
 builder.Services.AddDbContext<QuizEraDBContext>(options =>
     options.UseSqlServer(connectionString));
@@ -55,6 +55,14 @@ builder.Services.AddAuthentication()
 
         options.ClientSecret =
             builder.Configuration["Authentication:Google:ClientSecret"];
+
+        options.Events.OnRemoteFailure = context =>
+        {
+            context.Response.Redirect("/Account/Login");
+            context.HandleResponse();
+
+            return Task.CompletedTask;
+        };
     });
 
 // Email Configuration

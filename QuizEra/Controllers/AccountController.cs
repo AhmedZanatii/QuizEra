@@ -23,6 +23,10 @@ namespace QuizEra.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            TempData.Remove("IsExternalRegister");
+            TempData.Remove("ExternalEmail");
+            TempData.Remove("ExternalFirstName");
+            TempData.Remove("ExternalLastName");
             return RedirectToAction(nameof(ChooseRole));
         }
 
@@ -35,7 +39,6 @@ namespace QuizEra.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> ChooseRole(string role)
         {
@@ -52,15 +55,24 @@ namespace QuizEra.Controllers
             // Check if this is a Google External Register
             // ==========================================
 
-            var externalEmail = TempData["ExternalEmail"]?.ToString();
+            var isExternalRegister =
+                TempData["IsExternalRegister"] as bool? ?? false;
 
-            if (!string.IsNullOrEmpty(externalEmail))
+            if (isExternalRegister)
             {
+                var externalEmail =
+                    TempData["ExternalEmail"]?.ToString();
+
                 var firstName =
                     TempData["ExternalFirstName"]?.ToString() ?? "";
 
                 var lastName =
                     TempData["ExternalLastName"]?.ToString() ?? "";
+
+                if (string.IsNullOrEmpty(externalEmail))
+                {
+                    return RedirectToAction(nameof(Register));
+                }
 
                 var result =
                     await _authService.RegisterExternalUserAsync(
@@ -75,6 +87,7 @@ namespace QuizEra.Controllers
                         string.Empty,
                         "Unable to create your account.");
 
+                    TempData.Keep("IsExternalRegister");
                     TempData.Keep("ExternalEmail");
                     TempData.Keep("ExternalFirstName");
                     TempData.Keep("ExternalLastName");
@@ -370,11 +383,10 @@ namespace QuizEra.Controllers
             var lastName =
                 principal.FindFirst(
                     ClaimTypes.Surname)?.Value ?? "";
-
+            TempData["IsExternalRegister"] = true;
             TempData["ExternalEmail"] = email;
             TempData["ExternalFirstName"] = firstName;
             TempData["ExternalLastName"] = lastName;
-
             await HttpContext.SignOutAsync(
                 IdentityConstants.ExternalScheme);
 
