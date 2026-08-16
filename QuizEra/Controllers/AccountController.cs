@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuizEra.BLL.ModelVM.Auth;
-using QuizEra.BLL.Services.Auth.Abstraction;
+using QuizEra.BLL.Services.Abstraction;
 using System.Security.Claims;
 
 namespace QuizEra.Controllers

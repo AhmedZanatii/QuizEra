@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Identity;
 using QuizEra.BLL.ModelVM.Auth;
 using QuizEra.DAL.Entities;
 
-namespace QuizEra.BLL.Services.Auth.Abstraction
+namespace QuizEra.BLL.Services.Abstraction
 {
     public interface IAuthService
     {
         Task<IdentityResult> RegisterStudentAsync(RegisterStudentVM model);
 
         Task<bool> RegisterInstructorAsync(RegisterInstructorVM model);
+        Task<bool> ConfirmEmailAsync(string userId, string token);
 
         Task<bool> LoginAsync(LoginVM model);
 

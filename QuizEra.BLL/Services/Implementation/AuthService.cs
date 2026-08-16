@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using QuizEra.BLL.ModelVM.Auth;
-using QuizEra.BLL.Services.Auth.Abstraction;
+using QuizEra.BLL.Services.Abstraction;
 using QuizEra.DAL.Entities;
 using QuizEra.DAL.Repositories.Abstraction;
 using System.Security.Claims;
 
-namespace QuizEra.BLL.Services.Auth.Implementation
+namespace QuizEra.BLL.Services.Implementation
 {
     public class AuthService : IAuthService
     {
@@ -14,17 +14,22 @@ namespace QuizEra.BLL.Services.Auth.Implementation
 
         private readonly IGenericRepository<Student> _studentRepository;
         private readonly IGenericRepository<Instructor> _instructorRepository;
+        private readonly IEmailService _emailService;
 
         public AuthService(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IGenericRepository<Student> studentRepository,
-            IGenericRepository<Instructor> instructorRepository)
+            IGenericRepository<Instructor> instructorRepository,
+            IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+
             _studentRepository = studentRepository;
             _instructorRepository = instructorRepository;
+
+            _emailService = emailService;
         }
 
         // =========================
@@ -60,6 +65,14 @@ namespace QuizEra.BLL.Services.Auth.Implementation
 
             await _studentRepository.Create(student);
             await _studentRepository.SaveAsync();
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink =
+                $"https://localhost:7077/Account/ConfirmEmail" +
+                $"?userId={user.Id}" +
+                $"&token={Uri.EscapeDataString(token)}";
+
+            await _emailService.SendEmailConfirmationAsync(user.Email, confirmationLink);
 
             return result;
         }
@@ -104,6 +117,14 @@ namespace QuizEra.BLL.Services.Auth.Implementation
 
             await _instructorRepository.Create(instructor);
             await _instructorRepository.SaveAsync();
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink =
+                $"https://localhost:7077/Account/ConfirmEmail" +
+                $"?userId={user.Id}" +
+                $"&token={Uri.EscapeDataString(token)}";
+
+            await _emailService.SendEmailConfirmationAsync(user.Email, confirmationLink);
 
             return true;
         }
@@ -282,6 +303,18 @@ namespace QuizEra.BLL.Services.Auth.Implementation
                 isPersistent: false);
 
             return true;
+        }
+
+        public async Task<bool> ConfirmEmailAsync(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                return false;
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+
+            return result.Succeeded;
         }
 
         // =========================
