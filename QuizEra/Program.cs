@@ -8,7 +8,6 @@ using QuizEra.DAL.Entities;
 using QuizEra.DAL.Repositories.Abstraction;
 using QuizEra.DAL.Repositories.Implementation;
 using QuizEra.Data;
-using Resend;
 
 
 var builder = WebApplication.CreateBuilder(args);
