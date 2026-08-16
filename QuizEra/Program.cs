@@ -65,16 +65,21 @@ builder.Services.AddAuthentication()
         };
     });
 
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+    {
+        options.TokenLifespan = TimeSpan.FromHours(1);
+    });
+
 // Email Configuration
 builder.Services.AddHttpClient<ResendClient>();
 
 builder.Services.Configure<ResendClientOptions>(options =>
-{
-    options.ApiToken = builder.Configuration["Resend:ApiKey"]!;
-});
+    {
+        options.ApiToken = builder.Configuration["Resend:ApiKey"]!;
+    });
+
+
 builder.Services.AddTransient<IResend, ResendClient>();
-
-
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IEmailService, EmailService>();
