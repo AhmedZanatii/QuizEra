@@ -7,5 +7,6 @@ namespace QuizEra.BLL.Services.Abstraction
     public interface IEmailService
     {
         Task SendEmailConfirmationAsync(string email,string confirmationLink);
+        Task SendPasswordResetEmailAsync(string email,string resetLink);
     }
 }

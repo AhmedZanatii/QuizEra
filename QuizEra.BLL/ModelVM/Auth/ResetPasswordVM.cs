@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace QuizEra.BLL.ModelVMs.Auth
+namespace QuizEra.BLL.ModelVM.Auth
 {
     public class ResetPasswordVM
     {

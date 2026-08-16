@@ -195,17 +195,22 @@
                     </div>
 
                     <!-- Register -->
-                    <p class="text-center mt-4 mb-0">
+                    <p class="text-start mt-4 mb-3">
 
                         Don't have an account?
 
                        <a asp-controller="Account"
-   asp-action="ChooseRole"
-   class="register-link">
-    Register
-</a>
+                           asp-action="ChooseRole"
+                           class="register-link">
+                            Register
+                        </a>
                         
 
+                    </p>
+                    <p class="text-end mb-0">
+                        <a asp-action="ForgotPassword">
+                            Forgot Password?
+                        </a>
                     </p>
 
                 </form>

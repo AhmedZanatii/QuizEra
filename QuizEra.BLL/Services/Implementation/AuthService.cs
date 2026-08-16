@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using QuizEra.BLL.ModelVM.Auth;
 using QuizEra.BLL.Services.Abstraction;
 using QuizEra.DAL.Entities;
@@ -15,21 +17,22 @@ namespace QuizEra.BLL.Services.Implementation
         private readonly IGenericRepository<Student> _studentRepository;
         private readonly IGenericRepository<Instructor> _instructorRepository;
         private readonly IEmailService _emailService;
+        private readonly IConfiguration _configuration;
 
         public AuthService(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            IGenericRepository<Student> studentRepository,
-            IGenericRepository<Instructor> instructorRepository,
-            IEmailService emailService)
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        IGenericRepository<Student> studentRepository,
+        IGenericRepository<Instructor> instructorRepository,
+        IEmailService emailService,
+        IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-
             _studentRepository = studentRepository;
             _instructorRepository = instructorRepository;
-
             _emailService = emailService;
+            _configuration = configuration;
         }
 
         // =========================
@@ -67,9 +70,11 @@ namespace QuizEra.BLL.Services.Implementation
             await _studentRepository.SaveAsync();
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var appUrl = _configuration["AppUrl"];
+
             var confirmationLink =
-                $"https://localhost:7077/Account/ConfirmEmail" +
-                $"?userId={user.Id}" +
+                $"{appUrl}/Account/ConfirmEmail" +
+                $"?userId={Uri.EscapeDataString(user.Id)}" +
                 $"&token={Uri.EscapeDataString(token)}";
 
             await _emailService.SendEmailConfirmationAsync(user.Email, confirmationLink);
@@ -119,9 +124,11 @@ namespace QuizEra.BLL.Services.Implementation
             await _instructorRepository.SaveAsync();
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var appUrl = _configuration["AppUrl"];
+
             var confirmationLink =
-                $"https://localhost:7077/Account/ConfirmEmail" +
-                $"?userId={user.Id}" +
+                $"{appUrl}/Account/ConfirmEmail" +
+                $"?userId={Uri.EscapeDataString(user.Id)}" +
                 $"&token={Uri.EscapeDataString(token)}";
 
             await _emailService.SendEmailConfirmationAsync(user.Email, confirmationLink);
@@ -161,7 +168,7 @@ namespace QuizEra.BLL.Services.Implementation
 
             await _signInManager.SignInAsync(
                 user,
-                isPersistent: false);
+                isPersistent: model.RememberMe);
 
             return true;
         }
@@ -313,6 +320,40 @@ namespace QuizEra.BLL.Services.Implementation
                 return false;
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
+
+            return result.Succeeded;
+        }
+
+        public async Task<bool> ForgotPasswordAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+                return true;
+
+            var token =
+                await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var resetLink =
+                $"https://localhost:7077/Account/ResetPassword" +
+                $"?userId={user.Id}" +
+                $"&token={Uri.EscapeDataString(token)}";
+
+            await _emailService.SendPasswordResetEmailAsync(user.Email!,resetLink);
+
+            return true;
+        }
+
+        public async Task<bool> ResetPasswordAsync(ResetPasswordVM model)
+        {
+            var user =
+                await _userManager.FindByIdAsync(model.UserId);
+
+            if (user == null)
+                return false;
+
+            var result =
+                await _userManager.ResetPasswordAsync(user,model.Token, model.Password);
 
             return result.Succeeded;
         }
