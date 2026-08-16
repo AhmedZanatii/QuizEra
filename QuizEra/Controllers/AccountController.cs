@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuizEra.BLL.ModelVM.Auth;
@@ -153,17 +153,7 @@ namespace QuizEra.Controllers
         }
 
 
-        // =========================
-        // Confirm Your Email Page
-        // =========================
-
-        [HttpGet]
-        public IActionResult ConfirmYourEmail(string email)
-        {
-            ViewBag.Email = email;
-
-            return View();
-        }
+        
 
         // =========================
         // Register Instructor
@@ -199,14 +189,24 @@ namespace QuizEra.Controllers
         new { email = vm.Email });
         }
 
+        // =========================
+        // Confirm Your Email Page
+        // =========================
+
+        [HttpGet]
+        public IActionResult ConfirmYourEmail(string email)
+        {
+            ViewBag.Email = email;
+
+            return View();
+        }
 
         // =========================
         // Confirm Email
         // =========================
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmEmail(
-            ConfirmEmailVM vm)
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailVM vm)
         {
             if (!ModelState.IsValid)
             {
@@ -214,9 +214,7 @@ namespace QuizEra.Controllers
             }
 
             var result =
-                await _authService.ConfirmEmailAsync(
-                    vm.UserId!,
-                    vm.Token!);
+                await _authService.ConfirmEmailAsync(vm.UserId!,vm.Token!);
 
             if (!result)
             {
@@ -383,6 +381,7 @@ namespace QuizEra.Controllers
             var lastName =
                 principal.FindFirst(
                     ClaimTypes.Surname)?.Value ?? "";
+
             TempData["IsExternalRegister"] = true;
             TempData["ExternalEmail"] = email;
             TempData["ExternalFirstName"] = firstName;
@@ -404,6 +403,80 @@ namespace QuizEra.Controllers
 
             return RedirectToAction(nameof(Login));
         }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+
+            await _authService.ForgotPasswordAsync(vm.Email);
+
+            return RedirectToAction(
+                nameof(ForgotPasswordConfirmation));
+        }
+
+        [HttpGet]
+        public IActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) ||
+                string.IsNullOrEmpty(token))
+            {
+                return BadRequest();
+            }
+
+            var vm = new ResetPasswordVM
+            {
+                UserId = userId,
+                Token = token
+            };
+
+            return View(vm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+
+            var result =
+                await _authService.ResetPasswordAsync(vm);
+
+            if (!result)
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "The password reset link is invalid or expired.");
+
+                return View(vm);
+            }
+
+            return RedirectToAction(
+                nameof(ResetPasswordConfirmation));
+        }
+
 
         // =========================
         // Access Denied
