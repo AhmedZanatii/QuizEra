@@ -401,6 +401,11 @@ namespace QuizEra.Controllers
         {
             await _authService.LogoutAsync();
 
+            TempData.Remove("IsExternalRegister");
+            TempData.Remove("ExternalEmail");
+            TempData.Remove("ExternalFirstName");
+            TempData.Remove("ExternalLastName");
+
             return RedirectToAction(nameof(Login));
         }
 
