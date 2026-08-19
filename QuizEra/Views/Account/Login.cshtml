@@ -2,8 +2,9 @@
 
 @{
     ViewData["Title"] = "Login";
-}
+    Layout = "AuthLayout";
 
+}
 <style>
     .login-page {
         min-height: calc(100vh - 56px);
@@ -30,19 +31,19 @@
         margin-bottom: 8px;
     }
 
-.login-subtitle {
-    color: #6c757d;
-    margin-bottom: 30px;
-}
+    .login-subtitle {
+        color: #6c757d;
+        margin-bottom: 30px;
+    }
 
     .form-control {
         border-radius: 8px;
         padding: 12px 15px;
     }
 
-    .form-control:focus {
-        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
-    }
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+        }
 
     .login-btn {
         border-radius: 8px;
@@ -76,11 +77,13 @@
     }
 
     
-        .login-container {
-            padding: 20px;
-        }
+    .login-container {
+        padding: 20px;
+    }
+
     }
 </style>
+
 
 
 <div class="login-page">
@@ -237,3 +240,4 @@
     <partial name="_ValidationScriptsPartial" />
 
 }
+

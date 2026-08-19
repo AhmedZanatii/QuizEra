@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace QuizEra.BLL.ModelVM.Course
+{
+    public class UpdateCourseVM
+    {
+        [Required]
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "Instructor is required.")]
+        public int InstructorId { get; set; }
+
+        [Required(ErrorMessage = "Course name is required.")]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "Course name must be between 3 and 100 characters.")]
+        public string CourseName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Course level is required.")]
+        [StringLength(50, ErrorMessage = "Course level cannot exceed 50 characters.")]
+        public string CourseLevel { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Course description is required.")]
+        [StringLength(1000, ErrorMessage = "Description cannot exceed 1000 characters.")]
+        public string CourseDescription { get; set; } = string.Empty;
+        public string ModifierUser { get; set; } = string.Empty;
+    }
+}

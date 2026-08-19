@@ -16,16 +16,16 @@ namespace QuizEra.DAL.Entities
 
         protected BaseEntity() { } 
 
-        public BaseEntity(string creatorUser, DateTime createdDate)
+        public BaseEntity(string creatorUser)
         {
             CreatorUser = creatorUser;
-            CreatedDate = createdDate;
+            CreatedDate = DateTime.UtcNow;
         }
 
-        public void Update(string modifierUser, DateTime modifiedDate)
+        public void Update(string modifierUser)
         {
             ModifierUser = modifierUser;
-            ModifiedDate = modifiedDate;
+            ModifiedDate = DateTime.UtcNow;
         }
         
         // Return true if deleted successfully, false if already deleted
