@@ -7,8 +7,7 @@ namespace QuizEra.BLL.ModelVM.Course
 {
     public class CreateCourseVM
     {
-        [Required(ErrorMessage = "Instructor is required.")]
-        public int InstructorId { get; set; }
+        public string InstructorId { get; set; }
 
         [Required(ErrorMessage = "Course name is required.")]
         [StringLength(100, MinimumLength = 3, ErrorMessage = "Course name must be between 3 and 100 characters.")]

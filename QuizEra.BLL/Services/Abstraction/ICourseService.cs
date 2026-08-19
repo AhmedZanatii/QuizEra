@@ -9,8 +9,8 @@ namespace QuizEra.BLL.Services.Abstraction
     {
         Task<IEnumerable<CourseVM>> GetAllCoursesAsync();
         Task<CourseVM?> GetCourseByIdAsync(int id);
-        Task<IEnumerable<CourseVM>> GetCoursesByInstructorAsync(int instructorId);
-        Task<IEnumerable<CourseVM>> GetCoursesByStudentAsync(int studentId);
+        Task<IEnumerable<CourseVM>> GetCoursesByInstructorAsync(string instructorId);
+        Task<IEnumerable<CourseVM>> GetCoursesByStudentAsync(string studentId);
         Task<bool> CreateCourseAsync(CreateCourseVM createVM);
         Task<bool> UpdateCourseAsync(UpdateCourseVM updateVM);
         Task<bool> DeleteCourseAsync(int id, string deleterUser);

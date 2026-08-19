@@ -4,7 +4,7 @@ using System.Text;
 
 namespace QuizEra.DAL.Entities
 {
-    public class Topic
+    public class Topic : BaseEntity
     {
         public int Id { get; private set; }
         public int CourseID { get; private set; }
@@ -17,16 +17,17 @@ namespace QuizEra.DAL.Entities
 
         protected Topic() { }
 
-        public Topic(int courseID, string name)
+        public Topic(int courseID, string name, string creatorUser) : base(creatorUser)
         {
             CourseID = courseID;
             Name = name;
         }
 
-        public void Update(int courseID, string name)
+        public void Update(int courseID, string name , string modifierUser)
         {
             CourseID = courseID;
             Name = name;
+            base.Update(modifierUser);
         }
     }
 }

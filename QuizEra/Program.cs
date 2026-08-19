@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using QuizEra.BLL.Services;
 using QuizEra.BLL.Services.Abstraction;
 using QuizEra.BLL.Services.Implementation;
 using QuizEra.DAL.DataBase;
@@ -73,6 +74,9 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<ITopicService, TopicService>();
+
 
 var app = builder.Build();
 //role (authentication) seeding

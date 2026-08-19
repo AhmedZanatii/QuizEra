@@ -21,7 +21,7 @@
             string questionAnswer,
             string creatorUser,
             DateTime createdDate)
-        : base(creatorUser, createdDate)
+        : base(creatorUser)
         {
             ExamQuestionsId = examQuestionsId;
             StudentExamAttemptId = studentExamAttemptId;
@@ -34,7 +34,7 @@
             StudQMarks = studQMarks;
             QuestionAnswer = questionAnswer;
             // Call the base class Update method to update modifierUser and modifiedDate
-            base.Update(modifierUser, modifiedDate); 
+            base.Update(modifierUser); 
         }
     }
 }

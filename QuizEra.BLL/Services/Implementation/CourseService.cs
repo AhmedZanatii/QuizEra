@@ -1,7 +1,6 @@
 ﻿using QuizEra.BLL.ModelVM.Course;
 using QuizEra.BLL.Services.Abstraction;
 using QuizEra.DAL.Entities;
-using QuizEra.DAL.Repositories;
 using QuizEra.DAL.Repositories.Abstraction;
 using System.Linq.Expressions;
 
@@ -10,10 +9,17 @@ namespace QuizEra.BLL.Services
     public class CourseService : ICourseService
     {
         private readonly IGenericRepository<Course> _courseRepository;
+        private readonly IGenericRepository<Instructor> _instructorRepository;
+        private readonly IGenericRepository<Student> _studentRepository;
 
-        public CourseService(IGenericRepository<Course> courseRepository)
+        public CourseService(
+            IGenericRepository<Course> courseRepository,
+            IGenericRepository<Instructor> instructorRepository,
+            IGenericRepository<Student> studentRepository)
         {
             _courseRepository = courseRepository;
+            _instructorRepository = instructorRepository;
+            _studentRepository = studentRepository;
         }
 
         public async Task<IEnumerable<CourseVM>> GetAllCoursesAsync()
@@ -25,8 +31,6 @@ namespace QuizEra.BLL.Services
 
             return courses.Select(c => new CourseVM
             {
-                Id = c.Id,
-                InstructorId = c.InstructorID,
                 CourseName = c.CourseName,
                 CourseLevel = c.CourseLevel,
                 CourseCode = c.CourseCode,
@@ -46,63 +50,90 @@ namespace QuizEra.BLL.Services
             return new CourseVM
             {
                 Id = course.Id,
-                InstructorId = course.InstructorID,
                 CourseName = course.CourseName,
                 CourseLevel = course.CourseLevel,
                 CourseCode = course.CourseCode,
                 CourseDescription = course.CourseDescription
-               
             };
         }
 
-        public async Task<IEnumerable<CourseVM>> GetCoursesByInstructorAsync(int instructorId)
+        public async Task<IEnumerable<CourseVM>> GetCoursesByInstructorAsync(string userId)
         {
+            // 1. Resolve Instructor ID using ApplicationUserId string via generic repo
+            var instructor = await _instructorRepository.GetBy(
+                filter: i => i.AppUserId == userId,
+                noTrack: true
+            );
+
+            if (instructor == null)
+            {
+                return Enumerable.Empty<CourseVM>();
+            }
+
+            // 2. Fetch courses using the resolved Instructor.Id
             var courses = await _courseRepository.Get(
-                filter: c => c.InstructorID == instructorId && !c.IsDeleted,
+                filter: c => c.InstructorID == instructor.Id && !c.IsDeleted,
                 noTrack: true
             );
 
             return courses.Select(c => new CourseVM
             {
                 Id = c.Id,
-                InstructorId = c.InstructorID,
                 CourseName = c.CourseName,
                 CourseLevel = c.CourseLevel,
                 CourseCode = c.CourseCode,
                 CourseDescription = c.CourseDescription
-                
             });
         }
 
-        public async Task<IEnumerable<CourseVM>> GetCoursesByStudentAsync(int studentId)
+        public async Task<IEnumerable<CourseVM>> GetCoursesByStudentAsync(string userId)
         {
+            // 1. Resolve Student ID using ApplicationUserId string via generic repo
+            var student = await _studentRepository.GetBy(
+                filter: s => s.AppUserId == userId,
+                noTrack: true
+            );
+
+            if (student == null)
+            {
+                return Enumerable.Empty<CourseVM>();
+            }
+
             var includeStudentCourses = new List<Expression<Func<Course, object>>>
             {
                 c => c.StudentCourses
             };
 
+            // 2. Fetch courses using the resolved Student.Id
             var courses = await _courseRepository.Get(
-                filter: c => !c.IsDeleted && c.StudentCourses.Any(sc => sc.StudentId == studentId),
+                filter: c => !c.IsDeleted && c.StudentCourses.Any(sc => sc.StudentId == student.Id),
                 includeProperties: includeStudentCourses,
                 noTrack: true
             );
 
             return courses.Select(c => new CourseVM
             {
-                Id = c.Id,
-                InstructorId = c.InstructorID,
                 CourseName = c.CourseName,
                 CourseLevel = c.CourseLevel,
                 CourseCode = c.CourseCode,
                 CourseDescription = c.CourseDescription
-               
             });
         }
 
         public async Task<bool> CreateCourseAsync(CreateCourseVM createVM)
         {
+            var instructor = await _instructorRepository.GetBy(
+                filter: i => i.AppUserId == createVM.InstructorId,
+                noTrack: true
+            );
+
+            if (instructor == null)
+            {
+                return false;
+            }
+
             var course = new Course(
-                instructorID: createVM.InstructorId,
+                instructorID: instructor.Id,
                 courseName: createVM.CourseName,
                 courseLevel: createVM.CourseLevel,
                 courseDescription: createVM.CourseDescription,
@@ -112,7 +143,6 @@ namespace QuizEra.BLL.Services
             await _courseRepository.Create(course);
             await _courseRepository.SaveAsync();
             return true;
-
         }
 
         public async Task<bool> UpdateCourseAsync(UpdateCourseVM updateVM)
@@ -128,7 +158,6 @@ namespace QuizEra.BLL.Services
             }
 
             course.Update(
-                instructorID: updateVM.InstructorId,
                 courseName: updateVM.CourseName,
                 courseLevel: updateVM.CourseLevel,
                 courseDescription: updateVM.CourseDescription,

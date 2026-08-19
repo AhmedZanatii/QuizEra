@@ -1,0 +1,59 @@
+﻿@model IEnumerable<QuizEra.BLL.ModelVM.Course.CourseVM>
+
+@{
+    ViewData["Title"] = "My Teaching Courses";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My Teaching Courses</h2>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New Course
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center" role="alert">
+            You haven't created any courses yet.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm rounded">
+            <table class="table table-hover align-middle mb-0 bg-white">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Code</th>
+                        <th>Course Name</th>
+                        <th>Level</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var course in Model)
+                    {
+                        <tr>
+                            <td><span class="badge bg-secondary">@course.CourseCode</span></td>
+                            <td class="fw-bold text-primary">@course.CourseName</td>
+                            <td><span class="badge bg-info text-dark">@course.CourseLevel</span></td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@course.Id" class="btn btn-sm btn-outline-primary me-1">
+                                    Details
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@course.Id" class="btn btn-sm btn-outline-warning me-1">
+                                    Edit
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@course.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this course?');" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

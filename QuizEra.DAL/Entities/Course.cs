@@ -35,13 +35,11 @@ namespace QuizEra.DAL.Entities
         }
 
         public void Update(
-            int instructorID, 
             string courseName, 
             string courseLevel, 
             string courseDescription, 
             string modifierUser)
         {
-            InstructorID = instructorID;
             CourseName = courseName;
             CourseLevel = courseLevel;
             CourseDescription = courseDescription;
