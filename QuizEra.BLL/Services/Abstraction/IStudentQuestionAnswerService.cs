@@ -6,7 +6,8 @@ namespace QuizEra.BLL.Services.Abstraction
     {
         Task<IEnumerable<StudentExamQuestionAnswerVM>> GetByExamAttemptIdAsync(int id);
         Task<IEnumerable<StudentExamQuestionAnswerVM>> GetByExamQuestionIdAsync(int id);
-        Task AddAsync(StudentExamQuestionAnswerVM answer);
-        Task UpdateAsync(StudentExamQuestionAnswerVM answer);
+        Task AddAsync(StudentExamQuestionAnswerVM answer, string creatorUser);
+        Task UpdateAsync(StudentExamQuestionAnswerVM answer, string modifierUser);
+        Task DeleteAsync(int examQuestionId, int studentExamAttemptId, string deleterUser);
     }
 }

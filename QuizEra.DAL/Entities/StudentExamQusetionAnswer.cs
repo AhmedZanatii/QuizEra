@@ -1,6 +1,6 @@
 ﻿namespace QuizEra.DAL.Entities
 {
-    public class StudentExamQuestionAnswer
+    public class StudentExamQuestionAnswer : BaseEntity
     {
         public int ExamQuestionsId { get; private set; }
         public int StudentExamAttemptId { get; private set; }
@@ -18,7 +18,10 @@
             int examQuestionsId,
             int studentExamAttemptId,
             int studQMarks,
-            string questionAnswer)
+            string questionAnswer,
+            string creatorUser,
+            DateTime createdDate)
+        : base(creatorUser, createdDate)
         {
             ExamQuestionsId = examQuestionsId;
             StudentExamAttemptId = studentExamAttemptId;
@@ -26,10 +29,12 @@
             QuestionAnswer = questionAnswer;
         }
 
-        public void Update(int studQMarks, string questionAnswer)
+        public void Update(int studQMarks, string questionAnswer, string modifierUser, DateTime modifiedDate)
         {
             StudQMarks = studQMarks;
             QuestionAnswer = questionAnswer;
+            // Call the base class Update method to update modifierUser and modifiedDate
+            base.Update(modifierUser, modifiedDate); 
         }
     }
 }
