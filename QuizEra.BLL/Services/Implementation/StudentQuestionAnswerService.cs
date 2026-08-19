@@ -18,7 +18,7 @@ namespace QuizEra.BLL.Services.Implementation
             try
             {
                 // Retrieve all StudentExamQuestionAnswers for the given ExamAttemptId
-                var answers = await Repo.Get(a => a.StudentExamAttemptId == id);
+                var answers = (await Repo.Get(a => a.StudentExamAttemptId == id)).Where(a => !a.IsDeleted).ToList();
 
                 // Check if any answers were found
                 if(answers == null || !answers.Any())
@@ -44,7 +44,7 @@ namespace QuizEra.BLL.Services.Implementation
             try
             {
                 // Retrieve all StudentExamQuestionAnswers for the given ExamQuestionId
-                var answers = await Repo.Get(a => a.ExamQuestionsId == id);
+                var answers = (await Repo.Get(a => a.ExamQuestionsId == id)).Where(a => !a.IsDeleted).ToList();
 
                 // Check if any answers were found
                 if(answers == null || !answers.Any())
@@ -65,7 +65,7 @@ namespace QuizEra.BLL.Services.Implementation
                 throw new Exception($"Error retrieving all StudentExamQuestionAnswers: {ex.Message}", ex);
             }
         }
-        public async Task AddAsync(StudentExamQuestionAnswerVM answer)
+        public async Task AddAsync(StudentExamQuestionAnswerVM answer, string creatorUser)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace QuizEra.BLL.Services.Implementation
                 }
 
                 // Create a new StudentExamQuestionAnswer entity and add it to the repository (Marks should be updated after grading)
-                await Repo.Create(new StudentExamQuestionAnswer(answer.ExamQuestionId, answer.StudentExamAttemptId, 0, answer.QuestionAnswer));
+                await Repo.Create(new StudentExamQuestionAnswer(answer.ExamQuestionId, answer.StudentExamAttemptId, 0, answer.QuestionAnswer, creatorUser, DateTime.Now));
                 await Repo.SaveAsync();
             }
             catch (Exception ex)
@@ -84,7 +84,7 @@ namespace QuizEra.BLL.Services.Implementation
                 throw new Exception($"Error adding StudentExamQuestionAnswer: {ex.Message}", ex);
             }
         }
-        public async Task UpdateAsync(StudentExamQuestionAnswerVM answer)
+        public async Task UpdateAsync(StudentExamQuestionAnswerVM answer, string modifierUser)
         {
             try
             {
@@ -102,12 +102,35 @@ namespace QuizEra.BLL.Services.Implementation
                 }
 
                 // Update the existing entity with the new values
-                Repo.Update(new StudentExamQuestionAnswer(existingAnswer.ExamQuestionsId, existingAnswer.StudentExamAttemptId, existingAnswer.StudQMarks, answer.QuestionAnswer));
+                existingAnswer.Update(existingAnswer.StudQMarks, answer.QuestionAnswer, modifierUser, DateTime.Now);
+                Repo.Update(existingAnswer);
                 await Repo.SaveAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception($"Error updating StudentExamQuestionAnswer: {ex.Message}", ex);
+            }
+        }
+
+        public async Task DeleteAsync(int examQuestionId, int studentExamAttemptId, string deleterUser) 
+        {
+            try 
+            {
+                // Check if the answer exists and is not already deleted
+                var existingAnswer = (await Repo.Get(a => a.StudentExamAttemptId == studentExamAttemptId && a.ExamQuestionsId == examQuestionId)).FirstOrDefault();
+                if (existingAnswer == null || existingAnswer.IsDeleted)
+                {
+                    throw new Exception($"StudentExamQuestionAnswer not found or already deleted for ExamQuestionId {examQuestionId} and ExamAttemptId {studentExamAttemptId}");
+                }
+
+                // Mark the answer as deleted
+                existingAnswer.Delete(deleterUser, DateTime.Now);
+                Repo.Delete(existingAnswer);
+                await Repo.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error deleting StudentExamQuestionAnswer: {ex.Message}", ex);
             }
         }
     }
