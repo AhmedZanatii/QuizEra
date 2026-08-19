@@ -1,0 +1,124 @@
+﻿using QuizEra.BLL.ModelVM.Topic;
+using QuizEra.BLL.Services.Abstraction;
+using QuizEra.DAL.Entities;
+using QuizEra.DAL.Repositories.Abstraction;
+
+namespace QuizEra.BLL.Services
+{
+    public class TopicService : ITopicService
+    {
+        private readonly IGenericRepository<Topic> _topicRepository;
+
+        public TopicService(IGenericRepository<Topic> topicRepository)
+        {
+            _topicRepository = topicRepository;
+        }
+
+        public async Task<IEnumerable<TopicVM>> GetAllTopicsAsync()
+        {
+            var topics = await _topicRepository.Get(
+                filter: t => !t.IsDeleted,
+                noTrack: true
+            );
+
+            return topics.Select(t => new TopicVM
+            {
+                Id = t.Id,
+                CourseId = t.CourseID,
+                Name = t.Name
+            });
+        }
+
+        public async Task<TopicVM?> GetTopicByIdAsync(int id)
+        {
+            var topic = await _topicRepository.GetBy(
+                filter: t => t.Id == id && !t.IsDeleted,
+                noTrack: true
+            );
+
+            if (topic == null) return null;
+
+            return new TopicVM
+            {
+                Id = topic.Id,
+                CourseId = topic.CourseID,
+                Name = topic.Name
+            };
+        }
+
+        public async Task<IEnumerable<TopicVM>> GetTopicsByCourseAsync(int courseId)
+        {
+            var topics = await _topicRepository.Get(
+                filter: t => t.CourseID == courseId && !t.IsDeleted,
+                noTrack: true
+            );
+
+            return topics.Select(t => new TopicVM
+            {
+                Id = t.Id,
+                CourseId = t.CourseID,
+                Name = t.Name
+            });
+        }
+
+        public async Task<bool> CreateTopicAsync(CreateTopicVM createVM)
+        {
+            var topic = new Topic(
+                courseID: createVM.CourseId,
+                name: createVM.Name,
+                creatorUser: createVM.CreatorUser
+            );
+
+            await _topicRepository.Create(topic);
+            await _topicRepository.SaveAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateTopicAsync(UpdateTopicVM updateVM)
+        {
+            var topic = await _topicRepository.GetBy(
+                filter: t => t.Id == updateVM.Id && !t.IsDeleted,
+                noTrack: false
+            );
+
+            if (topic == null)
+            {
+                return false;
+            }
+
+            topic.Update(
+                courseID: updateVM.CourseId,
+                name: updateVM.Name,
+                modifierUser: updateVM.ModifierUser
+            );
+
+            _topicRepository.Update(topic);
+            await _topicRepository.SaveAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteTopicAsync(int id, string deleterUser)
+        {
+            var topic = await _topicRepository.GetBy(
+                filter: t => t.Id == id && !t.IsDeleted,
+                noTrack: false
+            );
+
+            if (topic == null)
+            {
+                return false;
+            }
+
+            bool isDeleted = topic.Delete(deleterUser, DateTime.UtcNow);
+
+            if (isDeleted)
+            {
+                _topicRepository.Update(topic);
+                await _topicRepository.SaveAsync();
+            }
+
+            return isDeleted;
+        }
+    }
+}
