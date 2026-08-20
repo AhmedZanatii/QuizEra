@@ -9,6 +9,7 @@ namespace QuizEra.BLL.Services.Abstraction
     {
         Task<IEnumerable<TopicVM>> GetAllTopicsAsync();
         Task<TopicVM?> GetTopicByIdAsync(int id);
+        Task<TopicDetailsVM?> GetTopicDetailsAsync(int topicId);
         Task<IEnumerable<TopicVM>> GetTopicsByCourseAsync(int courseId);
         Task<bool> CreateTopicAsync(CreateTopicVM createVM);
         Task<bool> UpdateTopicAsync(UpdateTopicVM updateVM);

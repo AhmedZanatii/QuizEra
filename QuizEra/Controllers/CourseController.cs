@@ -41,6 +41,35 @@ namespace QuizEra.PL.Controllers
             return View(courses);
         }
 
+        [Authorize(Roles = "Student")]
+        [HttpPost]
+        public async Task<IActionResult> Join(string courseCode)
+        {
+            if (string.IsNullOrWhiteSpace(courseCode))
+            {
+                ModelState.AddModelError("", "Course code is required.");
+                var emptyList = await _courseService.GetCoursesByStudentAsync(GetCurrentUserId());
+                return View("EnrolledCourses", emptyList);
+            }
+
+            if (!Guid.TryParse(courseCode, out var codeGuid))
+            {
+                ModelState.AddModelError("", "Invalid course code format.");
+                var list = await _courseService.GetCoursesByStudentAsync(GetCurrentUserId());
+                return View("EnrolledCourses", list);
+            }
+
+            var joined = await _courseService.JoinCourseAsync(codeGuid, GetCurrentUserId());
+            if (!joined)
+            {
+                ModelState.AddModelError("", "Unable to join course. Make sure the code is correct.");
+            }
+
+            // Refresh the enrolled courses list
+            var courses = await _courseService.GetCoursesByStudentAsync(GetCurrentUserId());
+            return View("EnrolledCourses", courses);
+        }
+
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {

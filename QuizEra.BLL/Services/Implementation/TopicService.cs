@@ -1,4 +1,5 @@
 ﻿using QuizEra.BLL.ModelVM.Topic;
+using QuizEra.BLL.ModelVM.Question;
 using QuizEra.BLL.Services.Abstraction;
 using QuizEra.DAL.Entities;
 using QuizEra.DAL.Repositories.Abstraction;
@@ -8,10 +9,14 @@ namespace QuizEra.BLL.Services
     public class TopicService : ITopicService
     {
         private readonly IGenericRepository<Topic> _topicRepository;
+        private readonly IGenericRepository<Question> _questionRepository;
 
-        public TopicService(IGenericRepository<Topic> topicRepository)
+        public TopicService(
+            IGenericRepository<Topic> topicRepository,
+            IGenericRepository<Question> questionRepository)
         {
             _topicRepository = topicRepository;
+            _questionRepository = questionRepository;
         }
 
         public async Task<IEnumerable<TopicVM>> GetAllTopicsAsync()
@@ -119,6 +124,41 @@ namespace QuizEra.BLL.Services
             }
 
             return isDeleted;
+        }
+
+        public async Task<TopicDetailsVM?> GetTopicDetailsAsync(int topicId)
+        {
+            var topic = await _topicRepository.GetBy(
+                filter: t => t.Id == topicId && !t.IsDeleted,
+                noTrack: true
+            );
+
+            if (topic == null)
+            {
+                return null;
+            }
+
+            var questions = await _questionRepository.Get(
+                filter: q => q.TopicID == topicId,
+                noTrack: true
+            );
+
+            var questionVMs = questions.Select(q => new QuestionVM
+            {
+                Id = q.Id,
+                TopicId = q.TopicID,
+                QuestionText = q.QuestionText,
+                QuestionType = q.QuestionType,
+                Difficulty = q.DifficultyLevel.ToString()
+            });
+
+            return new TopicDetailsVM
+            {
+                Id = topic.Id,
+                CourseId = topic.CourseID,
+                Name = topic.Name,
+                Questions = questionVMs
+            };
         }
     }
 }

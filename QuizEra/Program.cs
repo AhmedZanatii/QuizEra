@@ -18,7 +18,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddOptions();
 
 var connectionString =
-    builder.Configuration.GetConnectionString("Mostafa");
+    builder.Configuration.GetConnectionString("Zanatii");
 
 builder.Services.AddDbContext<QuizEraDBContext>(options =>
     options.UseSqlServer(connectionString));

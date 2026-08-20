@@ -120,6 +120,47 @@ namespace QuizEra.BLL.Services
             });
         }
 
+        public async Task<bool> JoinCourseAsync(Guid courseCode, string studentAppUserId)
+        {
+            var includeStudentCourses = new List<Expression<Func<Course, object>>>
+            {
+                c => c.StudentCourses
+            };
+
+            var course = await _courseRepository.GetBy(
+                filter: c => c.CourseCode == courseCode && !c.IsDeleted,
+                includeProperties: includeStudentCourses,
+                noTrack: false
+            );
+
+            if (course == null)
+            {
+                return false;
+            }
+
+            var student = await _studentRepository.GetBy(
+                filter: s => s.AppUserId == studentAppUserId,
+                noTrack: true
+            );
+
+            if (student == null)
+            {
+                return false;
+            }
+
+            if (course.StudentCourses.Any(sc => sc.StudentId == student.Id))
+            {
+                return true;
+            }
+
+            course.StudentCourses.Add(new StudentCourse(student.Id, course.Id));
+
+            _courseRepository.Update(course);
+            await _courseRepository.SaveAsync();
+
+            return true;
+        }
+
         public async Task<bool> CreateCourseAsync(CreateCourseVM createVM)
         {
             var instructor = await _instructorRepository.GetBy(
