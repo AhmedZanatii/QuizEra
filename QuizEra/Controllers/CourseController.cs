@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizEra.BLL.ModelVM.Course;
+using QuizEra.BLL.Services;
 using QuizEra.BLL.Services.Abstraction;
 using System.Security.Claims;
 
@@ -10,10 +11,14 @@ namespace QuizEra.PL.Controllers
     public class CourseController : Controller
     {
         private readonly ICourseService _courseService;
+        private readonly ITopicService _topicService;
 
-        public CourseController(ICourseService courseService)
+        public CourseController(
+            ICourseService courseService,
+            ITopicService topicService)
         {
             _courseService = courseService;
+            _topicService = topicService;
         }
 
         #region Read Operations
@@ -40,12 +45,25 @@ namespace QuizEra.PL.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var course = await _courseService.GetCourseByIdAsync(id);
+
             if (course == null)
             {
                 return NotFound();
             }
 
-            return View(course);
+            var topics = await _topicService.GetTopicsByCourseAsync(id);
+
+            var model = new CourseDetailsVM
+            {
+                Id = course.Id,
+                CourseName = course.CourseName,
+                CourseCode = course.CourseCode,
+                CourseLevel = course.CourseLevel,
+                Description = course.CourseDescription,
+                Topics = topics
+            };
+
+            return View(model);
         }
 
         #endregion
@@ -61,7 +79,6 @@ namespace QuizEra.PL.Controllers
 
         [Authorize(Roles = "Admin, Instructor")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateCourseVM model)
         {
             // Assign AppUserId (GUID string) directly to InstructorId property
@@ -112,7 +129,6 @@ namespace QuizEra.PL.Controllers
 
         [Authorize(Roles = "Admin, Instructor")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, UpdateCourseVM model)
         {
             if (id != model.Id)
@@ -143,7 +159,7 @@ namespace QuizEra.PL.Controllers
                 return NotFound();
             }
 
-            return RedirectToAction(nameof(InstructorCourses));
+            return RedirectToAction(nameof(Details), new { id });
         }
 
         #endregion
@@ -152,7 +168,6 @@ namespace QuizEra.PL.Controllers
 
         [Authorize(Roles = "Admin, Instructor")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             string deleterUser = User.Identity?.Name ?? "SystemUser";
