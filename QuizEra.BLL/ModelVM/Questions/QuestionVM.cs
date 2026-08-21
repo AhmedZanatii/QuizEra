@@ -1,0 +1,36 @@
+﻿using QuizEra.DAL.Entities.Enums;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace QuizEra.BLL.ModelVM.Questions
+{
+    public class QuestionVM
+    {
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "Topic ID is required")]
+        public int TopicID { get; set; }
+
+        [Required(ErrorMessage = "Question text is required")]
+        [MinLength(1, ErrorMessage = "Question text must contain at least 1 character")]
+        public string QuestionText { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Question type is required")]
+        public string QuestionType { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Question format is required")]
+        public QuestionFormat QuestionFormat { get; set; }
+
+        public string? QuestionAnswer { get; set; }
+
+        [Required(ErrorMessage = "Difficulty level is required")]
+        public DifficultyLevel DifficultyLevel { get; set; }
+
+        public string? Photo { get; set; }
+
+        public ICollection<QuestionOptionVM> Options { get; set; }
+            = new List<QuestionOptionVM>();
+    }
+}
