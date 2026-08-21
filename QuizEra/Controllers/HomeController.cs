@@ -10,6 +10,20 @@ namespace QuizEra.Controllers
     {
         public IActionResult Index()
         {
+            if (!User.Identity?.IsAuthenticated ?? true)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            if (User.IsInRole("Instructor"))
+            {
+                return RedirectToAction("Index", "Instructor");
+            }
+
+            if (User.IsInRole("Student"))
+            {
+                return RedirectToAction("Index", "Student");
+            }
             return View();
         }
 
