@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+
+# Ignore appsettings to prevent secrets from being pushed
+QuizEra/appsettings.json
+QuizEra/appsettings.*.json
 # User-specific files
 *.rsuser
 *.suo

@@ -76,7 +76,7 @@ namespace QuizEra.BLL.Services.Implementation
                 }
 
                 // Create a new StudentExamQuestionAnswer entity and add it to the repository (Marks should be updated after grading)
-                await Repo.Create(new StudentExamQuestionAnswer(answer.ExamQuestionId, answer.StudentExamAttemptId, 0, answer.QuestionAnswer, creatorUser, DateTime.Now));
+                await Repo.Create(new StudentExamQuestionAnswer(answer.ExamQuestionId, answer.StudentExamAttemptId, 0, answer.QuestionAnswer, creatorUser, DateTime.Now, TimeSpan.Zero));
                 await Repo.SaveAsync();
             }
             catch (Exception ex)
@@ -102,7 +102,7 @@ namespace QuizEra.BLL.Services.Implementation
                 }
 
                 // Update the existing entity with the new values
-                existingAnswer.Update(existingAnswer.StudQMarks, answer.QuestionAnswer, modifierUser, DateTime.Now);
+                existingAnswer.Update(existingAnswer.StudQMarks, answer.QuestionAnswer, modifierUser, DateTime.Now, TimeSpan.Zero);
                 Repo.Update(existingAnswer);
                 await Repo.SaveAsync();
             }

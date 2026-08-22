@@ -76,6 +76,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ITopicService, TopicService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 
 var app = builder.Build();
