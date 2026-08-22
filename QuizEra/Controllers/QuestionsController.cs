@@ -1,17 +1,31 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuizEra.BLL.ModelVM.Questions;
 using QuizEra.BLL.Services.Abstraction;
+using QuizEra.DAL.Entities;
+using QuizEra.DAL.Repositories.Abstraction;
 
 namespace QuizEra.Controllers
 {
     public class QuestionsController : Controller
     {
         private readonly IQuestionService _questionService;
+        private readonly IGenericRepository<Topic> _topicRepository;
 
-        public QuestionsController(IQuestionService questionService)
+        public QuestionsController(
+            IQuestionService questionService,
+            IGenericRepository<Topic> topicRepository)
         {
             _questionService = questionService;
+            _topicRepository = topicRepository;
         }
+
+        private async Task LoadTopicsAsync()
+        {
+            var topics = await _topicRepository.Get();
+
+            ViewBag.Topics = topics.ToList();
+        }
+
 
         // =========================
         // Get All Questions
@@ -24,6 +38,7 @@ namespace QuizEra.Controllers
 
             return View(questions);
         }
+
 
         // =========================
         // Get Question
@@ -42,13 +57,16 @@ namespace QuizEra.Controllers
             return View(question);
         }
 
+
         // =========================
         // Create Question
         // =========================
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            await LoadTopicsAsync();
+
             return View();
         }
 
@@ -57,13 +75,18 @@ namespace QuizEra.Controllers
         {
             if (!ModelState.IsValid)
             {
+                await LoadTopicsAsync();
+
                 return View(vm);
             }
 
-            await _questionService.AddAsync(vm);
+            var creatorUser = User.Identity?.Name ?? "System";
+
+            await _questionService.AddAsync(vm, creatorUser);
 
             return RedirectToAction(nameof(Index));
         }
+
 
         // =========================
         // Edit Question
@@ -79,6 +102,8 @@ namespace QuizEra.Controllers
                 return NotFound();
             }
 
+            await LoadTopicsAsync();
+
             return View(question);
         }
 
@@ -87,13 +112,18 @@ namespace QuizEra.Controllers
         {
             if (!ModelState.IsValid)
             {
+                await LoadTopicsAsync();
+
                 return View(vm);
             }
 
-            await _questionService.UpdateAsync(vm);
+            var modifierUser = User.Identity?.Name ?? "System";
+
+            await _questionService.UpdateAsync(vm, modifierUser);
 
             return RedirectToAction(nameof(Index));
         }
+
 
         // =========================
         // Delete Question
@@ -102,7 +132,9 @@ namespace QuizEra.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            await _questionService.DeleteAsync(id);
+            var deleterUser = User.Identity?.Name ?? "System";
+
+            await _questionService.DeleteAsync(id, deleterUser);
 
             return RedirectToAction(nameof(Index));
         }

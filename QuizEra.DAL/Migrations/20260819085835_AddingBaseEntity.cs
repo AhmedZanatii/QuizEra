@@ -11,50 +11,7 @@ namespace QuizEra.DAL.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedDate",
-                table: "StudentExamQuestionAnswers",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-            migrationBuilder.AddColumn<string>(
-                name: "CreatorUser",
-                table: "StudentExamQuestionAnswers",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "DeletedDate",
-                table: "StudentExamQuestionAnswers",
-                type: "datetime2",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "DeleterUser",
-                table: "StudentExamQuestionAnswers",
-                type: "nvarchar(max)",
-                nullable: true);
-
-            migrationBuilder.AddColumn<bool>(
-                name: "IsDeleted",
-                table: "StudentExamQuestionAnswers",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "ModifiedDate",
-                table: "StudentExamQuestionAnswers",
-                type: "datetime2",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "ModifierUser",
-                table: "StudentExamQuestionAnswers",
-                type: "nvarchar(max)",
-                nullable: true);
+            
 
             migrationBuilder.AddColumn<string>(
                 name: "CourseDescription",
@@ -112,33 +69,7 @@ namespace QuizEra.DAL.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "CreatedDate",
-                table: "StudentExamQuestionAnswers");
-
-            migrationBuilder.DropColumn(
-                name: "CreatorUser",
-                table: "StudentExamQuestionAnswers");
-
-            migrationBuilder.DropColumn(
-                name: "DeletedDate",
-                table: "StudentExamQuestionAnswers");
-
-            migrationBuilder.DropColumn(
-                name: "DeleterUser",
-                table: "StudentExamQuestionAnswers");
-
-            migrationBuilder.DropColumn(
-                name: "IsDeleted",
-                table: "StudentExamQuestionAnswers");
-
-            migrationBuilder.DropColumn(
-                name: "ModifiedDate",
-                table: "StudentExamQuestionAnswers");
-
-            migrationBuilder.DropColumn(
-                name: "ModifierUser",
-                table: "StudentExamQuestionAnswers");
+            
 
             migrationBuilder.DropColumn(
                 name: "CourseDescription",

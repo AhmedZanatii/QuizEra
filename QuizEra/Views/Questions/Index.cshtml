@@ -1,5 +1,345 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<QuizEra.BLL.ModelVM.Questions.QuestionVM>
+
 @{
+    ViewData["Title"] = "Question Bank";
 }
+
+<style>
+    .question-bank-page {
+        background: #f8f9fa;
+        min-height: calc(100vh - 56px);
+        padding: 35px 20px;
+    }
+
+    .question-bank-container {
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    .page-title {
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 5px;
+    }
+
+    .page-subtitle {
+        color: #6c757d;
+        margin-bottom: 0;
+    }
+
+    .question-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        transition: 0.2s ease;
+    }
+
+        .question-card:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+        }
+
+    .topic-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 35px;
+        margin-bottom: 15px;
+    }
+
+    .topic-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #212529;
+        margin: 0;
+    }
+
+    .topic-count {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .question-body {
+        padding: 22px;
+    }
+
+    .question-text {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 20px;
+    }
+
+    .options-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .option-item {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 12px 15px;
+        background: #fff;
+    }
+
+        .option-item.correct {
+            border-color: #198754;
+            background: #f0fff6;
+        }
+
+    .option-letter {
+        font-weight: 700;
+        margin-right: 8px;
+    }
+
+    .correct-label {
+        color: #198754;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-left: 8px;
+    }
+
+    .question-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .meta-badge {
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+
+    .format-badge {
+        background: #e7f1ff;
+        color: #0d6efd;
+    }
+
+    .difficulty-badge {
+        background: #f1f3f5;
+        color: #495057;
+    }
+
+    .question-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .empty-state {
+        background: white;
+        border-radius: 12px;
+        padding: 60px 20px;
+        text-align: center;
+        border: 1px solid #e5e7eb;
+    }
+
+        .empty-state h4 {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: #6c757d;
+        }
+</style>
+
+
+<div class="question-bank-page">
+
+    <div class="question-bank-container">
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+                <h1 class="page-title">
+                    Question Bank
+                </h1>
+
+                <p class="page-subtitle">
+                    Manage and organize your questions by topic.
+                </p>
+            </div>
+
+            <a asp-action="Create"
+               class="btn btn-primary">
+
+                <i class="fas fa-plus me-1"></i>
+                Add Question
+
+            </a>
+
+        </div>
+
+
+        @if (Model != null && Model.Any())
+        {
+            <!-- Group Questions By Topic -->
+            @foreach (var topicGroup in Model.GroupBy(q => q.TopicName))
+            {
+                <div class="topic-header">
+
+                    <div>
+                        <h3 class="topic-title">
+                            @topicGroup.Key
+                        </h3>
+                    </div>
+
+                    <span class="topic-count">
+                        @topicGroup.Count()
+                        @(topicGroup.Count() == 1 ? "Question" : "Questions")
+                    </span>
+
+                </div>
+
+
+                @foreach (var question in topicGroup)
+                {
+                    <div class="question-card">
+
+                        <div class="question-body">
+
+                            <!-- Question Header -->
+                            <div class="d-flex justify-content-between align-items-start">
+
+                                <div class="flex-grow-1">
+
+                                    <div class="question-text">
+                                        @question.QuestionText
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Actions -->
+                                <div class="question-actions ms-3">
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@question.Id"
+                                       class="btn btn-sm btn-outline-primary">
+
+                                        <i class="fas fa-edit"></i>
+                                        Edit
+
+                                    </a>
+
+
+                                    <form asp-action="Delete"
+                                          asp-route-id="@question.Id"
+                                          method="post"
+                                          onsubmit="return confirm('Are you sure you want to delete this question?');">
+
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-danger">
+
+                                            <i class="fas fa-trash"></i>
+                                            Delete
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Options -->
+                            @if (question.Options != null &&
+                                 question.Options.Any())
+                            {
+                                <div class="options-grid">
+
+                                    @{
+                                        int optionNumber = 0;
+                                    }
+
+                                    @foreach (var option in question.Options)
+                                    {
+                                        var letter =
+                                            (char)('A' + optionNumber);
+
+                                        <div class="option-item @(option.IsCorrect ? "correct" : "")">
+
+                                            <span class="option-letter">
+                                                @letter.
+                                            </span>
+
+                                            <span>
+                                                @option.OptionText
+                                            </span>
+
+                                            @if (option.IsCorrect)
+                                            {
+                                                <span class="correct-label">
+                                                    Correct
+                                                </span>
+                                            }
+
+                                        </div>
+
+                                        optionNumber++;
+                                    }
+
+                                </div>
+                            }
+                            else if (question.QuestionFormat.ToString() == "Essay")
+                            {
+                                <div class="alert alert-light border">
+                                    <i class="fas fa-pen me-2"></i>
+                                    Essay Question
+                                </div>
+                            }
+
+
+                            <!-- Metadata -->
+                            <div class="question-meta">
+
+                                <span class="meta-badge format-badge">
+                                    @question.QuestionFormat
+                                </span>
+
+                                <span class="meta-badge difficulty-badge">
+                                    @question.DifficultyLevel
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+            }
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="empty-state">
+
+                <h4>
+                    No Questions Yet
+                </h4>
+
+                <p>
+                    Your question bank is currently empty.
+                    Start by adding your first question.
+                </p>
+
+                <a asp-action="Create"
+                   class="btn btn-primary">
+
+                    <i class="fas fa-plus me-1"></i>
+                    Add First Question
+
+                </a>
+
+            </div>
+        }
+
+    </div>
+
+</div>

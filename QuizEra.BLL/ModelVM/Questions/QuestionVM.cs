@@ -12,14 +12,13 @@ namespace QuizEra.BLL.ModelVM.Questions
 
         [Required(ErrorMessage = "Topic ID is required")]
         public int TopicID { get; set; }
+        public string TopicName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Question text is required")]
         [MinLength(1, ErrorMessage = "Question text must contain at least 1 character")]
         public string QuestionText { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Question type is required")]
-        public string QuestionType { get; set; } = string.Empty;
-
+       
         [Required(ErrorMessage = "Question format is required")]
         public QuestionFormat QuestionFormat { get; set; }
 

@@ -241,29 +241,12 @@
                             </label>
 
                             <select asp-for="DifficultyLevel"
+                                    asp-items="Html.GetEnumSelectList<QuizEra.DAL.Entities.Enums.DifficultyLevel>()"
                                     class="form-select">
-
-                                <option value="">
-                                    Select difficulty
-                                </option>
-
-                                <option value="Easy">
-                                    Easy
-                                </option>
-
-                                <option value="Intermediate">
-                                    Intermediate
-                                </option>
-
-                                <option value="Hard">
-                                    Hard
-                                </option>
-
+                                <option value="">Select Difficulty</option>
                             </select>
 
-                            <span asp-validation-for="DifficultyLevel"
-                                  class="validation-error">
-                            </span>
+                            <span asp-validation-for="DifficultyLevel" class="text-danger"></span>
 
                         </div>
 
@@ -278,10 +261,30 @@
                             Topic
                         </label>
 
-                        <input asp-for="TopicID"
-                               type="number"
-                               class="form-control"
-                               placeholder="Enter topic ID" />
+                        <label asp-for="TopicID"
+                               class="form-label fw-semibold">
+                            Topic
+                        </label>
+
+                        <select asp-for="TopicID"
+                                class="form-select">
+
+                            <option value="">
+                                Select Topic
+                            </option>
+
+                            @foreach (var topic in ViewBag.Topics)
+                            {
+                                <option value="@topic.Id">
+                                    @topic.Name
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="TopicID"
+                              class="text-danger">
+                        </span>
 
                         <span asp-validation-for="TopicID"
                               class="validation-error">

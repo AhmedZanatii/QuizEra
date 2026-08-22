@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using QuizEra.BLL.ModelVM.Questions;
+
 namespace QuizEra.BLL.Services.Abstraction
 {
     public interface IQuestionService
@@ -11,10 +13,10 @@ namespace QuizEra.BLL.Services.Abstraction
 
         Task<QuestionVM?> GetByIdAsync(int id);
 
-        Task AddAsync(QuestionVM question);
+        Task AddAsync(QuestionVM question, string creatorUser);
 
-        Task UpdateAsync(QuestionVM question);
+        Task UpdateAsync(QuestionVM question, string modifierUser);
 
-        Task DeleteAsync(int id);
+        Task DeleteAsync(int id, string deleterUser);
     }
 }

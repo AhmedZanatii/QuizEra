@@ -148,7 +148,7 @@ namespace QuizEra.BLL.Services
                 Id = q.Id,
                 TopicId = q.TopicID,
                 QuestionText = q.QuestionText,
-                QuestionType = q.QuestionType,
+               
                 Difficulty = q.DifficultyLevel.ToString()
             });
 
