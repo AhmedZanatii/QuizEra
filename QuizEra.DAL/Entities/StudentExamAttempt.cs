@@ -9,6 +9,9 @@
 
         public int StudResult { get; private set; }
 
+        public DateTime StartTime { get; private set; }
+        public DateTime? EndTime { get; private set; }
+
         // Navigation Properties
         public Exam Exam { get; private set; }
         public Student Student { get; private set; }
@@ -21,11 +24,18 @@
         public StudentExamAttempt(
             int examId,
             int studentId,
-            int studResult)
+            int studResult,
+            DateTime startTime)
         {
             ExamId = examId;
             StudentId = studentId;
             StudResult = studResult;
+            StartTime = startTime;
+        }
+
+        public void EndAttempt(DateTime endTime)
+        {
+            EndTime = endTime;
         }
 
         public void Update(int studResult)
