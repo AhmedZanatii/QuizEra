@@ -90,21 +90,66 @@
                 <small class="text-muted">Admin Panel</small>
             </div>
             <ul class="list-unstyled components mb-auto py-3">
-                <li>
-                    <a asp-controller="Admin" asp-action="Index">
-                        <i class="fa-solid fa-chart-pie"></i> Dashboard
-                    </a>
-                </li>
-                <li>
-                    <a asp-controller="Admin" asp-action="Students">
-                        <i class="fa-solid fa-user-graduate"></i> Students
-                    </a>
-                </li>
-                <li>
-                    <a asp-controller="Admin" asp-action="Instructors">
-                        <i class="fa-solid fa-chalkboard-user"></i> Instructors
-                    </a>
-                </li>
+                
+                <ul class="list-unstyled components mb-auto py-3">
+
+                    <!-- Dashboard -->
+                    <li>
+                        <a asp-controller="Admin" asp-action="Index">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+
+                    <!-- Students -->
+                    <li>
+                        <a asp-controller="Admin" asp-action="Students">
+                            <i class="fa-solid fa-user-graduate"></i>
+                            <span>Students</span>
+                        </a>
+                    </li>
+
+                    <!-- Instructors -->
+                    <li>
+                        <a asp-controller="Admin" asp-action="Instructors">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                            <span>Instructors</span>
+                        </a>
+                    </li>
+
+                    <!-- Courses -->
+                    <li>
+                        <a asp-controller="Admin" asp-action="Courses">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>Courses</span>
+                        </a>
+                    </li>
+
+                    <!-- Topics -->
+                    <li>
+                        <a asp-controller="Admin" asp-action="Topics">
+                            <i class="fa-solid fa-folder-tree"></i>
+                            <span>Topics</span>
+                        </a>
+                    </li>
+
+                    <!-- Questions -->
+                    <li>
+                        <a asp-controller="Admin" asp-action="Questions">
+                            <i class="fa-solid fa-circle-question"></i>
+                            <span>Questions</span>
+                        </a>
+                    </li>
+
+                    <!-- Exams -->
+                    <li>
+                        <a asp-controller="Admin" asp-action="Exams">
+                            <i class="fa-solid fa-file-pen"></i>
+                            <span>Exams</span>
+                        </a>
+                    </li>
+
+                </ul>
             </ul>
             <div class="p-3 border-top">
                 <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">

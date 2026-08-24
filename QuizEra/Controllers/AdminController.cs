@@ -8,25 +8,32 @@ namespace QuizEra.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
+        private readonly IAdminService _adminService;
         private readonly IStudentService _studentService;
         private readonly IInstructorService _instructorService;
-
+        private readonly ICourseService _courseService;
         public AdminController(
-            IStudentService studentService,
-            IInstructorService instructorService)
+    IAdminService adminService,
+    IStudentService studentService,
+    IInstructorService instructorService,
+    ICourseService courseService)
         {
+            _adminService = adminService;
             _studentService = studentService;
             _instructorService = instructorService;
+            _courseService = courseService;
         }
 
-        // =====================================================
+        // =========================
         // Admin Dashboard
-        // =====================================================
+        // =========================
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var dashboard = await _adminService.GetDashboardAsync();
+
+            return View(dashboard);
         }
 
 
@@ -415,6 +422,22 @@ namespace QuizEra.Controllers
                 "Instructor restored successfully.";
 
             return RedirectToAction(nameof(Instructors));
+        }
+
+        // =====================================================
+        // COURSES
+        // =====================================================
+
+        // =========================
+        // Courses List
+        // =========================
+
+        [HttpGet]
+        public async Task<IActionResult> Courses()
+        {
+            var courses = await _courseService.GetAllCoursesAsync();
+
+            return View(courses);
         }
     }
 }
