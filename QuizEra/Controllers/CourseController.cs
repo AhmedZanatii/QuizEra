@@ -227,5 +227,29 @@ namespace QuizEra.PL.Controllers
         }
 
         #endregion
+        [Authorize(Roles = "Student")]
+        [HttpGet]
+        public async Task<IActionResult> CourseDetailsForStud(int id)
+        {
+            var course = await _courseService.GetCourseByIdAsync(id);
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            var topics = await _topicService.GetTopicsByCourseAsync(id);
+
+            var model = new CourseDetailsVM
+            {
+                Id = course.Id,
+                CourseName = course.CourseName,
+                CourseCode = course.CourseCode,
+                CourseLevel = course.CourseLevel,
+                Description = course.CourseDescription,
+                Topics = topics ?? new List<QuizEra.BLL.ModelVM.Topic.TopicVM>()
+            };
+
+            return View("CourseDetailsForStud", model);
+        }
     }
 }

@@ -1,0 +1,22 @@
+﻿@model QuizEra.BLL.ModelVM.Administration.InstructorModelVM
+
+@{
+    ViewData["Title"] = "Deactivate Instructor";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card dashboard-card p-4 col-md-8 mx-auto mt-4">
+    <div class="text-center mb-4">
+        <i class="fa-solid fa-triangle-exclamation text-warning fs-1 mb-2"></i>
+        <h4 class="fw-bold">Deactivate Instructor</h4>
+        <p class="text-muted">Are you sure you want to deactivate <strong>@Model.FirstName @Model.LastName</strong> (@Model.Email)?</p>
+    </div>
+
+    <form asp-action="DeactivateInstructorConfirmed" method="post" class="text-center">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <button type="submit" class="btn btn-danger px-4">Yes, Deactivate</button>
+        <a asp-action="Instructors" class="btn btn-outline-secondary px-4 ms-2">Cancel</a>
+    </form>
+</div>

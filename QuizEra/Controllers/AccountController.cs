@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using QuizEra.BLL.ModelVM.Auth;
 using QuizEra.BLL.Services.Abstraction;
 using System.Security.Claims;
-
 namespace QuizEra.Controllers
 {
     public class AccountController : Controller
@@ -243,7 +242,11 @@ namespace QuizEra.Controllers
             var result =
                 await _authService.LoginAsync(vm);
 
-            if (!result)
+            // =========================
+            // User Not Found
+            // =========================
+
+            if (result == LoginResult.UserNotFound)
             {
                 ModelState.AddModelError(
                     string.Empty,
@@ -252,28 +255,115 @@ namespace QuizEra.Controllers
                 return View(vm);
             }
 
+            // =========================
+            // User Deactivated
+            // =========================
+
+            if (result == LoginResult.Deactivated)
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "USER IS DEACTIVATED.");
+
+                return View(vm);
+            }
+
+            // =========================
+            // Invalid Password
+            // =========================
+
+            if (result == LoginResult.InvalidPassword)
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Invalid email or password.");
+
+                return View(vm);
+            }
+
+            // =========================
+            // Not Allowed
+            // =========================
+
+            if (result == LoginResult.NotAllowed)
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Your account is not allowed to login.");
+
+                return View(vm);
+            }
+
+            // =========================
+            // Locked Out
+            // =========================
+
+            if (result == LoginResult.LockedOut)
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Your account is locked out.");
+
+                return View(vm);
+            }
+
+            // =========================
+            // Login Successful
+            // =========================
+
+            if (result != LoginResult.Success)
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Login failed.");
+
+                return View(vm);
+            }
+
+            // =========================
+            // Get User
+            // =========================
+
             var user =
                 await _authService.GetUserByEmailAsync(vm.Email);
 
             if (user == null)
                 return RedirectToAction(nameof(Login));
 
+            // =========================
+            // Get Role
+            // =========================
+
             var role =
                 await _authService.GetUserRoleAsync(user.Id);
 
+            // =========================
+            // Redirect By Role
+            // =========================
+
             if (role == "Student")
             {
-                return RedirectToAction("Index", "Student");
+                return RedirectToAction(
+                    "Index",
+                    "Student");
             }
 
             if (role == "Instructor")
             {
-                return RedirectToAction("Index", "Instructor");
+                return RedirectToAction(
+                    "Index",
+                    "Instructor");
+            }
+
+            if (role == "Admin")
+            {
+                return RedirectToAction(
+                    "Index",
+                    "Admin");
             }
 
             return RedirectToAction(nameof(Login));
         }
-
         // =========================
         // External Login
         // =========================
@@ -336,6 +426,16 @@ namespace QuizEra.Controllers
 
             if (existingUser != null)
             {
+                if (!existingUser.IsActive)
+                {
+                    await HttpContext.SignOutAsync(
+                        IdentityConstants.ExternalScheme);
+
+                    TempData["Error"] =
+                        "Your account has been deactivated.";
+
+                    return RedirectToAction(nameof(Login));
+                }
                 var role =
                     await _authService.GetUserRoleAsync(
                         existingUser.Id);

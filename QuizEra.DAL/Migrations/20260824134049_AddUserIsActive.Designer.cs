@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizEra.DAL.DataBase;
 
@@ -11,9 +12,11 @@ using QuizEra.DAL.DataBase;
 namespace QuizEra.DAL.Migrations
 {
     [DbContext(typeof(QuizEraDBContext))]
-    partial class QuizEraDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260824134049_AddUserIsActive")]
+    partial class AddUserIsActive
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,9 +182,7 @@ namespace QuizEra.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()

@@ -1,0 +1,99 @@
+﻿@model IEnumerable<QuizEra.BLL.ModelVM.Administration.StudentModelVM>
+
+@{
+    ViewData["Title"] = "Students";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold text-dark m-0">Students</h3>
+        <p class="text-muted small mb-0">Manage student accounts and records.</p>
+    </div>
+    <a asp-action="CreateStudent" class="btn btn-primary btn-sm">
+        <i class="fa-solid fa-plus me-1"></i> Add Student
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card dashboard-card">
+    <div class="card-body p-0">
+        @if (!Model.Any())
+        {
+            <div class="p-4 text-center text-muted">No students found.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th class="text-end pe-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var student in Model)
+                        {
+                            <tr>
+                                <td class="ps-3 fw-medium">@student.FirstName @student.LastName</td>
+                                <td>@student.Email</td>
+                                <td>@(string.IsNullOrEmpty(student.PhoneNumber) ? "-" : student.PhoneNumber)</td>
+                                <td>
+                                    @if (student.IsActive)
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary">Inactive</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-3">
+                                    <a asp-action="StudentDetails" asp-route-id="@student.Id" class="btn btn-outline-info btn-sm me-1">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    <a asp-action="EditStudent" asp-route-id="@student.Id" class="btn btn-outline-warning btn-sm me-1">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    @if (student.IsActive)
+                                    {
+                                        <a asp-action="DeactivateStudent" asp-route-id="@student.Id" class="btn btn-outline-danger btn-sm">
+                                            <i class="fa-solid fa-user-slash"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="RestoreStudent" asp-route-id="@student.Id" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-outline-success btn-sm">
+                                                <i class="fa-solid fa-rotate-left"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

@@ -77,16 +77,20 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ITopicService, TopicService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
-
-
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IInstructorService, InstructorService>();
 var app = builder.Build();
-//role (authentication) seeding
+// Role and Admin seeding
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider
         .GetRequiredService<RoleManager<IdentityRole>>();
 
+    var userManager = scope.ServiceProvider
+        .GetRequiredService<UserManager<ApplicationUser>>();
+
     await RoleSeeder.SeedRolesAsync(roleManager);
+    await RoleSeeder.SeedAdminAsync(userManager);
 }
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -109,7 +113,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=Account}/{action=Login}/{id?}")
     .WithStaticAssets();
 
 app.Run();

@@ -5,6 +5,12 @@
     Layout = "AuthLayout";
 
 }
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
 <style>
     .login-page {
         min-height: calc(100vh - 56px);
