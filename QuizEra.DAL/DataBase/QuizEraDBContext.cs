@@ -14,6 +14,7 @@ namespace QuizEra.DAL.DataBase
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Exam> Exams { get; set; }
         public DbSet<Question> Questions { get; set; }
+        public DbSet<QuestionOption> QuestionOptions { get; set; }
         public DbSet<ExamQuestions> ExamQuestions { get; set; }
         public DbSet<StudentExamAttempt> StudentExamAttempts { get; set; }
         public DbSet<StudentExamQuestionAnswer> StudentExamQuestionAnswers { get; set; }
@@ -133,6 +134,22 @@ namespace QuizEra.DAL.DataBase
                 .Property(q => q.DifficultyLevel)
                 .HasConversion<string>();
 
+            modelBuilder.Entity<Question>()
+              .Property(q => q.QuestionFormat)
+              .HasConversion<string>();
+
+            // =========================================
+            // QuestionOption
+            // =========================================
+
+            modelBuilder.Entity<QuestionOption>()
+                .HasKey(qo => qo.Id);
+
+            modelBuilder.Entity<QuestionOption>()
+                .HasOne(qo => qo.Question)
+                .WithMany(q => q.Options)
+                .HasForeignKey(qo => qo.QuestionId)
+                .OnDelete(DeleteBehavior.Cascade);// as if question is deleted delete its options too
 
             // =========================================
             // ExamQuestions

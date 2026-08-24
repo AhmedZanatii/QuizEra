@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizEra.DAL.DataBase;
 
@@ -11,9 +12,11 @@ using QuizEra.DAL.DataBase;
 namespace QuizEra.DAL.Migrations
 {
     [DbContext(typeof(QuizEraDBContext))]
-    partial class QuizEraDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260820173226_AddingQuestionOptionsAndFormat")]
+    partial class AddingQuestionOptionsAndFormat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,11 +181,6 @@ namespace QuizEra.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -241,13 +239,6 @@ namespace QuizEra.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("CourseCode")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CourseDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CourseLevel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -256,30 +247,8 @@ namespace QuizEra.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeleterUser")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("InstructorID")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifierUser")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -403,30 +372,8 @@ namespace QuizEra.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeleterUser")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("DifficultyLevel")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifierUser")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Photo")
@@ -442,6 +389,10 @@ namespace QuizEra.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QuestionText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QuestionType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -523,14 +474,8 @@ namespace QuizEra.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("EndTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("ExamId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("StudResult")
                         .HasColumnType("int");
@@ -584,9 +529,6 @@ namespace QuizEra.DAL.Migrations
                     b.Property<int>("StudQMarks")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("TimeSpent")
-                        .HasColumnType("time");
-
                     b.HasKey("ExamQuestionsId", "StudentExamAttemptId");
 
                     b.HasIndex("StudentExamAttemptId");
@@ -604,28 +546,6 @@ namespace QuizEra.DAL.Migrations
 
                     b.Property<int>("CourseID")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeleterUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifierUser")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()

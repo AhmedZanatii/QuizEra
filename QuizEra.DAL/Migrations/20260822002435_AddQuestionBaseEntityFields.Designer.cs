@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizEra.DAL.DataBase;
 
@@ -11,9 +12,11 @@ using QuizEra.DAL.DataBase;
 namespace QuizEra.DAL.Migrations
 {
     [DbContext(typeof(QuizEraDBContext))]
-    partial class QuizEraDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260822002435_AddQuestionBaseEntityFields")]
+    partial class AddQuestionBaseEntityFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,11 +180,6 @@ namespace QuizEra.DAL.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -523,14 +521,8 @@ namespace QuizEra.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("EndTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("ExamId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("StudResult")
                         .HasColumnType("int");
@@ -583,9 +575,6 @@ namespace QuizEra.DAL.Migrations
 
                     b.Property<int>("StudQMarks")
                         .HasColumnType("int");
-
-                    b.Property<TimeSpan>("TimeSpent")
-                        .HasColumnType("time");
 
                     b.HasKey("ExamQuestionsId", "StudentExamAttemptId");
 

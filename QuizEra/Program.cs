@@ -70,7 +70,9 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
         options.TokenLifespan = TimeSpan.FromHours(1);
     });
 
-
+//questions
+builder.Services.AddScoped<IQuestionService, QuestionService>();
+///////////////////
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IEmailService, EmailService>();
