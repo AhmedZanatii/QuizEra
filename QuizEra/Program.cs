@@ -72,6 +72,8 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 
 //questions
 builder.Services.AddScoped<IQuestionService, QuestionService>();
+//Exam
+builder.Services.AddScoped<IExamService, ExamService>();
 ///////////////////
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

@@ -7,7 +7,9 @@
         public int QuestionId { get; private set; }
         public int ExamId { get; private set; }
 
-        public int ActualMark { get; private set; }
+        public double ActualMark { get; private set; }
+        public double BonusMark { get; private set; }
+        public double NegativeMark { get; private set; }
 
         // Navigation Properties
         public Question Question { get; private set; }
@@ -18,19 +20,20 @@
 
         protected ExamQuestions() { }
 
-        public ExamQuestions(
-            int questionId,
-            int examId,
-            int actualMark)
+        public ExamQuestions(int questionId, int examId, double actualMark, double bonusMark,double negativeMarks)
         {
             QuestionId = questionId;
             ExamId = examId;
             ActualMark = actualMark;
+            BonusMark = bonusMark;
+            NegativeMark = negativeMarks;
         }
 
-        public void Update(int actualMark)
+        public void Update(double actualMark, double bonusMark, double negativeMarks)
         {
             ActualMark = actualMark;
+            BonusMark = bonusMark;
+            NegativeMark = negativeMarks;
         }
     }
 }

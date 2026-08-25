@@ -43,7 +43,7 @@ namespace QuizEra.BLL.Services.Implementation
 
             var maxScore = attempt.Exam?.TotalMarks ?? 0;
             var score = attempt.StudResult;
-            var percentage = maxScore > 0 ? ((decimal)score / maxScore) * 100 : 0;
+            var percentage = maxScore > 0 ? ((decimal)score / (decimal)maxScore) * 100 : 0;
 
             bool isPassed = percentage >= 50; 
 

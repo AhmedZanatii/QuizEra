@@ -113,7 +113,11 @@ namespace QuizEra.DAL.DataBase
 
             modelBuilder.Entity<Exam>()
                 .HasKey(e => e.Id);
-
+            modelBuilder.Entity<Exam>()
+                .HasOne(e => e.Topic)
+                .WithMany(t => t.Exams)
+                .HasForeignKey(e => e.TopicID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // =========================================
             // Question
