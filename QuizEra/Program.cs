@@ -21,7 +21,10 @@ var connectionString =
     builder.Configuration.GetConnectionString("Zanatii");
 
 builder.Services.AddDbContext<QuizEraDBContext>(options =>
-    options.UseSqlServer(connectionString));
+    options
+        .UseSqlServer(connectionString)
+        .EnableSensitiveDataLogging()
+        .LogTo(Console.WriteLine));
 
 // Identity Configuration
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

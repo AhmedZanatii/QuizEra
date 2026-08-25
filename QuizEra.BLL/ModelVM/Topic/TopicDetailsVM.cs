@@ -1,4 +1,4 @@
-using QuizEra.BLL.ModelVM.Question;
+using QuizEra.BLL.ModelVM.Questions;
 
 namespace QuizEra.BLL.ModelVM.Topic
 {

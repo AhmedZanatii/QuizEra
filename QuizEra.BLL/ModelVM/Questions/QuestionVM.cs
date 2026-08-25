@@ -12,6 +12,7 @@ namespace QuizEra.BLL.ModelVM.Questions
 
         [Required(ErrorMessage = "Topic ID is required")]
         public int TopicID { get; set; }
+        public int TopicId { get;  set; }
         public string TopicName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Question text is required")]
@@ -31,5 +32,7 @@ namespace QuizEra.BLL.ModelVM.Questions
 
         public ICollection<QuestionOptionVM> Options { get; set; }
             = new List<QuestionOptionVM>();
+        public object? QuestionType { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

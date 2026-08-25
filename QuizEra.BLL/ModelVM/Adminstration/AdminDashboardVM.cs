@@ -13,6 +13,8 @@
         public int TotalCourses { get; set; }
         public int TotalTopics { get; set; }
         public int TotalQuestions { get; set; }
+        public int ActiveQuestions { get; set; }
+        public int DeletedQuestions { get; set; }
         public int TotalExams { get; set; }
     }
 }

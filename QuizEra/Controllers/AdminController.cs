@@ -12,16 +12,23 @@ namespace QuizEra.Controllers
         private readonly IStudentService _studentService;
         private readonly IInstructorService _instructorService;
         private readonly ICourseService _courseService;
+        private readonly ITopicService _topicService;
+        private readonly IQuestionService _questionService;
+
         public AdminController(
-    IAdminService adminService,
-    IStudentService studentService,
-    IInstructorService instructorService,
-    ICourseService courseService)
+            IAdminService adminService,
+            IStudentService studentService,
+            IInstructorService instructorService,
+            ICourseService courseService,
+            ITopicService topicService,
+            IQuestionService questionService)
         {
             _adminService = adminService;
             _studentService = studentService;
             _instructorService = instructorService;
             _courseService = courseService;
+            _topicService = topicService;
+            _questionService = questionService;
         }
 
         // =========================
@@ -438,6 +445,39 @@ namespace QuizEra.Controllers
             var courses = await _courseService.GetAllCoursesAsync();
 
             return View(courses);
+        }
+
+        // =========================
+        // TOPICS
+        // =========================
+
+        [HttpGet]
+        public async Task<IActionResult> Topics()
+        {
+            var topics = await _topicService.GetAllTopicsAsync();
+            return View(topics);
+        }
+
+        // =========================
+        // QUESTIONS
+        // =========================
+
+        [HttpGet]
+        public async Task<IActionResult> Questions()
+        {
+            var questions = await _questionService.GetByIdAsyncIncludingDeleted();
+            return View(questions);
+        }
+
+        // =========================
+        // EXAMS
+        // =========================
+
+        [HttpGet]
+        public IActionResult Exams()
+        {
+            // Exams management not implemented yet
+            return View();
         }
     }
 }

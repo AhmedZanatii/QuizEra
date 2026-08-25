@@ -81,6 +81,8 @@ namespace QuizEra.BLL.Services.Implementation
                 TotalCourses = courses.Count(),
                 TotalTopics = topics.Count(),
                 TotalQuestions = questions.Count(),
+                ActiveQuestions = questions.Count(q => !((dynamic)q).IsDeleted),
+                DeletedQuestions = questions.Count(q => ((dynamic)q).IsDeleted),
                 TotalExams = exams.Count()
             };
         }

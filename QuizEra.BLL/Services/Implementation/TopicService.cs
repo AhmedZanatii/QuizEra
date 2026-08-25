@@ -1,5 +1,5 @@
 ﻿using QuizEra.BLL.ModelVM.Topic;
-using QuizEra.BLL.ModelVM.Question;
+using QuizEra.BLL.ModelVM.Questions;
 using QuizEra.BLL.Services.Abstraction;
 using QuizEra.DAL.Entities;
 using QuizEra.DAL.Repositories.Abstraction;
@@ -148,8 +148,10 @@ namespace QuizEra.BLL.Services
                 Id = q.Id,
                 TopicId = q.TopicID,
                 QuestionText = q.QuestionText,
-               
-                Difficulty = q.DifficultyLevel.ToString()
+                QuestionFormat = q.QuestionFormat,
+                QuestionAnswer = q.QuestionAnswer,
+                DifficultyLevel = q.DifficultyLevel,
+                IsDeleted = q.IsDeleted
             });
 
             return new TopicDetailsVM

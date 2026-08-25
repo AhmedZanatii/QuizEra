@@ -18,5 +18,9 @@ namespace QuizEra.BLL.Services.Abstraction
         Task UpdateAsync(QuestionVM question, string modifierUser);
 
         Task DeleteAsync(int id, string deleterUser);
+        Task<IEnumerable<QuestionVM>> GetByIdAsyncIncludingDeleted();
+
+        Task RestoreAsync(int id);
+
     }
 }

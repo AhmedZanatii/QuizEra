@@ -2,598 +2,202 @@
 
 @{
     ViewData["Title"] = "Edit Question";
+    Layout = "~/Views/Shared/_InstructorLayout.cshtml"; 
 }
 
-<style>
-    .question-page {
-        min-height: calc(100vh - 56px);
-        background: #f8f9fa;
-        padding: 40px 20px;
-    }
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
 
-    .question-container {
-        max-width: 900px;
-        margin: auto;
-    }
+            <div class="card shadow-sm border-0 rounded-3">
 
-    .question-card {
-        background: white;
-        border-radius: 12px;
-        border: none;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
-    }
+                <!-- Header -->
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h4 class="fw-bold mb-1 text-dark">Edit Question</h4>
+                    <p class="text-muted small mb-0">Update the question details and answers.</p>
+                </div>
 
-    .question-header {
-        background: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
-        padding: 22px 25px;
-    }
+                <!-- Form -->
+                <form asp-controller="Questions" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+                    <input type="hidden" asp-for="Id" />
 
-    .question-title {
-        font-weight: 700;
-        color: #212529;
-        margin-bottom: 5px;
-    }
+                    <div class="card-body p-4">
 
-    .question-subtitle {
-        color: #6c757d;
-        margin-bottom: 0;
-    }
+                        <!-- Topic, Format & Difficulty Row -->
+                        <div class="row g-3 mb-4">
+                            
+                            <div class="col-md-4">
+                                <label asp-for="TopicID" class="form-label fw-semibold">Topic</label>
+                                <select asp-for="TopicID" class="form-select">
+                                    <option value="">-- Select Topic --</option>
+                                    @if (ViewBag.Topics != null)
+                                    {
+                                        foreach (var topic in ViewBag.Topics)
+                                        {
+                                            <option value="@topic.Id" selected="@(Model.TopicID == topic.Id)">
+                                                @topic.Name
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="TopicID" class="text-danger small"></span>
+                            </div>
 
-    .question-body {
-        padding: 25px;
-    }
+                            <div class="col-md-4">
+                                <label asp-for="QuestionFormat" class="form-label fw-semibold">Question Type</label>
+                                <select asp-for="QuestionFormat" asp-items="Html.GetEnumSelectList<QuizEra.DAL.Entities.Enums.QuestionFormat>()" class="form-select" id="questionFormat">
+                                </select>
+                                <span asp-validation-for="QuestionFormat" class="text-danger small"></span>
+                            </div>
 
-    .form-label {
-        font-weight: 600;
-        color: #343a40;
-    }
+                            <div class="col-md-4">
+                                <label asp-for="DifficultyLevel" class="form-label fw-semibold">Difficulty Level</label>
+                                <select asp-for="DifficultyLevel" asp-items="Html.GetEnumSelectList<QuizEra.DAL.Entities.Enums.DifficultyLevel>()" class="form-select">
+                                </select>
+                                <span asp-validation-for="DifficultyLevel" class="text-danger small"></span>
+                            </div>
 
-    .form-control,
-    .form-select {
-        border-radius: 8px;
-        padding: 11px 13px;
-    }
+                        </div>
 
-        .form-control:focus,
-        .form-select:focus {
-            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
-        }
+                        <!-- Question Content -->
+                        <div class="mb-4">
+                            <label asp-for="QuestionText" class="form-label fw-semibold">Question Content</label>
+                            <textarea asp-for="QuestionText" class="form-control" rows="4" placeholder="Enter question content..."></textarea>
+                            <span asp-validation-for="QuestionText" class="text-danger small"></span>
+                        </div>
 
-    .question-content {
-        min-height: 150px;
-        resize: vertical;
-    }
+                        <!-- Essay Model Answer Section -->
+                        <div id="essayAnswerSection" class="mb-4" style="display: none;">
+                            <label asp-for="QuestionAnswer" class="form-label fw-semibold">Model Answer</label>
+                            <textarea asp-for="QuestionAnswer" class="form-control" rows="4" placeholder="Enter reference answer..."></textarea>
+                        </div>
 
-    .options-container {
-        border: 1px solid #dee2e6;
-        border-radius: 10px;
-        padding: 18px;
-        margin-top: 25px;
-    }
+                        <!-- MCQ Options -->
+                        <div id="optionsSection" class="border rounded-3 p-3 bg-light mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold m-0 text-dark">Answer Options</h6>
+                                <small class="text-muted">Select the correct answer option</small>
+                            </div>
 
-    .options-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 18px;
-    }
+                            <div id="optionsList">
+                                @{ int index = 0; }
+                                @if (Model.Options != null && Model.Options.Any())
+                                {
+                                    foreach (var option in Model.Options)
+                                    {
+                                        <div class="option-row d-flex align-items-center gap-2 mb-3">
+                                            <input type="hidden" name="Options[@index].Id" value="@option.Id" />
+                                            
+                                            <input type="radio" name="CorrectOption" value="@index" class="form-check-input mt-0 correct-option" @(option.IsCorrect ? "checked" : "") />
 
-    .options-title {
-        font-weight: 600;
-        margin: 0;
-    }
+                                            <span class="badge bg-secondary rounded-circle d-flex align-items-center justify-content-center option-letter" style="width: 32px; height: 32px;">
+                                                @((char)('A' + index))
+                                            </span>
 
-    .option-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 12px;
-    }
+                                            <input type="text" name="Options[@index].OptionText" value="@option.OptionText" class="form-control" required />
 
-    .option-letter {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: #f1f3f5;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: 700;
-        flex-shrink: 0;
-    }
+                                            <button type="button" class="btn btn-outline-danger btn-sm border-0" onclick="removeOption(this)">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                        index++;
+                                    }
+                                }
+                            </div>
 
-    .correct-option {
-        width: 18px;
-        height: 18px;
-        cursor: pointer;
-        flex-shrink: 0;
-    }
+                            <button type="button" class="btn btn-sm btn-outline-primary fw-semibold" onclick="addOption()">
+                                <i class="fa-solid fa-plus me-1"></i> Add Option
+                            </button>
+                        </div>
 
-    .delete-option {
-        border: none;
-        background: transparent;
-        color: #6c757d;
-        padding: 6px;
-        cursor: pointer;
-    }
+                    </div>
 
-        .delete-option:hover {
-            color: #dc3545;
-        }
+                    <!-- Footer -->
+                    <div class="card-footer bg-white py-3 border-top d-flex justify-content-end gap-2">
+                        <a asp-controller="Questions" asp-action="Index" class="btn btn-outline-secondary px-4">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4 fw-bold">
+                            Save Changes <i class="fa-solid fa-check ms-1"></i>
+                        </button>
+                    </div>
 
-    .add-option {
-        border: none;
-        background: transparent;
-        color: #0d6efd;
-        font-weight: 600;
-        padding: 5px 0;
-        cursor: pointer;
-    }
-
-        .add-option:hover {
-            text-decoration: underline;
-        }
-
-    .validation-error {
-        color: #dc3545;
-        font-size: 0.85rem;
-        display: block;
-        margin-top: 4px;
-    }
-
-    .question-footer {
-        border-top: 1px solid #dee2e6;
-        padding: 18px 25px;
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        background: white;
-    }
-</style>
-
-
-<div class="question-page">
-
-    <div class="question-container">
-
-        <div class="question-card">
-
-            <!-- Header -->
-            <div class="question-header">
-
-                <h1 class="question-title">
-                    Edit Question
-                </h1>
-
-                <p class="question-subtitle">
-                    Update the question and its options.
-                </p>
+                </form>
 
             </div>
 
-
-            <!-- Form -->
-            <form asp-action="Edit"
-                  asp-route-id="@Model.Id"
-                  method="post">
-
-                <!-- Important -->
-                <input type="hidden"
-                       asp-for="Id" />
-
-
-                <div class="question-body">
-
-                    <!-- Topic + Difficulty -->
-                    <div class="row g-3">
-
-                        <div class="col-md-6">
-
-                            <label asp-for="TopicID"
-                                   class="form-label">
-                                Topic
-                            </label>
-
-                            <select asp-for="TopicID"
-                                    class="form-select">
-
-                                <option value="">
-                                    Select Topic
-                                </option>
-
-                                @foreach (var topic in ViewBag.Topics)
-                                {
-                                    <option value="@topic.Id">
-                                        @topic.Name
-                                    </option>
-                                }
-
-                            </select>
-
-                            <span asp-validation-for="TopicID"
-                                  class="validation-error">
-                            </span>
-
-                        </div>
-
-
-                        <div class="col-md-6">
-
-                            <label asp-for="DifficultyLevel"
-                                   class="form-label">
-                                Difficulty Level
-                            </label>
-
-                            <select asp-for="DifficultyLevel"
-                                    class="form-select">
-
-                                <option value="Easy">
-                                    Easy
-                                </option>
-
-                                <option value="Intermediate">
-                                    Intermediate
-                                </option>
-
-                                <option value="Hard">
-                                    Hard
-                                </option>
-
-                            </select>
-
-                            <span asp-validation-for="DifficultyLevel"
-                                  class="validation-error">
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Question Format -->
-                    <div class="mt-4">
-
-                        <label asp-for="QuestionFormat"
-                               class="form-label">
-                            Question Type
-                        </label>
-
-                        <select asp-for="QuestionFormat"
-                                class="form-select"
-                                id="questionFormat">
-
-                            <option value="MCQ">
-                                Multiple Choice (MCQ)
-                            </option>
-
-                            <option value="TrueFalse">
-                                True / False
-                            </option>
-
-                            <option value="Essay">
-                                Essay
-                            </option>
-
-                        </select>
-
-                        <span asp-validation-for="QuestionFormat"
-                              class="validation-error">
-                        </span>
-
-                    </div>
-
-
-                    <!-- Question Text -->
-                    <div class="mt-4">
-
-                        <label asp-for="QuestionText"
-                               class="form-label">
-                            Question Content
-                        </label>
-
-                        <textarea asp-for="QuestionText"
-                                  class="form-control question-content"
-                                  placeholder="Enter your question here...">
-                        </textarea>
-
-                        <span asp-validation-for="QuestionText"
-                              class="validation-error">
-                        </span>
-
-                    </div>
-
-
-                    <!-- Essay Answer -->
-                    <div id="essayAnswerSection"
-                         class="mt-4">
-
-                        <label asp-for="QuestionAnswer"
-                               class="form-label">
-                            Model Answer
-                        </label>
-
-                        <textarea asp-for="QuestionAnswer"
-                                  class="form-control"
-                                  rows="5"
-                                  placeholder="Enter the reference answer for the essay...">
-                        </textarea>
-
-                    </div>
-
-
-                    <!-- Options -->
-                    <div id="optionsSection"
-                         class="options-container">
-
-                        <div class="options-header">
-
-                            <h6 class="options-title">
-                                Answer Options
-                            </h6>
-
-                            <small class="text-muted">
-                                Select the correct answer
-                            </small>
-
-                        </div>
-
-
-                        <div id="optionsList">
-
-                            @{
-                                int index = 0;
-                            }
-
-                            @foreach (var option in Model.Options)
-                            {
-                                <div class="option-row">
-
-                                    <input type="hidden"
-                                           name="Options[@index].Id"
-                                           value="@option.Id" />
-
-                                    <input type="radio"
-                                           name="CorrectOption"
-                                           value="@index"
-                                           class="correct-option"
-                                    @(option.IsCorrect ? "checked" : "") />
-
-                                    <span class="option-letter">
-                                        @((char)('A' + index))
-                                    </span>
-
-                                    <input type="text"
-                                           name="Options[@index].OptionText"
-                                           value="@option.OptionText"
-                                           class="form-control"
-                                           placeholder="Option @((char)('A' + index)) text..." />
-
-                                    <button type="button"
-                                            class="delete-option"
-                                            onclick="removeOption(this)">
-
-                                        <i class="fas fa-trash"></i>
-
-                                    </button>
-
-                                </div>
-
-                                index++;
-                            }
-
-                        </div>
-
-
-                        <button type="button"
-                                class="add-option"
-                                onclick="addOption()">
-
-                            <i class="fas fa-plus"></i>
-                            Add Option
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Footer -->
-                <div class="question-footer">
-
-                    <a asp-action="Index"
-                       class="btn btn-outline-secondary">
-                        Cancel
-                    </a>
-
-                    <button type="submit"
-                            class="btn btn-primary">
-
-                        Save Changes
-                        <i class="fas fa-check ms-1"></i>
-
-                    </button>
-
-                </div>
-
-            </form>
-
         </div>
-
     </div>
-
 </div>
 
-
 @section Scripts {
-
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-
-        let optionIndex =
-            document.querySelectorAll(".option-row").length;
-
+        let optionIndex = document.querySelectorAll(".option-row").length;
 
         function addOption() {
+            const optionsList = document.getElementById("optionsList");
+            const letter = String.fromCharCode(65 + optionIndex);
+            const row = document.createElement("div");
 
-            const optionsList =
-                document.getElementById("optionsList");
-
-            const letter =
-                String.fromCharCode(65 + optionIndex);
-
-            const row =
-                document.createElement("div");
-
-            row.className = "option-row";
-
+            row.className = "option-row d-flex align-items-center gap-2 mb-3";
             row.innerHTML = `
-                        <input type="hidden"
-                               name="Options[${optionIndex}].Id"
-                               value="0" />
-
-                        <input type="radio"
-                               name="CorrectOption"
-                               value="${optionIndex}"
-                               class="correct-option" />
-
-                        <span class="option-letter">
-                            ${letter}
-                        </span>
-
-                        <input type="text"
-                               name="Options[${optionIndex}].OptionText"
-                               class="form-control"
-                               placeholder="Option ${letter} text..." />
-
-                        <button type="button"
-                                class="delete-option"
-                                onclick="removeOption(this)">
-
-                            <i class="fas fa-trash"></i>
-
-                        </button>
-                    `;
+                <input type="hidden" name="Options[${optionIndex}].Id" value="0" />
+                <input type="radio" name="CorrectOption" value="${optionIndex}" class="form-check-input mt-0 correct-option" />
+                <span class="badge bg-secondary rounded-circle d-flex align-items-center justify-content-center option-letter" style="width: 32px; height: 32px;">${letter}</span>
+                <input type="text" name="Options[${optionIndex}].OptionText" class="form-control" placeholder="Option ${letter} text..." required />
+                <button type="button" class="btn btn-outline-danger btn-sm border-0" onclick="removeOption(this)">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            `;
 
             optionsList.appendChild(row);
-
             optionIndex++;
         }
 
-
         function removeOption(button) {
-
-            const optionsList =
-                document.getElementById("optionsList");
-
+            const optionsList = document.getElementById("optionsList");
             if (optionsList.children.length <= 2) {
-
-                alert(
-                    "A question must have at least 2 options."
-                );
-
+                alert("A question must have at least 2 options.");
                 return;
             }
-
             button.closest(".option-row").remove();
-
             updateIndexes();
         }
 
-
         function updateIndexes() {
-
-            const rows =
-                document.querySelectorAll(".option-row");
-
+            const rows = document.querySelectorAll(".option-row");
             rows.forEach((row, index) => {
+                const letter = String.fromCharCode(65 + index);
+                row.querySelector(".option-letter").textContent = letter;
 
-                const letter =
-                    String.fromCharCode(65 + index);
+                const textInput = row.querySelector("input[type='text']");
+                textInput.name = `Options[${index}].OptionText`;
 
-                row.querySelector(
-                    ".option-letter"
-                ).textContent = letter;
+                const hiddenInput = row.querySelector("input[type='hidden']");
+                if (hiddenInput) hiddenInput.name = `Options[${index}].Id`;
 
-                const textInput =
-                    row.querySelector(
-                        "input[type='text']"
-                    );
-
-                textInput.name =
-                    `Options[${index}].OptionText`;
-
-                textInput.placeholder =
-                    `Option ${letter} text...`;
-
-                const hiddenInput =
-                    row.querySelector(
-                        "input[type='hidden']"
-                    );
-
-                hiddenInput.name =
-                    `Options[${index}].Id`;
-
-                const radio =
-                    row.querySelector(
-                        "input[type='radio']"
-                    );
-
+                const radio = row.querySelector("input[type='radio']");
                 radio.value = index;
-
             });
-
             optionIndex = rows.length;
         }
 
-
         function updateQuestionFormat() {
+            const formatSelect = document.getElementById("questionFormat");
+            const selectedText = formatSelect.options[formatSelect.selectedIndex]?.text;
+            const optionsSection = document.getElementById("optionsSection");
+            const essaySection = document.getElementById("essayAnswerSection");
 
-            const format =
-                document.getElementById(
-                    "questionFormat"
-                ).value;
-
-            const optionsSection =
-                document.getElementById(
-                    "optionsSection"
-                );
-
-            const essaySection =
-                document.getElementById(
-                    "essayAnswerSection"
-                );
-
-
-            if (format === "Essay") {
-
+            if (selectedText === "Essay") {
                 optionsSection.style.display = "none";
-
                 essaySection.style.display = "block";
-
-            }
-            else {
-
+            } else {
                 optionsSection.style.display = "block";
-
                 essaySection.style.display = "none";
-
             }
         }
 
-
-        document
-            .getElementById("questionFormat")
-            .addEventListener(
-                "change",
-                updateQuestionFormat
-            );
-
-
+        document.getElementById("questionFormat").addEventListener("change", updateQuestionFormat);
         updateQuestionFormat();
-
     </script>
 }

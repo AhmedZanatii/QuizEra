@@ -30,8 +30,8 @@ namespace QuizEra.BLL.Services.Implementation
                 q => !q.IsDeleted,
                 new List<Expression<Func<Question, object>>>
                 {
-                    q => q.Options,
-                    q => q.Topic
+            q => q.Options,
+            q => q.Topic
                 });
 
             return questions.Select(q => new QuestionVM
@@ -44,19 +44,19 @@ namespace QuizEra.BLL.Services.Implementation
                 QuestionAnswer = q.QuestionAnswer,
                 DifficultyLevel = q.DifficultyLevel,
                 Photo = q.Photo,
+                IsDeleted = q.IsDeleted,
 
-                    Options = q.Options
-        .Select(o => new QuestionOptionVM
-        {
-            Id = o.Id,
-            QuestionId = o.QuestionId,
-            OptionText = o.OptionText,
-            IsCorrect = o.IsCorrect
-        })
-        .ToList()
+                Options = q.Options
+                    .Select(o => new QuestionOptionVM
+                    {
+                        Id = o.Id,
+                        QuestionId = o.QuestionId,
+                        OptionText = o.OptionText,
+                        IsCorrect = o.IsCorrect
+                    })
+                    .ToList()
             });
         }
-
 
         // =========================================
         // Get Question By ID
@@ -244,6 +244,54 @@ namespace QuizEra.BLL.Services.Implementation
             question.Delete(
                 deleterUser,
                 DateTime.UtcNow);
+
+            _questionRepo.Update(question);
+
+            await _questionRepo.SaveAsync();
+        }
+        public async Task<IEnumerable<QuestionVM>> GetByIdAsyncIncludingDeleted()
+        {
+            var questions = await _questionRepo.Get(
+                null,
+                new List<Expression<Func<Question, object>>>
+                {
+                    q => q.Options,
+                    q => q.Topic
+                });
+
+            return questions.Select(question => new QuestionVM
+            {
+                Id = question.Id,
+                TopicID = question.TopicID,
+                TopicName = question.Topic?.Name,
+                QuestionText = question.QuestionText,
+                QuestionFormat = question.QuestionFormat,
+                QuestionAnswer = question.QuestionAnswer,
+                DifficultyLevel = question.DifficultyLevel,
+                Photo = question.Photo,
+                IsDeleted = question.IsDeleted,
+
+                Options = question.Options.Select(o => new QuestionOptionVM
+                {
+                    Id = o.Id,
+                    QuestionId = o.QuestionId,
+                    OptionText = o.OptionText,
+                    IsCorrect = o.IsCorrect
+                }).ToList()
+            });
+        }
+        public async Task RestoreAsync(int id)
+        {
+            var questions = await _questionRepo.Get(
+                q => q.Id == id
+            );
+
+            var question = questions.FirstOrDefault();
+
+            if (question == null)
+                throw new Exception($"Question with ID {id} was not found.");
+
+            question.Restore();
 
             _questionRepo.Update(question);
 

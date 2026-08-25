@@ -6,7 +6,7 @@ namespace QuizEra.DAL.Entities.Enums
 {
     public enum DifficultyLevel
     {
-        Eazy,
+        Easy,
         Medium,
         Hard
     }

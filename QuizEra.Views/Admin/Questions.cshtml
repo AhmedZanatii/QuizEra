@@ -1,0 +1,42 @@
+@model IEnumerable<QuizEra.BLL.ModelVM.Questions.QuestionVM>
+
+@{
+    ViewData["Title"] = "Questions";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="mb-4">
+    <h3 class="fw-bold">Questions</h3>
+    <p class="text-muted small">Question bank (including deleted items).</p>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-light">No questions found.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Topic</th>
+                    <th>Question</th>
+                    <th>Deleted</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var q in Model)
+                {
+                    <tr>
+                        <td>@q.Id</td>
+                        <td>@(string.IsNullOrEmpty(q.TopicName)? "-" : q.TopicName)</td>
+                        <td>@q.QuestionText</td>
+                        <td>@(q.IsDeleted ? "Yes" : "No")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

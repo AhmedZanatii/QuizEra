@@ -12,9 +12,9 @@ namespace QuizEra.DAL.Entities
         public string QuestionText { get; private set; }
         
         public QuestionFormat QuestionFormat { get; private set; }  //MSQ or T/F or essay
-        public string QuestionAnswer { get; private set; }
+        public string? QuestionAnswer{ get; private set; }
         public DifficultyLevel DifficultyLevel { get; private set; }
-        public string Photo { get; private set; }
+        public string? Photo { get; private set; }
 
         // Navigation Properties
         public Topic Topic { get; private set; } 
@@ -61,6 +61,7 @@ namespace QuizEra.DAL.Entities
 
             base.Update(modifierUser);
         }
+       
     }
 }
  

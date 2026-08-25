@@ -34,11 +34,10 @@ namespace QuizEra.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var questions = await _questionService.GetAllAsync();
-
+            var questions = await _questionService.GetByIdAsyncIncludingDeleted();
             return View(questions);
         }
-
+        
 
         // =========================
         // Get Question
@@ -63,9 +62,11 @@ namespace QuizEra.Controllers
         // =========================
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int? topicId)
         {
             await LoadTopicsAsync();
+
+            ViewBag.SelectedTopicId = topicId;
 
             return View();
         }
@@ -135,6 +136,15 @@ namespace QuizEra.Controllers
             var deleterUser = User.Identity?.Name ?? "System";
 
             await _questionService.DeleteAsync(id, deleterUser);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Restore(int id)
+        {
+            await _questionService.RestoreAsync(id);
 
             return RedirectToAction(nameof(Index));
         }
