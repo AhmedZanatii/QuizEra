@@ -2,607 +2,198 @@
 
 @{
     ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_InstructorLayout.cshtml";
 }
 
-<div class="container mt-4 mb-5">
-
-    <!-- Topic Header -->
-    <div class="card topic-header border-0 shadow-sm mb-4">
-        <div class="card-body p-4 p-md-5">
-
-            <div class="d-flex justify-content-between align-items-start">
-
-                <div class="topic-info">
-
-                    <span class="badge topic-badge mb-3">
-                        <i class="bi bi-journal-text me-1"></i>
-                        Topic
-                    </span>
-
-                    <h1 class="topic-title">
-                        @Model.Name
-                    </h1>
-
-                    <p class="topic-subtitle mb-0">
-                        <i class="bi bi-question-circle me-1"></i>
-                        @Model.Questions.Count() question@(Model.Questions.Count() == 1 ? "" : "s")
-                    </p>
-
-                </div>
-
-                <!-- Topic Menu -->
-                <div class="dropdown">
-
-                    <button class="btn menu-button"
-                            type="button"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            title="Topic options">
-
-                        <i class="bi bi-three-dots-vertical"></i>
-
-                    </button>
-
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-
-                        <li>
-                            <a class="dropdown-item"
-                               asp-action="Edit"
-                               asp-route-id="@Model.Id">
-
-                                <i class="bi bi-pencil me-2"></i>
-                                Edit Topic
-
-                            </a>
-                        </li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li>
-                            <button type="button"
-                                    class="dropdown-item text-danger"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#deleteTopicModal">
-
-                                <i class="bi bi-trash me-2"></i>
-                                Delete Topic
-
-                            </button>
-                        </li>
-
-                    </ul>
-
-                </div>
-
+<div class="mb-5">
+    <!-- Topic Header Card -->
+    <div class="card dashboard-card p-4 p-md-5 mb-4 position-relative">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fs-7 fw-semibold mb-3">
+                    <i class="fa-solid fa-folder-open me-1"></i> Topic
+                </span>
+                <h2 class="fw-bold text-dark mb-2">@Model.Name</h2>
+                <p class="text-muted small mb-0">
+                    <i class="fa-solid fa-circle-question me-1 text-success"></i>
+                    @Model.Questions.Count() question@(Model.Questions.Count() == 1 ? "" : "s")
+                </p>
             </div>
 
+            <!-- Topic Menu Dropdown -->
+            <div class="dropdown">
+                <button class="btn btn-light rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center"
+                        type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 40px; height: 40px;">
+                    <i class="fa-solid fa-ellipsis-vertical text-secondary"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
+                    <li>
+                        <a class="dropdown-item" asp-action="Edit" asp-route-id="@Model.Id">
+                            <i class="fa-solid fa-pen-to-square me-2 text-primary"></i> Edit Topic
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteTopicModal">
+                            <i class="fa-solid fa-trash-can me-2"></i> Delete Topic
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 
-
-    <!-- Questions Section -->
+    <!-- Questions Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-
         <div>
-            <h3 class="section-title mb-1">
-                Questions
-            </h3>
-
-            <p class="text-muted mb-0">
-                Manage the questions that belong to this topic.
-            </p>
+            <h4 class="fw-bold text-dark mb-1">Questions</h4>
+            <p class="text-muted small mb-0">Manage the questions that belong to this topic.</p>
         </div>
-
-        <a asp-controller="Question"
-           asp-action="Create"
-           asp-route-topicId="@Model.Id"
-           class="btn btn-primary add-question-button">
-
-            <i class="bi bi-plus-lg me-1"></i>
-            Add Question
-
+        <a asp-controller="Question" asp-action="Create" asp-route-topicId="@Model.Id" class="btn btn-success btn-sm px-3">
+            <i class="fa-solid fa-plus me-1"></i> Add Question
         </a>
-
     </div>
-
 
     <!-- Questions List -->
     @if (!Model.Questions.Any())
     {
-        <div class="empty-questions text-center py-5">
-
-            <div class="empty-icon-container">
-                <i class="bi bi-question-circle"></i>
+        <div class="card dashboard-card p-5 text-center border-dashed mb-4">
+            <div class="text-muted mb-3">
+                <i class="fa-solid fa-file-circle-question fs-1 text-secondary opacity-50"></i>
             </div>
-
-            <h5 class="mt-3 fw-bold">
-                No questions yet
-            </h5>
-
-            <p class="text-muted mb-4">
-                There are no questions for this topic.
-            </p>
-
-            <a asp-controller="Question"
-               asp-action="Create"
-               asp-route-topicId="@Model.Id"
-               class="btn btn-primary">
-
-                <i class="bi bi-plus-lg me-1"></i>
-                Add First Question
-
-            </a>
-
+            <h5 class="fw-bold text-dark">No Questions Yet</h5>
+            <p class="text-muted small mb-3">There are no questions in this topic yet.</p>
+            <div>
+                <a asp-controller="Question" asp-action="Create" asp-route-topicId="@Model.Id" class="btn btn-success btn-sm px-4">
+                    <i class="fa-solid fa-plus me-1"></i> Add First Question
+                </a>
+            </div>
         </div>
     }
     else
     {
-        <div class="questions-list">
-
+        <div class="d-flex flex-column gap-2 mb-4">
             @{
                 var questions = Model.Questions.ToList();
             }
-
             @for (int i = 0; i < questions.Count; i++)
             {
                 var q = questions[i];
-
-                <div class="question-item">
-
-                    <div class="question-number">
-                        @(i + 1)
-                    </div>
-
-                    <div class="question-info">
-
-                        <h5 class="mb-1">
-                            @q.QuestionText
-                        </h5>
-
-                        <div class="question-meta">
-                            <span class="meta-badge meta-type">
-                                <i class="bi bi-tag me-1"></i>
-                                @q.QuestionType
-                            </span>
-                            <span class="meta-badge meta-difficulty meta-difficulty-@q.Difficulty.ToString().ToLower()">
-                                <i class="bi bi-speedometer2 me-1"></i>
-                                @q.Difficulty
-                            </span>
+                <div class="card dashboard-card question-card p-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-shape bg-success bg-opacity-10 text-success fw-bold rounded-3 flex-shrink-0">
+                            @(i + 1)
                         </div>
 
+                        <div class="flex-grow-1 min-w-0">
+                            <h6 class="fw-semibold text-dark mb-2 text-truncate">@q.QuestionText</h6>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <span class="badge bg-light text-secondary border fw-normal">
+                                    <i class="fa-solid fa-tag me-1"></i>@q.QuestionType
+                                </span>
+                                @{
+                                    var diffClass = q.Difficulty.ToString().ToLower() switch
+                                    {
+                                        "easy" => "bg-success bg-opacity-10 text-success",
+                                        "medium" => "bg-warning bg-opacity-10 text-warning",
+                                        "hard" => "bg-danger bg-opacity-10 text-danger",
+                                        _ => "bg-secondary bg-opacity-10 text-secondary"
+                                    };
+                                }
+                                <span class="badge @diffClass fw-medium">
+                                    <i class="fa-solid fa-gauge-high me-1"></i>@q.Difficulty
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-shrink-0">
+                            <a asp-controller="Question" asp-action="Edit" asp-route-id="@q.Id" class="btn btn-sm btn-light text-secondary" title="Edit">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <button type="button" class="btn btn-sm btn-light text-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteQuestionModal-@q.Id">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
                     </div>
-
-                    <div class="question-actions">
-
-                        <a asp-controller="Question"
-                           asp-action="Edit"
-                           asp-route-id="@q.Id"
-                           class="btn btn-sm btn-light action-btn"
-                           title="Edit question">
-
-                            <i class="bi bi-pencil"></i>
-
-                        </a>
-
-                        <button type="button"
-                                class="btn btn-sm btn-light action-btn text-danger"
-                                title="Delete question"
-                                data-bs-toggle="modal"
-                                data-bs-target="#deleteQuestionModal-@q.Id">
-
-                            <i class="bi bi-trash"></i>
-
-                        </button>
-
-                    </div>
-
                 </div>
             }
-
         </div>
     }
 
     <!-- Back Button -->
-    <div class="mt-4">
-        <a asp-controller="Course"
-           asp-action="Details"
-           asp-route-id="@Model.CourseId"
-           class="btn btn-outline-secondary back-button">
-
-            <i class="bi bi-arrow-left me-1"></i>
-            Back to Course
-
+    <div>
+        <a asp-controller="Course" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-outline-secondary btn-sm px-3">
+            <i class="fa-solid fa-arrow-left me-1"></i> Back to Course
         </a>
     </div>
-
 </div>
 
+<!-- Modals -->
 <!-- Delete Topic Modal -->
-<div class="modal fade"
-     id="deleteTopicModal"
-     tabindex="-1"
-     aria-labelledby="deleteTopicModalLabel"
-     aria-hidden="true">
-
+<div class="modal fade" id="deleteTopicModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-
         <div class="modal-content border-0 shadow">
-
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold"
-                    id="deleteTopicModalLabel">
-
-                    <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
-                    Delete Topic
-
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-danger">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i> Delete Topic
                 </h5>
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal">
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-
-            <div class="modal-body">
-
-                <p class="mb-2">
-                    Are you sure you want to delete the topic
-                    <strong>@Model.Name</strong>?
-                </p>
-
-                <p class="text-muted mb-0">
-                    This action cannot be undone and will remove all its questions.
-                </p>
-
+            <div class="modal-body py-3">
+                <p class="mb-1">Are you sure you want to delete topic <strong>@Model.Name</strong>?</p>
+                <p class="text-muted small mb-0">This action cannot be undone and will remove all questions inside it.</p>
             </div>
-
-            <div class="modal-footer">
-
-                <button type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal">
-
-                    Cancel
-
-                </button>
-
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                 <form asp-action="Delete" method="post">
-
                     <input type="hidden" name="id" value="@Model.Id" />
-
                     @Html.AntiForgeryToken()
-
-                    <button type="submit"
-                            class="btn btn-danger">
-
-                        <i class="bi bi-trash me-1"></i>
-                        Delete Topic
-
-                    </button>
-
+                    <button type="submit" class="btn btn-danger">Delete Topic</button>
                 </form>
-
             </div>
-
         </div>
-
     </div>
 </div>
 
 <!-- Delete Question Modals -->
 @foreach (var q in Model.Questions)
 {
-    <div class="modal fade"
-         id="deleteQuestionModal-@q.Id"
-         tabindex="-1"
-         aria-hidden="true">
-
+    <div class="modal fade" id="deleteQuestionModal-@q.Id" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-
             <div class="modal-content border-0 shadow">
-
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">
-                        <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
-                        Delete Question
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-danger">
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i> Delete Question
                     </h5>
-
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal">
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
-                <div class="modal-body">
-                    <p class="mb-0">
-                        Are you sure you want to delete this question?
-                    </p>
+                <div class="modal-body py-3">
+                    <p class="mb-0">Are you sure you want to delete this question?</p>
                 </div>
-
-                <div class="modal-footer">
-
-                    <button type="button"
-                            class="btn btn-light"
-                            data-bs-dismiss="modal">
-
-                        Cancel
-
-                    </button>
-
-                    <form asp-controller="Question"
-                          asp-action="Delete"
-                          method="post">
-
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <form asp-controller="Question" asp-action="Delete" method="post">
                         <input type="hidden" name="id" value="@q.Id" />
-
                         @Html.AntiForgeryToken()
-
-                        <button type="submit"
-                                class="btn btn-danger">
-
-                            <i class="bi bi-trash me-1"></i>
-                            Delete
-
-                        </button>
-
+                        <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
-
                 </div>
-
             </div>
-
         </div>
     </div>
 }
 
 <style>
-
-    /* =========================
-           Topic Header
-           ========================= */
-
-    .topic-header {
-        border-radius: 20px;
-        overflow: hidden;
-        background: #ffffff;
+    .border-dashed {
+        border: 2px dashed #e9ecef !important;
     }
 
-    .topic-info {
-        max-width: 85%;
+    .question-card {
+        transition: border-color 0.2s ease;
+        border: 1px solid #e9ecef !important;
     }
 
-    .topic-badge {
-        background: #eef2ff;
-        color: #4f46e5;
-        padding: 7px 14px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-
-    .topic-title {
-        font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-        font-weight: 750;
-        color: #212529;
-        margin-bottom: 10px;
-    }
-
-    .topic-subtitle {
-        color: #6c757d;
-        font-size: 1rem;
-        font-weight: 500;
-    }
-
-
-    /* =========================
-           Topic Menu
-           ========================= */
-
-    .menu-button {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: #f8f9fa;
-        color: #495057;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 21px;
-        border: none;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
-    }
-
-        .menu-button:hover {
-            background: #e9ecef;
-            color: #212529;
+        .question-card:hover {
+            border-color: #198754 !important;
         }
-
-
-    /* =========================
-           Questions
-           ========================= */
-
-    .section-title {
-        font-size: 1.6rem;
-        font-weight: 700;
-    }
-
-    .add-question-button {
-        white-space: nowrap;
-    }
-
-    .questions-list {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .question-item {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-        background: #ffffff;
-        border: 1px solid #e9ecef;
-        border-radius: 14px;
-        padding: 17px 20px;
-        color: #212529;
-        transition: all 0.2s ease;
-    }
-
-        .question-item:hover {
-            border-color: #0d6efd;
-            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
-        }
-
-    .question-number {
-        width: 44px;
-        height: 44px;
-        border-radius: 11px;
-        background: #eef2ff;
-        color: #4f46e5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        flex-shrink: 0;
-    }
-
-    .question-info {
-        flex: 1;
-        min-width: 0;
-    }
-
-        .question-info h5 {
-            font-weight: 600;
-            color: #212529;
-            overflow-wrap: break-word;
-            font-size: 1.05rem;
-        }
-
-    .question-meta {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-top: 4px;
-    }
-
-    .meta-badge {
-        display: inline-flex;
-        align-items: center;
-        font-size: 0.78rem;
-        font-weight: 600;
-        padding: 3px 10px;
-        border-radius: 20px;
-    }
-
-    .meta-type {
-        background: #f1f3f5;
-        color: #495057;
-    }
-
-    .meta-difficulty-easy {
-        background: #e8f7f0;
-        color: #198754;
-    }
-
-    .meta-difficulty-medium {
-        background: #fff4e5;
-        color: #fd7e14;
-    }
-
-    .meta-difficulty-hard {
-        background: #fde8e8;
-        color: #dc3545;
-    }
-
-    .question-actions {
-        display: flex;
-        gap: 8px;
-        flex-shrink: 0;
-    }
-
-    .action-btn {
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid #e9ecef;
-    }
-
-        .action-btn:hover {
-            background: #f1f3f5;
-        }
-
-
-    /* =========================
-           Empty State
-           ========================= */
-
-    .empty-questions {
-        background: #ffffff;
-        border: 2px dashed #dee2e6;
-        border-radius: 16px;
-    }
-
-    .empty-icon-container {
-        width: 70px;
-        height: 70px;
-        margin: auto;
-        border-radius: 50%;
-        background: #f1f5f9;
-        color: #94a3b8;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 30px;
-    }
-
-
-    /* =========================
-           Back Button
-           ========================= */
-
-    .back-button {
-        border-radius: 10px;
-        padding: 9px 18px;
-        font-weight: 500;
-    }
-
-
-    /* =========================
-           Responsive
-           ========================= */
-
-    @@media (max-width: 576px) {
-
-        .topic-header .card-body {
-            padding: 25px !important;
-        }
-
-        .topic-info {
-            max-width: 80%;
-        }
-
-        .topic-title {
-            font-size: 1.5rem;
-        }
-
-        .add-question-button {
-            padding: 8px 12px;
-        }
-
-        .question-item {
-            flex-wrap: wrap;
-        }
-
-        .question-actions {
-            margin-left: 62px;
-        }
-    }
-
 </style>

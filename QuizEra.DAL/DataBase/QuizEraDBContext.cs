@@ -28,7 +28,9 @@ namespace QuizEra.DAL.DataBase
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            modelBuilder.Entity<ApplicationUser>()
+    .Property(u => u.IsActive)
+    .HasDefaultValue(true);
             // =========================================
             // Student
             // =========================================

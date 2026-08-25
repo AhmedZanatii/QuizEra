@@ -12,8 +12,7 @@ namespace QuizEra.BLL.Services.Abstraction
         Task<bool> RegisterInstructorAsync(RegisterInstructorVM model);
         Task<bool> ConfirmEmailAsync(string userId, string token);
 
-        Task<bool> LoginAsync(LoginVM model);
-
+        Task<LoginResult> LoginAsync(LoginVM model);
         Task<bool> ExternalLoginAsync(
     System.Security.Claims.ClaimsPrincipal principal,
     string email);

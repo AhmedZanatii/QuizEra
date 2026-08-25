@@ -8,6 +8,8 @@ namespace QuizEra.DAL.Entities
 
         public string LastName { get; set; }
 
+        public bool IsActive { get; set; } = true;
+
         public Student Student { get; set; }
 
         public Instructor Instructor { get; set; }

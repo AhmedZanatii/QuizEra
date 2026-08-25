@@ -2,58 +2,62 @@
 
 @{
     ViewData["Title"] = "Edit Course";
+    Layout = "~/Views/Shared/_InstructorLayout.cshtml";
 }
 
-<div class="container-fluid min-vh-100 py-4 px-4 bg-light d-flex flex-column align-items-center">
-    <div class="w-100" style="max-width: 900px;">
+<div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-8">
         <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            @Html.AntiForgeryToken()
             <input type="hidden" asp-for="Id" />
 
             <!-- Header Section -->
-            <div class="d-flex align-items-start justify-content-between mb-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
                 <div>
-                    <h2 class="fw-bold text-dark mb-1">Edit Course</h2>
-                    <p class="text-muted mb-0">Update information and settings for your course container.</p>
+                    <h3 class="fw-bold text-dark m-0">Edit Course</h3>
+                    <p class="text-muted small mb-0">Update information and settings for your course container.</p>
                 </div>
                 <div class="d-flex gap-2">
-                    <a asp-controller="Course" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary px-4 fw-semibold">Cancel</a>
-                    <button type="submit" class="btn btn-warning text-white px-4 fw-semibold">Save Changes</button>
+                    <a asp-controller="Course" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary px-4 fw-medium">Cancel</a>
+                    <button type="submit" class="btn btn-warning text-white px-4 fw-medium">
+                        <i class="fa-solid fa-check me-1"></i> Save Changes
+                    </button>
                 </div>
             </div>
 
             <!-- Course Details Card -->
-            <div class="card border border-light-subtle rounded-3 shadow-sm bg-white p-4">
-                <h4 class="fw-bold text-dark mb-3 pb-2 border-bottom">Course Details</h4>
+            <div class="card dashboard-card p-4">
+                <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom">Course Details</h5>
 
                 <!-- Course Name Field -->
-                <div class="mb-4">
-                    <label asp-for="CourseName" class="form-label fw-bold text-secondary small">
+                <div class="mb-3">
+                    <label asp-for="CourseName" class="form-label fw-semibold text-secondary small">
                         Course Name <span class="text-danger">*</span>
                     </label>
-                    <input asp-for="CourseName" class="form-control form-control-lg fs-6" placeholder="e.g., Introduction to Advanced Calculus" />
-                    <div class="form-text text-muted">The official name of the course.</div>
+                    <input asp-for="CourseName" class="form-control" placeholder="e.g., Introduction to Advanced Calculus" />
+                    <div class="form-text text-muted small">The official name of the course.</div>
                     <span asp-validation-for="CourseName" class="text-danger small"></span>
                 </div>
 
                 <!-- Course Level Field -->
-                <div class="mb-4">
-                    <label asp-for="CourseLevel" class="form-label fw-bold text-secondary small">
+                <div class="mb-3">
+                    <label asp-for="CourseLevel" class="form-label fw-semibold text-secondary small">
                         Course Level <span class="text-danger">*</span>
                     </label>
-                    <select asp-for="CourseLevel" class="form-select form-select-lg fs-6">
+                    <select asp-for="CourseLevel" class="form-select">
                         <option value="">Select Level...</option>
                         <option value="Beginner">Beginner</option>
                         <option value="Intermediate">Intermediate</option>
                         <option value="Advanced">Advanced</option>
                     </select>
-                    <div class="form-text text-muted">Difficulty classification for enrolled students.</div>
+                    <div class="form-text text-muted small">Difficulty classification for enrolled students.</div>
                     <span asp-validation-for="CourseLevel" class="text-danger small"></span>
                 </div>
 
                 <!-- Course Description Field -->
                 <div class="mb-2">
-                    <label asp-for="CourseDescription" class="form-label fw-bold text-secondary small">Course Description</label>
-                    <textarea asp-for="CourseDescription" class="form-control fs-6" rows="5" placeholder="Provide a brief overview of the course objectives and content..."></textarea>
+                    <label asp-for="CourseDescription" class="form-label fw-semibold text-secondary small">Course Description</label>
+                    <textarea asp-for="CourseDescription" class="form-control" rows="4" placeholder="Provide a brief overview of the course objectives and content..."></textarea>
                     <span asp-validation-for="CourseDescription" class="text-danger small"></span>
                 </div>
             </div>

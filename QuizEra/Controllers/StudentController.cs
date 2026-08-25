@@ -10,5 +10,25 @@ namespace QuizEra.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult Courses()
+        {
+            return RedirectToAction("EnrolledCourses", "Course");
+        }
+
+        [HttpGet]
+        public IActionResult Exams()
+        {
+            return RedirectToAction("Index", "Home");
+
+        }
+
+        [HttpGet]
+        public IActionResult Results()
+        {
+            // Fallback to home or analytics list in future
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

@@ -140,37 +140,53 @@ namespace QuizEra.BLL.Services.Implementation
         // Normal Login
         // =========================
 
-        public async Task<bool> LoginAsync(LoginVM model)
+        public async Task<LoginResult> LoginAsync(LoginVM model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user =
+                await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
             {
                 Console.WriteLine("USER NOT FOUND");
-                return false;
+
+                return LoginResult.UserNotFound;
             }
 
             Console.WriteLine($"USER FOUND: {user.Email}");
-            Console.WriteLine($"USERNAME: {user.UserName}");
-            Console.WriteLine($"PASSWORD HASH EXISTS: {user.PasswordHash != null}");
+            Console.WriteLine($"IS ACTIVE: {user.IsActive}");
 
-            var result = await _signInManager.CheckPasswordSignInAsync(
-                user,
-                model.Password,
-                false);
+            // IMPORTANT
+            if (!user.IsActive)
+            {
+                Console.WriteLine("USER IS DEACTIVATED");
+
+                return LoginResult.Deactivated;
+            }
+
+            var result =
+                await _signInManager.CheckPasswordSignInAsync(
+                    user,
+                    model.Password,
+                    false);
 
             Console.WriteLine($"PASSWORD CORRECT: {result.Succeeded}");
             Console.WriteLine($"NOT ALLOWED: {result.IsNotAllowed}");
             Console.WriteLine($"LOCKED OUT: {result.IsLockedOut}");
 
+            if (result.IsLockedOut)
+                return LoginResult.LockedOut;
+
+            if (result.IsNotAllowed)
+                return LoginResult.NotAllowed;
+
             if (!result.Succeeded)
-                return false;
+                return LoginResult.InvalidPassword;
 
             await _signInManager.SignInAsync(
                 user,
                 isPersistent: model.RememberMe);
 
-            return true;
+            return LoginResult.Success;
         }
 
         // =========================

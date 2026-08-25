@@ -1,61 +1,26 @@
 ﻿@{
     ViewData["Title"] = "Student Home";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
 }
 
-<style>
-    .home-page {
-        min-height: calc(100vh - 56px);
-        background: #f8f9fa;
-        padding: 60px 20px;
-    }
+<div class="row justify-content-center my-4">
+    <div class="col-md-9 col-lg-8">
+        <div class="card dashboard-card p-5 text-center">
+            <div class="card-body">
+                <div class="mb-4">
+                    <div class="icon-shape bg-primary bg-opacity-10 text-primary mx-auto" style="width: 80px; height: 80px; font-size: 2.5rem; border-radius: 50%;">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                </div>
 
-    .welcome-card {
-        background: white;
-        border-radius: 15px;
-        padding: 50px;
-        text-align: center;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.06);
-    }
+                <h2 class="fw-bold text-dark mb-2">Welcome to QuizEra!</h2>
+                <span class="badge bg-primary bg-opacity-10 text-primary fs-6 px-3 py-2 rounded-pill mb-3">Student Portal</span>
 
-    .home-icon {
-        font-size: 70px;
-        margin-bottom: 20px;
-    }
+                <p class="text-muted fs-5 mb-4">
+                    Explore your courses, take exams, and track your academic progress with ease.
+                </p>
 
-    .welcome-title {
-        font-weight: 700;
-        color: #212529;
-    }
-
-    .welcome-text {
-        color: #6c757d;
-        font-size: 18px;
-    }
-</style>
-
-<div class="home-page">
-
-    <div class="container">
-
-        <div class="welcome-card">
-
-            <div class="home-icon">
-                🎓
             </div>
-
-            <h1 class="welcome-title">
-                Welcome to QuizEra!
-            </h1>
-
-            <p class="welcome-text">
-                You're logged in as a Student.
-            </p>
-
-            <p class="welcome-text">
-                Explore your courses, take exams and track your progress.
-            </p>
-
         </div>
-
     </div>
 </div>

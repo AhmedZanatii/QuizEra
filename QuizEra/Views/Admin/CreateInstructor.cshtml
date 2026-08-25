@@ -1,0 +1,52 @@
+﻿@model QuizEra.BLL.ModelVM.Administration.InstructorModelVM
+
+@{
+    ViewData["Title"] = "Create Instructor";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="mb-4">
+    <h3 class="fw-bold text-dark m-0">Create Instructor</h3>
+    <p class="text-muted small mb-0">Add a new instructor to the system.</p>
+</div>
+
+<div class="card dashboard-card p-4">
+    <form asp-action="CreateInstructor" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="FirstName" class="form-label fw-medium"></label>
+                <input asp-for="FirstName" class="form-control" placeholder="John" />
+                <span asp-validation-for="FirstName" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="LastName" class="form-label fw-medium"></label>
+                <input asp-for="LastName" class="form-control" placeholder="Doe" />
+                <span asp-validation-for="LastName" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label fw-medium"></label>
+                <input asp-for="Email" type="email" class="form-control" placeholder="instructor@example.com" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Password" class="form-label fw-medium"></label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary px-4">Create Instructor</button>
+            <a asp-action="Instructors" class="btn btn-outline-secondary px-4 ms-2">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
