@@ -1,4 +1,24 @@
-﻿<!DOCTYPE html>
+﻿@using QuizEra.DAL.Entities
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+
+    string instructorName = "Instructor";
+
+    if (currentUser != null)
+    {
+        instructorName = $"{currentUser.FirstName} {currentUser.LastName}".Trim();
+
+        if (string.IsNullOrWhiteSpace(instructorName))
+        {
+            instructorName = currentUser.Email ?? "Instructor";
+        }
+    }
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -111,8 +131,14 @@
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="Instructor" asp-action="Exams">
+                    <a asp-controller="Exam" asp-action="Index">
                         <i class="fa-solid fa-file-signature"></i> Manage Exams
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Questions" asp-action="Index">
+                        <i class="fa-solid fa-list-check"></i>
+                        Question Bank
                     </a>
                 </li>
                 <li>
@@ -135,7 +161,10 @@
         <div id="content">
             <div class="top-navbar d-flex justify-content-end align-items-center">
                 <div class="d-flex align-items-center gap-3">
-                    <span class="text-muted small">Welcome, Instructor</span>
+                    <span class="text-muted small">
+                        Welcome, @instructorName
+                    </span>
+
                     <i class="fa-solid fa-circle-user fs-4 text-success"></i>
                 </div>
             </div>
