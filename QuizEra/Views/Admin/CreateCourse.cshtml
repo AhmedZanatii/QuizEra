@@ -1,0 +1,137 @@
+﻿@model QuizEra.BLL.ModelVM.Course.CreateCourseVM
+
+@{
+ViewData["Title"] = "Create Course";
+Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container py-4">
+
+<div class="mb-4">
+    <a asp-controller="Admin"
+       asp-action="Courses"
+       class="btn btn-outline-secondary btn-sm">
+        <i class="fa-solid fa-arrow-left me-1"></i>
+        Back to Courses
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-3">
+
+    <div class="card-header bg-white border-0 p-4">
+        <h3 class="fw-bold mb-1">
+            Create Course
+        </h3>
+
+        <p class="text-muted small mb-0">
+            Add a new course to the system.
+        </p>
+    </div>
+
+    <div class="card-body p-4">
+
+        <form asp-controller="Admin"
+              asp-action="CreateCourse"
+              method="post">
+                <div class="mb-3">
+                    <label asp-for="InstructorId" class="form-label fw-semibold">
+                        Instructor
+                    </label>
+
+                    <select asp-for="InstructorId"
+                            class="form-select">
+
+                        <option value="">-- Select Instructor --</option>
+
+                        @foreach (var instructor in ViewBag.Instructors)
+                        {
+                            <option value="@instructor.AppUserId">
+                                @instructor.FirstName @instructor.LastName - @instructor.Email
+                            </option>
+                        }
+
+                    </select>
+
+                    <span asp-validation-for="InstructorId"
+                          class="text-danger small">
+                    </span>
+                </div>
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3">
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CourseName"
+                       class="form-label fw-semibold">
+                    Course Name
+                </label>
+
+                <input asp-for="CourseName"
+                       class="form-control"
+                       placeholder="Enter course name" />
+
+                <span asp-validation-for="CourseName"
+                      class="text-danger small">
+                </span>
+            </div>
+
+                <div class="mb-3">
+                    <label asp-for="CourseLevel" class="form-label fw-semibold">
+                        Course Level
+                    </label>
+
+                    <select asp-for="CourseLevel" class="form-select">
+                        <option value="">-- Select Course Level --</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
+
+                    <span asp-validation-for="CourseLevel"
+                          class="text-danger small">
+                    </span>
+                </div>
+
+            <div class="mb-4">
+                <label asp-for="CourseDescription"
+                       class="form-label fw-semibold">
+                    Description
+                </label>
+
+                <textarea asp-for="CourseDescription"
+                          class="form-control"
+                          rows="5"
+                          placeholder="Enter course description"></textarea>
+
+                <span asp-validation-for="CourseDescription"
+                      class="text-danger small">
+                </span>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+
+                <a asp-controller="Admin"
+                   asp-action="Courses"
+                   class="btn btn-light">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="btn btn-primary px-4">
+                    <i class="fa-solid fa-plus me-1"></i>
+                    Create Course
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" />
+}

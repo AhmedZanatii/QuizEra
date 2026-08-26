@@ -10,7 +10,6 @@
     var questions = ViewBag.Questions as List<Question> ?? new List<Question>();
 }
 
-
 <div class="d-flex justify-content-between align-items-center mb-4">
 
     <div>
@@ -51,7 +50,7 @@
             </div>
 
 
-            <!-- COURSE -->
+            <!-- ================= COURSE ================= -->
 
             <div class="mb-4">
 
@@ -86,7 +85,7 @@
             </div>
 
 
-            <!-- TOPIC -->
+            <!-- ================= TOPIC ================= -->
 
             <div class="mb-4">
 
@@ -106,7 +105,26 @@
                         -- Select Course First --
                     </option>
 
+                    @if (Model.CourseId > 0)
+                    {
+                        foreach (var topic in topics)
+                        {
+                            <option value="@topic.Id">
+                                @topic.Name
+                            </option>
+                        }
+                    }
+
                 </select>
+
+                <!-- IMPORTANT:
+                     Because topicSelect is disabled,
+                     it will not be submitted.
+                     This hidden input keeps TopicId. -->
+
+                <input type="hidden"
+                       asp-for="TopicId"
+                       id="hiddenTopicId" />
 
                 <span asp-validation-for="TopicId"
                       class="text-danger">
@@ -115,7 +133,7 @@
             </div>
 
 
-            <!-- TITLE -->
+            <!-- ================= TITLE ================= -->
 
             <div class="mb-4">
 
@@ -137,7 +155,7 @@
             </div>
 
 
-            <!-- DURATION -->
+            <!-- ================= DURATION ================= -->
 
             <div class="mb-4">
 
@@ -161,7 +179,7 @@
             </div>
 
 
-            <!-- DATES -->
+            <!-- ================= DATES ================= -->
 
             <div class="row">
 
@@ -207,7 +225,7 @@
             </div>
 
 
-            <!-- QUESTION BANK -->
+            <!-- ================= QUESTION BANK ================= -->
 
             <hr class="my-4" />
 
@@ -234,7 +252,7 @@
             </div>
 
 
-            <!-- TOTAL MARKS -->
+            <!-- ================= TOTAL MARKS ================= -->
 
             <div class="mt-4 p-3 bg-light rounded">
 
@@ -249,7 +267,7 @@
             </div>
 
 
-            <!-- BUTTONS -->
+            <!-- ================= BUTTONS ================= -->
 
             <div class="mt-4">
 
@@ -290,6 +308,9 @@
         const topicSelect =
             document.getElementById("topicSelect");
 
+        const hiddenTopicId =
+            document.getElementById("hiddenTopicId");
+
         const questionContainer =
             document.getElementById("questionContainer");
 
@@ -297,16 +318,32 @@
             document.getElementById("totalMarks");
 
 
-        // Course -> Topics
+        // =========================================================
+        // Existing model data
+        // =========================================================
 
-        courseSelect.addEventListener("change", async function () {
+        const existingQuestions = @Html.Raw(
+                    System.Text.Json.JsonSerializer.Serialize(
+                    Model.Questions
+                    )
+                    );
+
+
+        // =========================================================
+        // Course -> Topics
+        // =========================================================
+
+        courseSelect.addEventListener("change", async function() {
 
             const courseId = this.value;
 
+            // Clear previous topic
             topicSelect.innerHTML =
                 '<option value="">-- Select Topic --</option>';
 
             topicSelect.disabled = true;
+
+            hiddenTopicId.value = "";
 
             questionContainer.innerHTML =
                 '<div class="alert alert-info">' +
@@ -326,6 +363,7 @@
                     await fetch(
                         `/Exam/GetTopicsByCourse?courseId=${courseId}`
                     );
+
 
                 if (!response.ok)
                     throw new Error("Failed to load topics.");
@@ -353,6 +391,7 @@
 
                 topicSelect.disabled = false;
 
+
             }
             catch (error) {
 
@@ -368,11 +407,16 @@
         });
 
 
+        // =========================================================
         // Topic -> Questions
+        // =========================================================
 
-        topicSelect.addEventListener("change", async function () {
+        topicSelect.addEventListener("change", async function() {
 
             const topicId = this.value;
+
+            // Keep TopicId for POST
+            hiddenTopicId.value = topicId;
 
             questionContainer.innerHTML = "";
 
@@ -397,6 +441,7 @@
                     await fetch(
                         `/Exam/GetQuestionsByTopic?topicId=${topicId}`
                     );
+
 
                 if (!response.ok)
                     throw new Error("Failed to load questions.");
@@ -427,6 +472,11 @@
 
                 });
 
+
+                // Restore selected questions
+                restoreExistingQuestions();
+
+
             }
             catch (error) {
 
@@ -442,12 +492,15 @@
         });
 
 
+        // =========================================================
         // Create Question Row
+        // =========================================================
 
         function createQuestionRow(question, index) {
 
             const wrapper =
                 document.createElement("div");
+
 
             wrapper.className =
                 "card mb-3 question-card";
@@ -455,93 +508,98 @@
 
             wrapper.innerHTML = `
 
-                <div class="card-body">
+                        <div class="card-body">
 
-                    <div class="form-check mb-2">
+                            <div class="form-check mb-2">
 
-                        <input
-                            class="form-check-input question-checkbox"
-                            type="checkbox"
-                            name="Questions[${index}].IsSelected"
-                            value="true"
-                        />
+                                <input
+                                    class="form-check-input question-checkbox"
+                                    type="checkbox"
+                                    name="Questions[${index}].IsSelected"
+                                    value="true"
+                                />
 
-                        <input
-                            type="hidden"
-                            name="Questions[${index}].IsSelected"
-                            value="false"
-                        />
+                                <input
+                                    type="hidden"
+                                    name="Questions[${index}].IsSelected"
+                                    value="false"
+                                />
 
-                        <input
-                            type="hidden"
-                            name="Questions[${index}].QuestionId"
-                            value="${question.id}"
-                        />
+                                <input
+                                    type="hidden"
+                                    name="Questions[${index}].QuestionId"
+                                    value="${question.id}"
+                                />
 
-                        <label class="form-check-label fw-bold">
+                                <label class="form-check-label fw-bold">
 
-                            ${escapeHtml(question.questionText)}
+                                    ${escapeHtml(question.questionText)}
 
-                        </label>
+                                </label>
 
-                    </div>
-
-
-                    <div class="mb-2">
-
-                        <span class="badge bg-secondary">
-
-                            ${question.questionFormat}
-
-                        </span>
-
-                    </div>
+                            </div>
 
 
-                    <div class="row question-details"
-                         style="display:none;">
+                            <div class="mb-2">
 
-                        <div class="col-md-6">
+                                <span class="badge bg-secondary">
 
-                            <label class="form-label">
-                                Actual Mark
-                            </label>
+                                    ${escapeHtml(question.questionFormat)}
 
-                            <input
-                                type="number"
-                                step="0.5"
-                                min="0"
-                                class="form-control actual-mark"
-                                name="Questions[${index}].ActualMark"
-                                value="0"
-                                disabled
-                            />
+                                </span>
+
+                            </div>
+
+
+                            <div class="row question-details"
+                                 style="display:none;">
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label">
+
+                                        Actual Mark
+
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        step="0.5"
+                                        min="0.5"
+                                        class="form-control actual-mark"
+                                        name="Questions[${index}].ActualMark"
+                                        placeholder="Enter actual mark"
+                                        disabled
+                                    />
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label">
+
+                                        Bonus Mark
+
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        step="0.5"
+                                        min="0"
+                                        class="form-control bonus-mark"
+                                        name="Questions[${index}].BonusMark"
+                                        value="0"
+                                        disabled
+                                    />
+
+                                </div>
+
+                            </div>
 
                         </div>
 
-
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Bonus Mark
-                            </label>
-
-                            <input
-                                type="number"
-                                step="0.5"
-                                min="0"
-                                class="form-control bonus-mark"
-                                name="Questions[${index}].BonusMark"
-                                value="0"
-                                disabled
-                            />
-
-                        </div>
-
-                    </div>
-
-                </div>
-            `;
+                    `;
 
 
             questionContainer.appendChild(wrapper);
@@ -550,31 +608,45 @@
             const checkbox =
                 wrapper.querySelector(".question-checkbox");
 
+
             const details =
                 wrapper.querySelector(".question-details");
 
+
             const actualMark =
                 wrapper.querySelector(".actual-mark");
+
 
             const bonusMark =
                 wrapper.querySelector(".bonus-mark");
 
 
-            checkbox.addEventListener("change", function () {
+            // =====================================================
+            // Checkbox
+            // =====================================================
+
+            checkbox.addEventListener("change", function() {
 
                 details.style.display =
                     this.checked ? "flex" : "none";
 
+
                 actualMark.disabled =
                     !this.checked;
 
+
                 bonusMark.disabled =
                     !this.checked;
+
 
                 calculateTotalMarks();
 
             });
 
+
+            // =====================================================
+            // Actual Mark
+            // =====================================================
 
             actualMark.addEventListener(
                 "input",
@@ -584,7 +656,103 @@
         }
 
 
+        // =========================================================
+        // Restore questions after validation error
+        // =========================================================
+
+        function restoreExistingQuestions() {
+
+            if (!existingQuestions ||
+                existingQuestions.length === 0) {
+
+                return;
+
+            }
+
+
+            existingQuestions.forEach(existingQuestion => {
+
+                const questionCards =
+                    document.querySelectorAll(".question-card");
+
+
+                questionCards.forEach(card => {
+
+                    const questionIdInput =
+                        card.querySelector(
+                            'input[name$=".QuestionId"]'
+                        );
+
+
+                    if (!questionIdInput)
+                        return;
+
+
+                    if (
+                        parseInt(questionIdInput.value) ===
+                        existingQuestion.questionId
+                    ) {
+
+                        const checkbox =
+                            card.querySelector(
+                                ".question-checkbox"
+                            );
+
+
+                        const actualMark =
+                            card.querySelector(
+                                ".actual-mark"
+                            );
+
+
+                        const bonusMark =
+                            card.querySelector(
+                                ".bonus-mark"
+                            );
+
+
+                        checkbox.checked =
+                            existingQuestion.isSelected;
+
+
+                        actualMark.value =
+                            existingQuestion.actualMark;
+
+
+                        bonusMark.value =
+                            existingQuestion.bonusMark;
+
+
+                        card.querySelector(
+                            ".question-details"
+                        ).style.display =
+                            checkbox.checked
+                                ? "flex"
+                                : "none";
+
+
+                        actualMark.disabled =
+                            !checkbox.checked;
+
+
+                        bonusMark.disabled =
+                            !checkbox.checked;
+
+                    }
+
+                });
+
+            });
+
+
+            calculateTotalMarks();
+
+        }
+
+
+        // =========================================================
         // Calculate Total Marks
+        // =========================================================
 
         function calculateTotalMarks() {
 
@@ -592,14 +760,22 @@
 
 
             document
-                .querySelectorAll(".question-checkbox:checked")
+                .querySelectorAll(
+                    ".question-checkbox:checked"
+                )
                 .forEach(checkbox => {
 
                     const card =
-                        checkbox.closest(".question-card");
+                        checkbox.closest(
+                            ".question-card"
+                        );
+
 
                     const actualMark =
-                        card.querySelector(".actual-mark");
+                        card.querySelector(
+                            ".actual-mark"
+                        );
+
 
                     total +=
                         parseFloat(actualMark.value) || 0;
@@ -613,7 +789,9 @@
         }
 
 
+        // =========================================================
         // Escape HTML
+        // =========================================================
 
         function escapeHtml(text) {
 
@@ -626,6 +804,106 @@
             return div.innerHTML;
 
         }
+
+
+        // =========================================================
+        // Initial page load
+        // =========================================================
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            async function() {
+
+                const courseId =
+                    "@Model.CourseId";
+
+                const topicId =
+                    "@Model.TopicId";
+
+
+                // If returning after validation error
+                // restore course/topics/questions
+
+                if (
+                    courseId &&
+                    courseId !== "0"
+                ) {
+
+                    // Load topics manually
+                    try {
+
+                        const response =
+                            await fetch(
+                                `/Exam/GetTopicsByCourse?courseId=${courseId}`
+                            );
+
+
+                        if (!response.ok)
+                            throw new Error(
+                                "Failed to load topics."
+                            );
+
+
+                        const topics =
+                            await response.json();
+
+
+                        topicSelect.innerHTML =
+                            '<option value="">-- Select Topic --</option>';
+
+
+                        topics.forEach(topic => {
+
+                            const option =
+                                document.createElement("option");
+
+                            option.value =
+                                topic.id;
+
+                            option.textContent =
+                                topic.name;
+
+                            topicSelect.appendChild(
+                                option
+                            );
+
+                        });
+
+
+                        topicSelect.disabled = false;
+
+
+                        // Restore topic
+                        if (
+                            topicId &&
+                            topicId !== "0"
+                        ) {
+
+                            topicSelect.value =
+                                topicId;
+
+                            hiddenTopicId.value =
+                                topicId;
+
+
+                            // Load questions
+                            topicSelect.dispatchEvent(
+                                new Event("change")
+                            );
+
+                        }
+
+                    }
+                    catch (error) {
+
+                        console.error(error);
+
+                    }
+
+                }
+
+            }
+        );
 
     </script>
 }

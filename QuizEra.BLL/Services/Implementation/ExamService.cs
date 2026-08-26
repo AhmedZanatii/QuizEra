@@ -33,29 +33,55 @@ namespace QuizEra.BLL.Services.Implementation
         // Create Exam
         // =========================
 
+
         public async Task<bool> CreateExamAsync(CreateExamVM model)
         {
-            // Validate schedule
+            // =========================
+            // Validate Dates
+            // =========================
+
             if (model.StartDate >= model.EndDate)
                 return false;
 
-            // Validate topic
+
+            // =========================
+            // Validate Topic
+            // =========================
+
             var topic = await _topicRepository.GetBy(
                 t => t.Id == model.TopicId);
 
             if (topic == null)
                 return false;
 
-            // Get selected questions
+
+            // =========================
+            // Validate Topic belongs to Course
+            // =========================
+
+            if (topic.CourseID != model.CourseId)
+                return false;
+
+
+            // =========================
+            // Get Selected Questions
+            // =========================
+
             var selectedQuestions = model.Questions
                 .Where(q => q.IsSelected)
                 .ToList();
 
-            // An exam should contain at least one question
+
+            // Exam must contain at least one question
+
             if (!selectedQuestions.Any())
                 return false;
 
-            // Validate that all selected questions exist
+
+            // =========================
+            // Validate Questions
+            // =========================
+
             foreach (var questionVM in selectedQuestions)
             {
                 var question = await _questionRepository.GetBy(
@@ -64,18 +90,38 @@ namespace QuizEra.BLL.Services.Implementation
                 if (question == null)
                     return false;
 
+
+                // Question must belong to selected topic
+
+                if (question.TopicID != model.TopicId)
+                    return false;
+
+
+                // Actual mark must be greater than zero
+
                 if (questionVM.ActualMark <= 0)
                     return false;
+
+
+                // Bonus mark cannot be negative
 
                 if (questionVM.BonusMark < 0)
                     return false;
             }
 
-            // Calculate total marks
+
+            // =========================
+            // Calculate Total Marks
+            // =========================
+
             double totalMarks = selectedQuestions
                 .Sum(q => q.ActualMark);
 
+
+            // =========================
             // Create Exam
+            // =========================
+
             var exam = new Exam(
                 model.TopicId,
                 model.Title,
@@ -85,10 +131,16 @@ namespace QuizEra.BLL.Services.Implementation
                 model.EndDate
             );
 
+
             await _examRepository.Create(exam);
+
             await _examRepository.SaveAsync();
 
-            // Create ExamQuestions
+
+            // =========================
+            // Create Exam Questions
+            // =========================
+
             foreach (var questionVM in selectedQuestions)
             {
                 var examQuestion = new ExamQuestions(
@@ -96,13 +148,15 @@ namespace QuizEra.BLL.Services.Implementation
                     exam.Id,
                     questionVM.ActualMark,
                     questionVM.BonusMark,
-                    0 // NegativeMark for now
+                    0
                 );
 
                 await _examQuestionsRepository.Create(examQuestion);
             }
 
+
             await _examQuestionsRepository.SaveAsync();
+
 
             return true;
         }

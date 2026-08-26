@@ -30,15 +30,21 @@ namespace QuizEra.BLL.Services.Implementation
                 q => !q.IsDeleted,
                 new List<Expression<Func<Question, object>>>
                 {
-            q => q.Options,
-            q => q.Topic
-                });
+                    q => q.Options,
+                    q => q.Topic.Course
+                },
+                noTrack: true
+            );
 
             return questions.Select(q => new QuestionVM
             {
                 Id = q.Id,
+
                 TopicID = q.TopicID,
-                TopicName = q.Topic.Name,
+                TopicName = q.Topic?.Name ?? string.Empty,
+
+                CourseName = q.Topic?.Course?.CourseName ?? string.Empty,
+
                 QuestionText = q.QuestionText,
                 QuestionFormat = q.QuestionFormat,
                 QuestionAnswer = q.QuestionAnswer,
@@ -58,6 +64,7 @@ namespace QuizEra.BLL.Services.Implementation
             });
         }
 
+
         // =========================================
         // Get Question By ID
         // =========================================
@@ -69,8 +76,10 @@ namespace QuizEra.BLL.Services.Implementation
                 new List<Expression<Func<Question, object>>>
                 {
                     q => q.Options,
-                    q => q.Topic
-                });
+                    q => q.Topic.Course
+                },
+                noTrack: true
+            );
 
             var question = questions.FirstOrDefault();
 
@@ -80,8 +89,12 @@ namespace QuizEra.BLL.Services.Implementation
             return new QuestionVM
             {
                 Id = question.Id,
+
                 TopicID = question.TopicID,
-                TopicName = question.Topic.Name,
+                TopicName = question.Topic?.Name ?? string.Empty,
+
+                CourseName = question.Topic?.Course?.CourseName ?? string.Empty,
+
                 QuestionText = question.QuestionText,
                 QuestionFormat = question.QuestionFormat,
                 QuestionAnswer = question.QuestionAnswer,
@@ -96,7 +109,7 @@ namespace QuizEra.BLL.Services.Implementation
                         OptionText = o.OptionText,
                         IsCorrect = o.IsCorrect
                     })
-        .ToList()
+                    .ToList()
             };
         }
 
@@ -122,16 +135,10 @@ namespace QuizEra.BLL.Services.Implementation
                 creatorUser);
 
             await _questionRepo.Create(question);
-
             await _questionRepo.SaveAsync();
 
 
-            // =========================================
-            // Add Options
-            // =========================================
-
-            if (vm.Options != null &&
-                vm.Options.Any())
+            if (vm.Options != null && vm.Options.Any())
             {
                 foreach (var option in vm.Options)
                 {
@@ -173,10 +180,12 @@ namespace QuizEra.BLL.Services.Implementation
                     $"Question with ID {vm.Id} was not found.");
 
 
-            // Update Question
+            // =========================================
+            // Update Question ONLY
+            // =========================================
 
             existingQuestion.Update(
-                vm.TopicID,
+                existingQuestion.TopicID,
                 vm.QuestionText,
                 vm.QuestionFormat,
                 vm.QuestionAnswer,
@@ -240,7 +249,6 @@ namespace QuizEra.BLL.Services.Implementation
                 throw new Exception(
                     $"Question with ID {id} was not found.");
 
-
             question.Delete(
                 deleterUser,
                 DateTime.UtcNow);
@@ -249,6 +257,12 @@ namespace QuizEra.BLL.Services.Implementation
 
             await _questionRepo.SaveAsync();
         }
+
+
+        // =========================================
+        // Get All Questions Including Deleted
+        // =========================================
+
         public async Task<IEnumerable<QuestionVM>> GetByIdAsyncIncludingDeleted()
         {
             var questions = await _questionRepo.Get(
@@ -256,42 +270,57 @@ namespace QuizEra.BLL.Services.Implementation
                 new List<Expression<Func<Question, object>>>
                 {
                     q => q.Options,
-                    q => q.Topic
-                });
+                    q => q.Topic.Course
+                },
+                noTrack: true
+            );
 
             return questions.Select(question => new QuestionVM
             {
                 Id = question.Id,
+
                 TopicID = question.TopicID,
-                TopicName = question.Topic?.Name,
+                TopicName = question.Topic?.Name ?? string.Empty,
+
+                CourseName = question.Topic?.Course?.CourseName ?? string.Empty,
+
                 QuestionText = question.QuestionText,
                 QuestionFormat = question.QuestionFormat,
                 QuestionAnswer = question.QuestionAnswer,
                 DifficultyLevel = question.DifficultyLevel,
                 Photo = question.Photo,
+
                 IsDeleted = question.IsDeleted,
 
-                Options = question.Options.Select(o => new QuestionOptionVM
-                {
-                    Id = o.Id,
-                    QuestionId = o.QuestionId,
-                    OptionText = o.OptionText,
-                    IsCorrect = o.IsCorrect
-                }).ToList()
+                Options = question.Options
+                    .Select(o => new QuestionOptionVM
+                    {
+                        Id = o.Id,
+                        QuestionId = o.QuestionId,
+                        OptionText = o.OptionText,
+                        IsCorrect = o.IsCorrect
+                    })
+                    .ToList()
             });
         }
+
+
+        // =========================================
+        // Restore Question
+        // =========================================
+
         public async Task RestoreAsync(int id)
         {
             var questions = await _questionRepo.Get(
-                q => q.Id == id
-            );
+                q => q.Id == id);
 
             var question = questions.FirstOrDefault();
 
             if (question == null)
-                throw new Exception($"Question with ID {id} was not found.");
+                throw new Exception(
+                    $"Question with ID {id} was not found.");
 
-            question.Restore();
+            question.Restore("System");
 
             _questionRepo.Update(question);
 

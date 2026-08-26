@@ -45,5 +45,9 @@ namespace QuizEra.DAL.Entities
             CourseDescription = courseDescription;
             base.Update(modifierUser);
         }
+        public void ChangeInstructor(int instructorId)
+        {
+            InstructorID = instructorId;
+        }
     }
 }

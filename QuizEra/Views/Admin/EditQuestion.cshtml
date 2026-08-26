@@ -1,0 +1,341 @@
+﻿@model QuizEra.BLL.ModelVM.Questions.QuestionVM
+
+@{
+    ViewData["Title"] = "Edit Question";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h3 class="fw-bold text-dark m-0">
+            Edit Question
+        </h3>
+
+        <p class="text-muted small mb-0">
+            Update question information and options.
+        </p>
+    </div>
+
+
+    <div class="card border-0 shadow-sm rounded-3">
+
+        <div class="card-body p-4">
+
+            <form asp-controller="Admin"
+                  asp-action="EditQuestion"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <!-- Hidden values -->
+                <input asp-for="Id" type="hidden" />
+
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+
+
+
+                <!-- Question Text -->
+
+                <div class="mb-3">
+
+                    <label asp-for="QuestionText"
+                           class="form-label fw-semibold">
+                        Question
+                    </label>
+
+                    <textarea asp-for="QuestionText"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Enter question text...">
+                    </textarea>
+
+                    <span asp-validation-for="QuestionText"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+
+                <!-- Question Format -->
+
+                <div class="mb-3">
+
+                    <label asp-for="QuestionFormat"
+                           class="form-label fw-semibold">
+                        Question Format
+                    </label>
+
+                    <select asp-for="QuestionFormat"
+                            class="form-select"
+                            asp-items="Html.GetEnumSelectList<QuizEra.DAL.Entities.Enums.QuestionFormat>()">
+
+                        <option value="">
+                            -- Select Format --
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="QuestionFormat"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+
+                <!-- Difficulty -->
+
+                <div class="mb-3">
+
+                    <label asp-for="DifficultyLevel"
+                           class="form-label fw-semibold">
+                        Difficulty Level
+                    </label>
+
+                    <select asp-for="DifficultyLevel"
+                            class="form-select"
+                            asp-items="Html.GetEnumSelectList<QuizEra.DAL.Entities.Enums.DifficultyLevel>()">
+
+                        <option value="">
+                            -- Select Difficulty --
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="DifficultyLevel"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+
+                <!-- Answer -->
+
+                <div class="mb-3">
+
+                    <label asp-for="QuestionAnswer"
+                           class="form-label fw-semibold">
+                        Answer
+                    </label>
+
+                    <textarea asp-for="QuestionAnswer"
+                              class="form-control"
+                              rows="3"
+                              placeholder="Enter the correct answer...">
+                    </textarea>
+
+                    <span asp-validation-for="QuestionAnswer"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+
+                <!-- Photo -->
+
+                <div class="mb-3">
+
+                    <label asp-for="Photo"
+                           class="form-label fw-semibold">
+                        Photo URL
+                    </label>
+
+                    <input asp-for="Photo"
+                           class="form-control"
+                           placeholder="Enter image URL (optional)" />
+
+                    <span asp-validation-for="Photo"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+
+                <!-- Options -->
+
+                <div class="mb-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <h5 class="fw-semibold mb-0">
+                            Options
+                        </h5>
+
+                        <button type="button"
+                                class="btn btn-sm btn-outline-primary"
+                                id="addOption">
+
+                            <i class="fa-solid fa-plus me-1"></i>
+                            Add Option
+
+                        </button>
+
+                    </div>
+
+
+                    <div id="optionsContainer">
+
+                        @for (int i = 0; i < Model.Options.Count; i++)
+                        {
+                            <div class="option-row mb-3">
+
+                                <!-- Existing Option IDs -->
+                                <input asp-for="Options[i].Id"
+                                       type="hidden" />
+
+                                <input asp-for="Options[i].QuestionId"
+                                       type="hidden" />
+
+
+                                <div class="input-group">
+
+                                    <input asp-for="Options[i].OptionText"
+                                           class="form-control"
+                                           placeholder="Option text..." />
+
+                                    <div class="input-group-text">
+
+                                        <input asp-for="Options[i].IsCorrect"
+                                               class="form-check-input mt-0"
+                                               type="checkbox" />
+
+                                        <span class="ms-2">
+                                            Correct
+                                        </span>
+
+                                    </div>
+
+
+                                    <button type="button"
+                                            class="btn btn-outline-danger remove-option">
+
+                                        <i class="fa-solid fa-trash"></i>
+
+                                    </button>
+
+                                </div>
+
+
+                                <span asp-validation-for="Options[i].OptionText"
+                                      class="text-danger small">
+                                </span>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a asp-controller="Admin"
+                       asp-action="Questions"
+                       class="btn btn-light">
+
+                        Cancel
+
+                    </a>
+
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        <i class="fa-solid fa-floppy-disk me-1"></i>
+                        Save Changes
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        let optionIndex = @Model.Options.Count;
+
+        document.getElementById("addOption")
+            .addEventListener("click", function() {
+
+                const container =
+                    document.getElementById("optionsContainer");
+
+                const div =
+                    document.createElement("div");
+
+                div.className = "option-row mb-3";
+
+                div.innerHTML = `
+                            <div class="input-group">
+
+                                <input
+                                    name="Options[${optionIndex}].OptionText"
+                                    class="form-control"
+                                    placeholder="Option text..."
+                                />
+
+                                <div class="input-group-text">
+
+                                    <input
+                                        name="Options[${optionIndex}].IsCorrect"
+                                        value="true"
+                                        type="checkbox"
+                                        class="form-check-input mt-0"
+                                    />
+
+                                    <span class="ms-2">
+                                        Correct
+                                    </span>
+
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-danger remove-option">
+
+                                    <i class="fa-solid fa-trash"></i>
+
+                                </button>
+
+                            </div>
+                        `;
+
+                container.appendChild(div);
+
+                optionIndex++;
+
+            });
+
+
+        document.addEventListener("click", function(e) {
+
+            if (e.target.closest(".remove-option")) {
+
+                e.target
+                    .closest(".option-row")
+                    .remove();
+
+            }
+
+        });
+
+    </script>
+}
