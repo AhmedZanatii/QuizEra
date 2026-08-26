@@ -1,0 +1,631 @@
+﻿@using QuizEra.DAL.Entities
+@model QuizEra.BLL.ModelVM.Exam.CreateExamVM
+
+@{
+    ViewData["Title"] = "Create Exam";
+    Layout = "~/Views/Shared/_InstructorLayout.cshtml";
+
+    var courses = ViewBag.Courses as List<Course> ?? new List<Course>();
+    var topics = ViewBag.Topics as List<Topic> ?? new List<Topic>();
+    var questions = ViewBag.Questions as List<Question> ?? new List<Question>();
+}
+
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2 class="fw-bold text-dark mb-1">
+            Create Exam
+        </h2>
+
+        <p class="text-muted mb-0">
+            Create an exam, select its questions, and assign marks.
+        </p>
+    </div>
+
+    <a asp-controller="Exam"
+       asp-action="Index"
+       class="btn btn-outline-secondary">
+
+        <i class="fa-solid fa-arrow-left me-2"></i>
+        Back to Exams
+
+    </a>
+
+</div>
+
+
+<div class="card dashboard-card">
+
+    <div class="card-body p-4">
+
+        <form asp-controller="Exam"
+              asp-action="Create"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3">
+            </div>
+
+
+            <!-- COURSE -->
+
+            <div class="mb-4">
+
+                <label asp-for="CourseId"
+                       class="form-label fw-semibold">
+
+                    Course
+
+                </label>
+
+                <select asp-for="CourseId"
+                        class="form-select"
+                        id="courseSelect">
+
+                    <option value="">
+                        -- Select Course --
+                    </option>
+
+                    @foreach (var course in courses)
+                    {
+                        <option value="@course.Id">
+                            @course.CourseName
+                        </option>
+                    }
+
+                </select>
+
+                <span asp-validation-for="CourseId"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+
+            <!-- TOPIC -->
+
+            <div class="mb-4">
+
+                <label asp-for="TopicId"
+                       class="form-label fw-semibold">
+
+                    Topic
+
+                </label>
+
+                <select asp-for="TopicId"
+                        class="form-select"
+                        id="topicSelect"
+                        disabled>
+
+                    <option value="">
+                        -- Select Course First --
+                    </option>
+
+                </select>
+
+                <span asp-validation-for="TopicId"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+
+            <!-- TITLE -->
+
+            <div class="mb-4">
+
+                <label asp-for="Title"
+                       class="form-label fw-semibold">
+
+                    Exam Title
+
+                </label>
+
+                <input asp-for="Title"
+                       class="form-control"
+                       placeholder="Enter exam title" />
+
+                <span asp-validation-for="Title"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+
+            <!-- DURATION -->
+
+            <div class="mb-4">
+
+                <label asp-for="Duration"
+                       class="form-label fw-semibold">
+
+                    Duration (minutes)
+
+                </label>
+
+                <input asp-for="Duration"
+                       type="number"
+                       class="form-control"
+                       min="1"
+                       max="200" />
+
+                <span asp-validation-for="Duration"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+
+            <!-- DATES -->
+
+            <div class="row">
+
+                <div class="col-md-6 mb-4">
+
+                    <label asp-for="StartDate"
+                           class="form-label fw-semibold">
+
+                        Start Date
+
+                    </label>
+
+                    <input asp-for="StartDate"
+                           type="datetime-local"
+                           class="form-control" />
+
+                    <span asp-validation-for="StartDate"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <div class="col-md-6 mb-4">
+
+                    <label asp-for="EndDate"
+                           class="form-label fw-semibold">
+
+                        End Date
+
+                    </label>
+
+                    <input asp-for="EndDate"
+                           type="datetime-local"
+                           class="form-control" />
+
+                    <span asp-validation-for="EndDate"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUESTION BANK -->
+
+            <hr class="my-4" />
+
+            <h4 class="fw-bold">
+                Question Bank
+            </h4>
+
+            <p class="text-muted">
+                Select the questions you want to include in this exam
+                and assign their marks.
+            </p>
+
+
+            <div id="questionContainer">
+
+                <div class="alert alert-info">
+
+                    <i class="fa-solid fa-circle-info me-2"></i>
+
+                    Select a topic first to display its questions.
+
+                </div>
+
+            </div>
+
+
+            <!-- TOTAL MARKS -->
+
+            <div class="mt-4 p-3 bg-light rounded">
+
+                <strong>
+                    Total Marks:
+                </strong>
+
+                <span id="totalMarks">
+                    0
+                </span>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="mt-4">
+
+                <button type="submit"
+                        class="btn btn-success">
+
+                    <i class="fa-solid fa-check me-2"></i>
+                    Create Exam
+
+                </button>
+
+                <a asp-controller="Exam"
+                   asp-action="Index"
+                   class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        const courseSelect =
+            document.getElementById("courseSelect");
+
+        const topicSelect =
+            document.getElementById("topicSelect");
+
+        const questionContainer =
+            document.getElementById("questionContainer");
+
+        const totalMarksElement =
+            document.getElementById("totalMarks");
+
+
+        // Course -> Topics
+
+        courseSelect.addEventListener("change", async function () {
+
+            const courseId = this.value;
+
+            topicSelect.innerHTML =
+                '<option value="">-- Select Topic --</option>';
+
+            topicSelect.disabled = true;
+
+            questionContainer.innerHTML =
+                '<div class="alert alert-info">' +
+                'Select a topic to display its questions.' +
+                '</div>';
+
+            totalMarksElement.textContent = "0";
+
+
+            if (!courseId)
+                return;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/Exam/GetTopicsByCourse?courseId=${courseId}`
+                    );
+
+                if (!response.ok)
+                    throw new Error("Failed to load topics.");
+
+
+                const topics =
+                    await response.json();
+
+
+                topics.forEach(topic => {
+
+                    const option =
+                        document.createElement("option");
+
+                    option.value =
+                        topic.id;
+
+                    option.textContent =
+                        topic.name;
+
+                    topicSelect.appendChild(option);
+
+                });
+
+
+                topicSelect.disabled = false;
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+                questionContainer.innerHTML =
+                    '<div class="alert alert-danger">' +
+                    'Unable to load topics.' +
+                    '</div>';
+
+            }
+
+        });
+
+
+        // Topic -> Questions
+
+        topicSelect.addEventListener("change", async function () {
+
+            const topicId = this.value;
+
+            questionContainer.innerHTML = "";
+
+            totalMarksElement.textContent = "0";
+
+
+            if (!topicId) {
+
+                questionContainer.innerHTML =
+                    '<div class="alert alert-info">' +
+                    'Select a topic to display its questions.' +
+                    '</div>';
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/Exam/GetQuestionsByTopic?topicId=${topicId}`
+                    );
+
+                if (!response.ok)
+                    throw new Error("Failed to load questions.");
+
+
+                const questions =
+                    await response.json();
+
+
+                if (questions.length === 0) {
+
+                    questionContainer.innerHTML =
+                        '<div class="alert alert-warning">' +
+                        'No questions found for this topic.' +
+                        '</div>';
+
+                    return;
+
+                }
+
+
+                questions.forEach((question, index) => {
+
+                    createQuestionRow(
+                        question,
+                        index
+                    );
+
+                });
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+                questionContainer.innerHTML =
+                    '<div class="alert alert-danger">' +
+                    'Unable to load questions.' +
+                    '</div>';
+
+            }
+
+        });
+
+
+        // Create Question Row
+
+        function createQuestionRow(question, index) {
+
+            const wrapper =
+                document.createElement("div");
+
+            wrapper.className =
+                "card mb-3 question-card";
+
+
+            wrapper.innerHTML = `
+
+                <div class="card-body">
+
+                    <div class="form-check mb-2">
+
+                        <input
+                            class="form-check-input question-checkbox"
+                            type="checkbox"
+                            name="Questions[${index}].IsSelected"
+                            value="true"
+                        />
+
+                        <input
+                            type="hidden"
+                            name="Questions[${index}].IsSelected"
+                            value="false"
+                        />
+
+                        <input
+                            type="hidden"
+                            name="Questions[${index}].QuestionId"
+                            value="${question.id}"
+                        />
+
+                        <label class="form-check-label fw-bold">
+
+                            ${escapeHtml(question.questionText)}
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="mb-2">
+
+                        <span class="badge bg-secondary">
+
+                            ${question.questionFormat}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="row question-details"
+                         style="display:none;">
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Actual Mark
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.5"
+                                min="0"
+                                class="form-control actual-mark"
+                                name="Questions[${index}].ActualMark"
+                                value="0"
+                                disabled
+                            />
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Bonus Mark
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.5"
+                                min="0"
+                                class="form-control bonus-mark"
+                                name="Questions[${index}].BonusMark"
+                                value="0"
+                                disabled
+                            />
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+
+            questionContainer.appendChild(wrapper);
+
+
+            const checkbox =
+                wrapper.querySelector(".question-checkbox");
+
+            const details =
+                wrapper.querySelector(".question-details");
+
+            const actualMark =
+                wrapper.querySelector(".actual-mark");
+
+            const bonusMark =
+                wrapper.querySelector(".bonus-mark");
+
+
+            checkbox.addEventListener("change", function () {
+
+                details.style.display =
+                    this.checked ? "flex" : "none";
+
+                actualMark.disabled =
+                    !this.checked;
+
+                bonusMark.disabled =
+                    !this.checked;
+
+                calculateTotalMarks();
+
+            });
+
+
+            actualMark.addEventListener(
+                "input",
+                calculateTotalMarks
+            );
+
+        }
+
+
+        // Calculate Total Marks
+
+        function calculateTotalMarks() {
+
+            let total = 0;
+
+
+            document
+                .querySelectorAll(".question-checkbox:checked")
+                .forEach(checkbox => {
+
+                    const card =
+                        checkbox.closest(".question-card");
+
+                    const actualMark =
+                        card.querySelector(".actual-mark");
+
+                    total +=
+                        parseFloat(actualMark.value) || 0;
+
+                });
+
+
+            totalMarksElement.textContent =
+                total.toFixed(2);
+
+        }
+
+
+        // Escape HTML
+
+        function escapeHtml(text) {
+
+            const div =
+                document.createElement("div");
+
+            div.textContent =
+                text;
+
+            return div.innerHTML;
+
+        }
+
+    </script>
+}
