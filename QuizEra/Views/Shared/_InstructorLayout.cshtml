@@ -3,21 +3,6 @@
 
 @inject UserManager<ApplicationUser> UserManager
 
-@{
-    var currentUser = await UserManager.GetUserAsync(User);
-
-    string instructorName = "Instructor";
-
-    if (currentUser != null)
-    {
-        instructorName = $"{currentUser.FirstName} {currentUser.LastName}".Trim();
-
-        if (string.IsNullOrWhiteSpace(instructorName))
-        {
-            instructorName = currentUser.Email ?? "Instructor";
-        }
-    }
-}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,26 +73,10 @@
             }
 
             .top-navbar {
-                padding: 15px 30px;
+                padding: 12px 30px;
                 background: #ffffff;
                 border-bottom: 1px solid #e9ecef;
-            }
-
-            .dashboard-card {
-                border: none;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-                background: #ffffff;
-            }
-
-            .icon-shape {
-                width: 50px;
-                height: 50px;
-                border-radius: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.4rem;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             }
     </style>
 </head>
@@ -137,8 +106,7 @@
                 </li>
                 <li>
                     <a asp-controller="Questions" asp-action="Index">
-                        <i class="fa-solid fa-list-check"></i>
-                        Question Bank
+                        <i class="fa-solid fa-list-check"></i> Question Bank
                     </a>
                 </li>
                 <li>
@@ -147,27 +115,24 @@
                     </a>
                 </li>
             </ul>
-            <div class="p-3 border-top">
-                <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-outline-danger w-100 btn-sm text-start">
-                        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
-                    </button>
-                </form>
-            </div>
         </nav>
 
         <!-- Main Content -->
         <div id="content">
-            <div class="top-navbar d-flex justify-content-end align-items-center">
-                <div class="d-flex align-items-center gap-3">
-                    <span class="text-muted small">
-                        Welcome, @instructorName
-                    </span>
+            <!-- Top Navbar -->
+            <div class="top-navbar d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small fw-medium">Instructor Workspace</span>
+                </div>
 
-                    <i class="fa-solid fa-circle-user fs-4 text-success"></i>
+                <div class="d-flex align-items-center gap-3">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        @await Component.InvokeAsync("UserProfile")
+                    }
                 </div>
             </div>
+
             <div class="container-fluid p-4">
                 @RenderBody()
             </div>
