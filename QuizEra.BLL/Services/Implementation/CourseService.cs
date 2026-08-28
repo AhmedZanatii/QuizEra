@@ -194,9 +194,17 @@ namespace QuizEra.BLL.Services
             );
 
             if (course == null)
-            {
                 return false;
-            }
+
+            var instructor = await _instructorRepository.GetBy(
+                filter: i => i.AppUserId == updateVM.InstructorId,
+                noTrack: true
+            );
+
+            if (instructor == null)
+                return false;
+
+            course.ChangeInstructor(instructor.Id);
 
             course.Update(
                 courseName: updateVM.CourseName,
@@ -232,6 +240,69 @@ namespace QuizEra.BLL.Services
             }
 
             return isDeleted;
+        }
+        public async Task<IEnumerable<CourseVM>> GetAllCoursesIncludingDeletedAsync()
+        {
+            var courses = await _courseRepository.Get(
+                noTrack: true
+            );
+
+            return courses.Select(c => new CourseVM
+            {
+                Id = c.Id,
+                CourseName = c.CourseName,
+                CourseLevel = c.CourseLevel,
+                CourseCode = c.CourseCode,
+                CourseDescription = c.CourseDescription,
+                IsDeleted = c.IsDeleted
+            });
+        }
+
+        public async Task<CourseVM?> GetCourseByIdIncludingDeletedAsync(int id)
+        {
+            var course = await _courseRepository.GetBy(
+                filter: c => c.Id == id,
+                includeProperties: new List<Expression<Func<Course, object>>>
+                {
+            c => c.Instructor
+                },
+                noTrack: true
+            );
+
+            if (course == null)
+                return null;
+
+            return new CourseVM
+            {
+                Id = course.Id,
+                InstructorId = course.Instructor.AppUserId,
+                CourseName = course.CourseName,
+                CourseLevel = course.CourseLevel,
+                CourseCode = course.CourseCode,
+                CourseDescription = course.CourseDescription,
+                IsDeleted = course.IsDeleted
+            };
+        }
+
+        public async Task<bool> RestoreCourseAsync(
+            int id,
+            string modifierUser)
+        {
+            var course = await _courseRepository.GetBy(
+                filter: c => c.Id == id && c.IsDeleted,
+                noTrack: false
+            );
+
+            if (course == null)
+                return false;
+
+            course.Restore(modifierUser);
+
+            _courseRepository.Update(course);
+
+            await _courseRepository.SaveAsync();
+
+            return true;
         }
     }
 }

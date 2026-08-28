@@ -1,5 +1,5 @@
-﻿using QuizEra.BLL.ModelVM.Topic;
-using QuizEra.BLL.ModelVM.Questions;
+﻿using QuizEra.BLL.ModelVM.Questions;
+using QuizEra.BLL.ModelVM.Topic;
 using QuizEra.BLL.Services.Abstraction;
 using QuizEra.DAL.Entities;
 using QuizEra.DAL.Repositories.Abstraction;
@@ -19,6 +19,10 @@ namespace QuizEra.BLL.Services
             _questionRepository = questionRepository;
         }
 
+        // =====================================================
+        // Get All Active Topics
+        // =====================================================
+
         public async Task<IEnumerable<TopicVM>> GetAllTopicsAsync()
         {
             var topics = await _topicRepository.Get(
@@ -30,9 +34,35 @@ namespace QuizEra.BLL.Services
             {
                 Id = t.Id,
                 CourseId = t.CourseID,
-                Name = t.Name
+                Name = t.Name,
+                IsDeleted = t.IsDeleted
             });
         }
+
+        // =====================================================
+        // Get All Topics Including Deleted
+        // =====================================================
+
+        public async Task<IEnumerable<TopicVM>> GetAllTopicsIncludingDeletedAsync()
+        {
+            var topics = await _topicRepository.Get(
+                filter: null,
+                noTrack: true
+            );
+
+            return topics.Select(t => new TopicVM
+            {
+                Id = t.Id,
+                CourseId = t.CourseID,
+                Name = t.Name,
+                IsDeleted = t.IsDeleted
+
+            });
+        }
+
+        // =====================================================
+        // Get Topic By ID
+        // =====================================================
 
         public async Task<TopicVM?> GetTopicByIdAsync(int id)
         {
@@ -41,15 +71,22 @@ namespace QuizEra.BLL.Services
                 noTrack: true
             );
 
-            if (topic == null) return null;
+            if (topic == null)
+                return null;
 
             return new TopicVM
             {
                 Id = topic.Id,
                 CourseId = topic.CourseID,
-                Name = topic.Name
+                Name = topic.Name,
+                IsDeleted = topic.IsDeleted
+
             };
         }
+
+        // =====================================================
+        // Get Topics By Course
+        // =====================================================
 
         public async Task<IEnumerable<TopicVM>> GetTopicsByCourseAsync(int courseId)
         {
@@ -66,6 +103,10 @@ namespace QuizEra.BLL.Services
             });
         }
 
+        // =====================================================
+        // Create Topic
+        // =====================================================
+
         public async Task<bool> CreateTopicAsync(CreateTopicVM createVM)
         {
             var topic = new Topic(
@@ -76,8 +117,13 @@ namespace QuizEra.BLL.Services
 
             await _topicRepository.Create(topic);
             await _topicRepository.SaveAsync();
+
             return true;
         }
+
+        // =====================================================
+        // Update Topic
+        // =====================================================
 
         public async Task<bool> UpdateTopicAsync(UpdateTopicVM updateVM)
         {
@@ -87,9 +133,7 @@ namespace QuizEra.BLL.Services
             );
 
             if (topic == null)
-            {
                 return false;
-            }
 
             topic.Update(
                 courseID: updateVM.CourseId,
@@ -98,12 +142,19 @@ namespace QuizEra.BLL.Services
             );
 
             _topicRepository.Update(topic);
+
             await _topicRepository.SaveAsync();
 
             return true;
         }
 
-        public async Task<bool> DeleteTopicAsync(int id, string deleterUser)
+        // =====================================================
+        // Delete Topic
+        // =====================================================
+
+        public async Task<bool> DeleteTopicAsync(
+            int id,
+            string deleterUser)
         {
             var topic = await _topicRepository.GetBy(
                 filter: t => t.Id == id && !t.IsDeleted,
@@ -111,22 +162,52 @@ namespace QuizEra.BLL.Services
             );
 
             if (topic == null)
-            {
                 return false;
-            }
 
-            bool isDeleted = topic.Delete(deleterUser, DateTime.UtcNow);
+            bool isDeleted =
+                topic.Delete(deleterUser, DateTime.UtcNow);
 
-            if (isDeleted)
-            {
-                _topicRepository.Update(topic);
-                await _topicRepository.SaveAsync();
-            }
+            if (!isDeleted)
+                return false;
 
-            return isDeleted;
+            _topicRepository.Update(topic);
+
+            await _topicRepository.SaveAsync();
+
+            return true;
         }
 
-        public async Task<TopicDetailsVM?> GetTopicDetailsAsync(int topicId)
+        // =====================================================
+        // Restore Topic
+        // =====================================================
+
+        public async Task<bool> RestoreTopicAsync(
+            int id,
+            string modifierUser)
+        {
+            var topic = await _topicRepository.GetBy(
+                filter: t => t.Id == id && t.IsDeleted,
+                noTrack: false
+            );
+
+            if (topic == null)
+                return false;
+
+            topic.Restore(modifierUser);
+
+            _topicRepository.Update(topic);
+
+            await _topicRepository.SaveAsync();
+
+            return true;
+        }
+
+        // =====================================================
+        // Topic Details
+        // =====================================================
+
+        public async Task<TopicDetailsVM?> GetTopicDetailsAsync(
+            int topicId)
         {
             var topic = await _topicRepository.GetBy(
                 filter: t => t.Id == topicId && !t.IsDeleted,
@@ -134,9 +215,7 @@ namespace QuizEra.BLL.Services
             );
 
             if (topic == null)
-            {
                 return null;
-            }
 
             var questions = await _questionRepository.Get(
                 filter: q => q.TopicID == topicId,
@@ -146,11 +225,12 @@ namespace QuizEra.BLL.Services
             var questionVMs = questions.Select(q => new QuestionVM
             {
                 Id = q.Id,
-                TopicId = q.TopicID,
+                TopicID = q.TopicID,
                 QuestionText = q.QuestionText,
                 QuestionFormat = q.QuestionFormat,
                 QuestionAnswer = q.QuestionAnswer,
                 DifficultyLevel = q.DifficultyLevel,
+                Photo = q.Photo,
                 IsDeleted = q.IsDeleted
             });
 

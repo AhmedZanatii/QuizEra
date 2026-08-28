@@ -379,6 +379,7 @@ namespace QuizEra.BLL.Services.Implementation
         // Create Exam
         // =========================
 
+
         public async Task<bool> CreateExamAsync(CreateExamVM model)
         {
             // Validate dates
@@ -393,6 +394,20 @@ namespace QuizEra.BLL.Services.Implementation
             var topics = (await _topicRepository.Get(
                 filter: t => model.TopicIds.Contains(t.Id)))
                 .ToList();
+            // =========================
+            // Validate Dates
+            // =========================
+
+            if (model.StartDate >= model.EndDate)
+                return false;
+
+
+            // =========================
+            // Validate Topic
+            // =========================
+
+            var topic = await _topicRepository.GetBy(
+                t => t.Id == model.TopicId);
 
             // All selected topics must exist
             if (topics.Count != model.TopicIds.Distinct().Count())
@@ -403,7 +418,19 @@ namespace QuizEra.BLL.Services.Implementation
             if (topics.Any(t => t.CourseID != model.CourseId))
                 return false;
 
-            // Get selected questions
+
+            // =========================
+            // Validate Topic belongs to Course
+            // =========================
+
+            if (topic.CourseID != model.CourseId)
+                return false;
+
+
+            // =========================
+            // Get Selected Questions
+            // =========================
+
             var selectedQuestions = model.Questions
                 .Where(q => q.IsSelected)
                 .ToList();
@@ -413,6 +440,17 @@ namespace QuizEra.BLL.Services.Implementation
                 return false;
 
             // Validate questions
+
+            // Exam must contain at least one question
+
+            if (!selectedQuestions.Any())
+                return false;
+
+
+            // =========================
+            // Validate Questions
+            // =========================
+
             foreach (var questionVM in selectedQuestions)
             {
                 var question = await _questionRepository.GetBy(
@@ -425,8 +463,20 @@ namespace QuizEra.BLL.Services.Implementation
                 if (!model.TopicIds.Contains(question.TopicID))
                     return false;
 
+
+                // Question must belong to selected topic
+
+                if (question.TopicID != model.TopicId)
+                    return false;
+
+
+                // Actual mark must be greater than zero
+
                 if (questionVM.ActualMark <= 0)
                     return false;
+
+
+                // Bonus mark cannot be negative
 
                 if (questionVM.BonusMark < 0)
                     return false;
@@ -442,6 +492,19 @@ namespace QuizEra.BLL.Services.Implementation
             Console.WriteLine($"TopicIds: {string.Join(",", model.TopicIds)}");
             Console.WriteLine($"Selected Questions: {selectedQuestions.Count}");
             Console.WriteLine($"Total Marks: {totalMarks}");
+
+            // =========================
+            // Calculate Total Marks
+            // =========================
+
+            double totalMarks = selectedQuestions
+                .Sum(q => q.ActualMark);
+
+
+            // =========================
+            // Create Exam
+            // =========================
+
             var exam = new Exam(
                 model.Title,
                 model.Duration,
@@ -450,7 +513,9 @@ namespace QuizEra.BLL.Services.Implementation
                 model.EndDate
             );
 
+
             await _examRepository.Create(exam);
+
             await _examRepository.SaveAsync();
 
             // Create ExamTopics
@@ -467,6 +532,11 @@ namespace QuizEra.BLL.Services.Implementation
             await _examTopicRepository.SaveAsync();
 
             // Create ExamQuestions
+
+            // =========================
+            // Create Exam Questions
+            // =========================
+
             foreach (var questionVM in selectedQuestions)
             {
                 var examQuestion = new ExamQuestions(
@@ -480,7 +550,9 @@ namespace QuizEra.BLL.Services.Implementation
                 await _examQuestionsRepository.Create(examQuestion);
             }
 
+
             await _examQuestionsRepository.SaveAsync();
+
 
             return true;
         }

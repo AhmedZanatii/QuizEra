@@ -37,7 +37,7 @@ namespace QuizEra.BLL.Services.Implementation
                     System.Linq.Expressions.Expression<
                         Func<Student, object>>>
                 {
-                    s => s.AppUser
+            s => s.AppUser
                 });
 
             var instructors = await _instructorRepository.Get(
@@ -45,7 +45,7 @@ namespace QuizEra.BLL.Services.Implementation
                     System.Linq.Expressions.Expression<
                         Func<Instructor, object>>>
                 {
-                    i => i.AppUser
+            i => i.AppUser
                 });
 
             var courses = await _courseRepository.Get();
@@ -55,7 +55,8 @@ namespace QuizEra.BLL.Services.Implementation
 
             return new AdminDashboardVM
             {
-                // Students
+                // ================= STUDENTS =================
+
                 TotalStudents = students.Count(),
 
                 ActiveStudents = students.Count(
@@ -66,7 +67,9 @@ namespace QuizEra.BLL.Services.Implementation
                     s => s.AppUser != null &&
                          !s.AppUser.IsActive),
 
-                // Instructors
+
+                // ================= INSTRUCTORS =================
+
                 TotalInstructors = instructors.Count(),
 
                 ActiveInstructors = instructors.Count(
@@ -77,13 +80,42 @@ namespace QuizEra.BLL.Services.Implementation
                     i => i.AppUser != null &&
                          !i.AppUser.IsActive),
 
-                // Other entities
+
+                // ================= COURSES =================
+
                 TotalCourses = courses.Count(),
+
+                ActiveCourses = courses.Count(
+                    c => !c.IsDeleted),
+
+                DeletedCourses = courses.Count(
+                    c => c.IsDeleted),
+
+
+                // ================= TOPICS =================
+
                 TotalTopics = topics.Count(),
+                ActiveTopics = topics.Count(t => !t.IsDeleted),
+                DeletedTopics = topics.Count(t => t.IsDeleted),
+
+
+                // ================= QUESTIONS =================
+
                 TotalQuestions = questions.Count(),
-                ActiveQuestions = questions.Count(q => !((dynamic)q).IsDeleted),
-                DeletedQuestions = questions.Count(q => ((dynamic)q).IsDeleted),
-                TotalExams = exams.Count()
+
+                ActiveQuestions = questions.Count(
+                    q => !q.IsDeleted),
+
+                DeletedQuestions = questions.Count(
+                    q => q.IsDeleted),
+
+
+                // ================= EXAMS =================
+
+                TotalExams = exams.Count(),
+                // Exams are not tracked as active/deleted yet; default to 0 until implemented
+                ActiveExams = 0,
+                DeletedExams = 0
             };
         }
     }

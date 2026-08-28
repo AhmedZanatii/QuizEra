@@ -12,9 +12,8 @@ namespace QuizEra.BLL.ModelVM.Questions
 
         [Required(ErrorMessage = "Topic ID is required")]
         public int TopicID { get; set; }
-        public int TopicId { get;  set; }
         public string TopicName { get; set; } = string.Empty;
-
+        public string CourseName { get; set; } = string.Empty;
         [Required(ErrorMessage = "Question text is required")]
         [MinLength(1, ErrorMessage = "Question text must contain at least 1 character")]
         public string QuestionText { get; set; } = string.Empty;
@@ -30,8 +29,8 @@ namespace QuizEra.BLL.ModelVM.Questions
 
         public string? Photo { get; set; }
 
-        public ICollection<QuestionOptionVM> Options { get; set; }
-            = new List<QuestionOptionVM>();
+        public List<QuestionOptionVM> Options { get; set; }
+    = new List<QuestionOptionVM>();
         public object? QuestionType { get; set; }
         public bool IsDeleted { get; set; }
     }
