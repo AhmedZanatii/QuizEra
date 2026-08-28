@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.AspNetCore.Authorization;
-
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QuizEra.BLL.ModelVM.Exam;
 using QuizEra.BLL.Services.Abstraction;
 using QuizEra.DAL.Entities;
@@ -71,6 +69,7 @@ namespace QuizEra.Controllers
 
         [Authorize(Roles = "Admin, Instructor")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateExamVM model)
         {
             if (!ModelState.IsValid)
@@ -85,7 +84,7 @@ namespace QuizEra.Controllers
             {
                 ModelState.AddModelError(
                     "",
-                    "Unable to create the exam. Please check the exam data and selected questions.");
+                    "Unable to create the exam. Please check the exam data, selected topics and selected questions.");
 
                 await LoadCreateDataAsync(model);
                 return View(model);
@@ -111,7 +110,7 @@ namespace QuizEra.Controllers
             {
                 Id = exam.Id,
                 CourseId = exam.CourseId,
-                TopicId = exam.TopicId,
+                TopicIds = exam.TopicIds,
                 Title = exam.Title,
                 Duration = exam.Duration,
                 StartDate = exam.StartDate,
@@ -126,6 +125,7 @@ namespace QuizEra.Controllers
 
         [Authorize(Roles = "Admin, Instructor")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UpdateExamVM model)
         {
             if (!ModelState.IsValid)
@@ -140,13 +140,13 @@ namespace QuizEra.Controllers
             {
                 ModelState.AddModelError(
                     "",
-                    "Unable to update the exam. Please check the exam data and selected questions.");
+                    "Unable to update the exam. Please check the exam data, selected topics and selected questions.");
 
                 await LoadCreateDataAsync(model);
                 return View(model);
             }
 
-            return RedirectToAction(nameof(Details), new { id = model.Id });
+            return RedirectToAction(nameof(Index));
         }
 
         // =========================
@@ -155,6 +155,7 @@ namespace QuizEra.Controllers
 
         [Authorize(Roles = "Admin, Instructor")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await _examService.DeleteExamAsync(id);
@@ -171,13 +172,18 @@ namespace QuizEra.Controllers
 
         private async Task LoadCreateDataAsync(CreateExamVM? model = null)
         {
-            // Load all courses
+            // -------------------------
+            // Courses
+            // -------------------------
+
             var courses = await _courseRepository.Get();
 
             ViewBag.Courses = courses.ToList();
 
-            // If a topic has already been selected,
-            // only load topics belonging to that course.
+            // -------------------------
+            // Topics
+            // -------------------------
+
             if (model != null && model.CourseId > 0)
             {
                 var topics = await _topicRepository.Get(
@@ -190,12 +196,16 @@ namespace QuizEra.Controllers
                 ViewBag.Topics = new List<Topic>();
             }
 
-            // If a topic has already been selected,
-            // only load questions belonging to that topic.
-            if (model != null && model.TopicId > 0)
+            // -------------------------
+            // Questions
+            // -------------------------
+
+            if (model != null &&
+                model.TopicIds != null &&
+                model.TopicIds.Any())
             {
                 var questions = await _questionRepository.Get(
-                    filter: q => q.TopicID == model.TopicId);
+                    filter: q => model.TopicIds.Contains(q.TopicID));
 
                 ViewBag.Questions = questions.ToList();
             }
@@ -211,12 +221,18 @@ namespace QuizEra.Controllers
 
         private async Task LoadCreateDataAsync(UpdateExamVM model)
         {
-            // Load all courses
+            // -------------------------
+            // Courses
+            // -------------------------
+
             var courses = await _courseRepository.Get();
 
             ViewBag.Courses = courses.ToList();
 
-            // Load topics for selected course
+            // -------------------------
+            // Topics
+            // -------------------------
+
             if (model.CourseId > 0)
             {
                 var topics = await _topicRepository.Get(
@@ -229,11 +245,15 @@ namespace QuizEra.Controllers
                 ViewBag.Topics = new List<Topic>();
             }
 
-            // Load questions for selected topic
-            if (model.TopicId > 0)
+            // -------------------------
+            // Questions
+            // -------------------------
+
+            if (model.TopicIds != null &&
+                model.TopicIds.Any())
             {
                 var questions = await _questionRepository.Get(
-                    filter: q => q.TopicID == model.TopicId);
+                    filter: q => model.TopicIds.Contains(q.TopicID));
 
                 ViewBag.Questions = questions.ToList();
             }
@@ -242,6 +262,11 @@ namespace QuizEra.Controllers
                 ViewBag.Questions = new List<Question>();
             }
         }
+
+        // =========================
+        // Get Topics By Course
+        // =========================
+
         [HttpGet]
         public async Task<IActionResult> GetTopicsByCourse(int courseId)
         {
@@ -257,6 +282,10 @@ namespace QuizEra.Controllers
             return Json(result);
         }
 
+        // =========================
+        // Get Questions By Topic
+        // =========================
+
         [HttpGet]
         public async Task<IActionResult> GetQuestionsByTopic(int topicId)
         {
@@ -268,6 +297,44 @@ namespace QuizEra.Controllers
                 id = q.Id,
                 questionText = q.QuestionText,
                 questionFormat = q.QuestionFormat.ToString()
+            });
+
+            return Json(result);
+        }
+
+        // =========================
+        // Get Questions By Topics
+        // =========================
+
+        [HttpGet]
+        public async Task<IActionResult> GetQuestionsByTopics(string topicIds)
+        {
+            if (string.IsNullOrWhiteSpace(topicIds))
+            {
+                return Json(new List<object>());
+            }
+
+            var ids = topicIds
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(id => int.TryParse(id, out var value) ? value : 0)
+                .Where(id => id > 0)
+                .Distinct()
+                .ToList();
+
+            if (!ids.Any())
+            {
+                return Json(new List<object>());
+            }
+
+            var questions = await _questionRepository.Get(
+                filter: q => ids.Contains(q.TopicID));
+
+            var result = questions.Select(q => new
+            {
+                id = q.Id,
+                questionText = q.QuestionText,
+                questionFormat = q.QuestionFormat.ToString(),
+                topicId = q.TopicID
             });
 
             return Json(result);

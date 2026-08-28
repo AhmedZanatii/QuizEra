@@ -6,14 +6,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace QuizEra.BLL.ModelVM.Exam
 {
-    //used for the data comming from the instructor
     public class CreateExamVM
     {
         [Required(ErrorMessage = "Course is required")]
         public int CourseId { get; set; }
 
-        [Required(ErrorMessage = "Topic is required")]
-        public int TopicId { get; set; }
+        public List<int> TopicIds { get; set; } = new();
 
         [Required(ErrorMessage = "Exam title is required")]
         [MinLength(2, ErrorMessage = "Exam title must contain at least 2 characters")]

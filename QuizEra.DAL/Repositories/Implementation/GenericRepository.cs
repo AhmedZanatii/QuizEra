@@ -83,6 +83,10 @@ namespace QuizEra.DAL.Repositories.Implementation
             //soft delete
             _db.Set<TEntity>().Update(entity);
         }
+        public void HardDelete(TEntity entity)
+        {
+            _db.Set<TEntity>().Remove(entity);
+        }
 
         public void Update(TEntity entity)
         {

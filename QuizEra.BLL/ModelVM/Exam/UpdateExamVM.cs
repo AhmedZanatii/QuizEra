@@ -13,8 +13,7 @@ namespace QuizEra.BLL.ModelVM.Exam
         [Required(ErrorMessage = "Course is required")]
         public int CourseId { get; set; }
 
-        [Required(ErrorMessage = "Topic is required")]
-        public int TopicId { get; set; }
+        public List<int> TopicIds { get; set; } = new();
 
         [Required(ErrorMessage = "Exam title is required")]
         [MinLength(2, ErrorMessage = "Exam title must contain at least 2 characters")]

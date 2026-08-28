@@ -11,8 +11,10 @@ namespace QuizEra.DAL.Entities
         public string Name { get; private set; }
 
         // Navigation Properties
-        public Course Course { get; private set; }
-        public ICollection<Exam> Exams { get; private set; } = new List<Exam>();
+        public Course Course { get; private set; } = null!;
+
+        public ICollection<ExamTopic> ExamTopics { get; private set; }
+        = new List<ExamTopic>();
         public ICollection<Question> Questions { get; private set; } = new List<Question>(); // التعديل الجديد
 
         protected Topic() { }

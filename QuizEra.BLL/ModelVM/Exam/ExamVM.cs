@@ -10,8 +10,8 @@ namespace QuizEra.BLL.ModelVM.Exam
         //used for the data going to the view
         public int Id { get; set; }
 
-        public int TopicId { get; set; }
-        public string TopicName { get; set; } = string.Empty;
+        public List<int> TopicIds { get; set; } = new();
+        public List<string> TopicNames { get; set; } = new();
         public int CourseId { get; set; }
         public string CourseName { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;

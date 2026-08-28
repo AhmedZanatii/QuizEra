@@ -17,6 +17,7 @@ namespace QuizEra.DAL.Repositories.Abstraction
         public Task Create(TEntity entity);
         public void Update(TEntity entity);
         public void Delete(TEntity entity);
+        void HardDelete(TEntity entity);
         public Task SaveAsync();
 
 

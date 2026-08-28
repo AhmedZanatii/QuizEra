@@ -11,6 +11,7 @@ namespace QuizEra.DAL.DataBase
         public DbSet<Course> Courses { get; set; }
         public DbSet<StudentCourse> StudentCourses { get; set; }
         public DbSet<Topic> Topics { get; set; }
+        public DbSet<ExamTopic> ExamTopics { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Exam> Exams { get; set; }
         public DbSet<Question> Questions { get; set; }
@@ -88,6 +89,27 @@ namespace QuizEra.DAL.DataBase
             modelBuilder.Entity<Topic>()
                 .HasKey(t => t.Id);
 
+            //===========================================
+            //ExamTopics
+            //=======================================
+            modelBuilder.Entity<ExamTopic>()
+             .HasKey(et => et.Id);
+
+            modelBuilder.Entity<ExamTopic>()
+                .HasOne(et => et.Exam)
+                .WithMany(e => e.ExamTopics)
+                .HasForeignKey(et => et.ExamId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ExamTopic>()
+                .HasOne(et => et.Topic)
+                .WithMany(t => t.ExamTopics)
+                .HasForeignKey(et => et.TopicId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ExamTopic>()
+                .HasIndex(et => new { et.ExamId, et.TopicId })
+                .IsUnique();
 
             // =========================================
             // Feedback
