@@ -16,5 +16,11 @@
         public int ActiveQuestions { get; set; }
         public int DeletedQuestions { get; set; }
         public int TotalExams { get; set; }
+        public int ActiveCourses { get; set; }
+        public int DeletedCourses { get; set; }
+        public int ActiveExams { get; set; }
+        public int DeletedExams { get; set; }
+        public int ActiveTopics { get; set; }
+        public int DeletedTopics { get; set; }
     }
 }

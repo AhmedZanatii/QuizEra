@@ -34,7 +34,7 @@ public class BaseEntity
         return true;
     }
 
-    public bool Restore()
+    public bool Restore(string modifierUser)
     {
         if (!IsDeleted)
             return false;
@@ -42,6 +42,10 @@ public class BaseEntity
         IsDeleted = false;
         DeleterUser = null;
         DeletedDate = null;
+
+        ModifierUser = modifierUser;
+        ModifiedDate = DateTime.UtcNow;
+
         return true;
     }
 }

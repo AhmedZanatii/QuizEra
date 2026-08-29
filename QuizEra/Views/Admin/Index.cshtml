@@ -119,7 +119,6 @@
             </a>
         </div>
 
-
         <!-- ================= COURSES ================= -->
         <div class="col-12 col-sm-6 col-xl-4">
             <a asp-controller="Admin"
@@ -150,8 +149,18 @@
 
                         </div>
 
-                        <div class="pt-2 border-top text-muted small">
-                            <span>Active System Courses</span>
+                        <div class="pt-2 border-top d-flex gap-3 small fw-medium">
+
+                            <span class="text-success">
+                                <i class="fa-solid fa-circle-check me-1"></i>
+                                @Model.ActiveCourses Active
+                            </span>
+
+                            <span class="text-danger">
+                                <i class="fa-solid fa-circle-xmark me-1"></i>
+                                @Model.DeletedCourses Deleted
+                            </span>
+
                         </div>
 
                     </div>
@@ -192,8 +201,18 @@
 
                         </div>
 
-                        <div class="pt-2 border-top text-muted small">
-                            <span>Topics across all courses</span>
+                        <div class="pt-2 border-top d-flex gap-3 small fw-medium">
+
+                            <span class="text-success">
+                                <i class="fa-solid fa-circle-check me-1"></i>
+                                @Model.ActiveTopics Active
+                            </span>
+
+                            <span class="text-danger">
+                                <i class="fa-solid fa-circle-xmark me-1"></i>
+                                @Model.DeletedTopics Deleted
+                            </span>
+
                         </div>
 
                     </div>
@@ -255,7 +274,6 @@
             </a>
         </div>
 
-
         <!-- ================= EXAMS ================= -->
         <div class="col-12 col-sm-6 col-xl-4">
             <a asp-controller="Admin"
@@ -286,8 +304,18 @@
 
                         </div>
 
-                        <div class="pt-2 border-top text-muted small">
-                            <span>Generated System Exams</span>
+                        <div class="pt-2 border-top d-flex gap-3 small fw-medium">
+
+                            <span class="text-success">
+                                <i class="fa-solid fa-circle-check me-1"></i>
+                                @Model.ActiveExams Active
+                            </span>
+
+                            <span class="text-danger">
+                                <i class="fa-solid fa-circle-xmark me-1"></i>
+                                @Model.DeletedExams Deleted
+                            </span>
+
                         </div>
 
                     </div>

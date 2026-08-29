@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizEra.DAL.DataBase;
 
@@ -11,9 +12,11 @@ using QuizEra.DAL.DataBase;
 namespace QuizEra.DAL.Migrations
 {
     [DbContext(typeof(QuizEraDBContext))]
-    partial class QuizEraDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260828163156_AddProfileImage")]
+    partial class AddProfileImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -315,10 +318,15 @@ namespace QuizEra.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TopicID")
+                        .HasColumnType("int");
+
                     b.Property<double>("TotalMarks")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TopicID");
 
                     b.ToTable("Exams");
                 });
@@ -353,30 +361,6 @@ namespace QuizEra.DAL.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("ExamQuestions");
-                });
-
-            modelBuilder.Entity("QuizEra.DAL.Entities.ExamTopic", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ExamId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TopicId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TopicId");
-
-                    b.HasIndex("ExamId", "TopicId")
-                        .IsUnique();
-
-                    b.ToTable("ExamTopics");
                 });
 
             modelBuilder.Entity("QuizEra.DAL.Entities.Feedback", b =>
@@ -732,6 +716,17 @@ namespace QuizEra.DAL.Migrations
                     b.Navigation("Instructor");
                 });
 
+            modelBuilder.Entity("QuizEra.DAL.Entities.Exam", b =>
+                {
+                    b.HasOne("QuizEra.DAL.Entities.Topic", "Topic")
+                        .WithMany("Exams")
+                        .HasForeignKey("TopicID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Topic");
+                });
+
             modelBuilder.Entity("QuizEra.DAL.Entities.ExamQuestions", b =>
                 {
                     b.HasOne("QuizEra.DAL.Entities.Exam", "Exam")
@@ -749,25 +744,6 @@ namespace QuizEra.DAL.Migrations
                     b.Navigation("Exam");
 
                     b.Navigation("Question");
-                });
-
-            modelBuilder.Entity("QuizEra.DAL.Entities.ExamTopic", b =>
-                {
-                    b.HasOne("QuizEra.DAL.Entities.Exam", "Exam")
-                        .WithMany("ExamTopics")
-                        .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("QuizEra.DAL.Entities.Topic", "Topic")
-                        .WithMany("ExamTopics")
-                        .HasForeignKey("TopicId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Exam");
-
-                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("QuizEra.DAL.Entities.Feedback", b =>
@@ -923,8 +899,6 @@ namespace QuizEra.DAL.Migrations
                 {
                     b.Navigation("ExamQuestions");
 
-                    b.Navigation("ExamTopics");
-
                     b.Navigation("StudentExamAttempts");
                 });
 
@@ -961,7 +935,7 @@ namespace QuizEra.DAL.Migrations
 
             modelBuilder.Entity("QuizEra.DAL.Entities.Topic", b =>
                 {
-                    b.Navigation("ExamTopics");
+                    b.Navigation("Exams");
 
                     b.Navigation("Questions");
                 });

@@ -435,7 +435,7 @@ namespace QuizEra.BLL.Services.Implementation
             // Calculate total marks
             double totalMarks = selectedQuestions.Sum(q => q.ActualMark);
 
-           
+
 
             Console.WriteLine("CREATE EXAM VALIDATION PASSED");
             Console.WriteLine($"CourseId: {model.CourseId}");
@@ -806,7 +806,7 @@ namespace QuizEra.BLL.Services.Implementation
         }
 
         //DEtails//////
-        
+
         public async Task<ExamVM?> GetExamDetailsAsync(int id)
         {
             // Get the exam
@@ -915,7 +915,7 @@ namespace QuizEra.BLL.Services.Implementation
 
         public async Task<bool> DeleteExamAsync(int id)
         {
-           
+
             // Get Exam
 
             var exam = await _examRepository.GetBy(
@@ -925,7 +925,7 @@ namespace QuizEra.BLL.Services.Implementation
                 return false;
 
             // Delete ExamTopics
-          
+
 
             var examTopics = (await _examTopicRepository.Get(
                 filter: et => et.ExamId == id))

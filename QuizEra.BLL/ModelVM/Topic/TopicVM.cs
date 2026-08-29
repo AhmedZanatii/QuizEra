@@ -10,6 +10,8 @@ namespace QuizEra.BLL.ModelVM.Topic
         public int Id { get; set; }
         public int CourseId { get; set; }
         public string Name { get; set; } = string.Empty;
-        
+        public bool IsDeleted { get; set; }
+
+
     }
 }

@@ -7,7 +7,6 @@
 
     var courses = ViewBag.Courses as List<Course> ?? new List<Course>();
     var topics = ViewBag.Topics as List<Topic> ?? new List<Topic>();
-    var questions = ViewBag.Questions as List<Question> ?? new List<Question>();
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -322,6 +321,10 @@
 
     <script>
 
+        // =========================================================
+        // Elements
+        // =========================================================
+
         const courseSelect =
             document.getElementById("courseSelect");
 
@@ -335,25 +338,30 @@
             document.getElementById("totalMarks");
 
 
-        // ==========================================
+        // =========================================================
         // Course -> Topics
-        // ==========================================
+        // =========================================================
 
         courseSelect.addEventListener("change", async function() {
 
             const courseId = this.value;
 
+            // Clear topics
             topicContainer.innerHTML = "";
 
+            // Clear questions
             questionContainer.innerHTML =
                 '<div class="alert alert-info">' +
                 'Select one or more topics to display their questions.' +
                 '</div>';
 
+            // Reset total
             totalMarksElement.textContent = "0";
 
 
+            // No course selected
             if (!courseId) {
+
                 topicContainer.innerHTML =
                     '<div class="alert alert-info">' +
                     'Select a course first to display its topics.' +
@@ -364,13 +372,16 @@
 
 
             try {
+
                 const response =
                     await fetch(
                         `/Exam/GetTopicsByCourse?courseId=${courseId}`
                     );
 
-                if (!response.ok)
+
+                if (!response.ok) {
                     throw new Error("Failed to load topics.");
+                }
 
 
                 const topics =
@@ -378,6 +389,7 @@
 
 
                 if (topics.length === 0) {
+
                     topicContainer.innerHTML =
                         '<div class="alert alert-warning">' +
                         'No topics found for this course.' +
@@ -388,6 +400,7 @@
 
 
                 topics.forEach(function(topic) {
+
                     const wrapper =
                         document.createElement("div");
 
@@ -396,20 +409,20 @@
 
 
                     wrapper.innerHTML = `
-                                <input
-                                    class="form-check-input topic-checkbox"
-                                    type="checkbox"
-                                    name="TopicIds"
-                                    value="${topic.id}"
-                                    id="topic_${topic.id}"
-                                />
+                                        <input
+                                            class="form-check-input topic-checkbox"
+                                            type="checkbox"
+                                            name="TopicIds"
+                                            value="${topic.id}"
+                                            id="topic_${topic.id}"
+                                        />
 
-                                <label
-                                    class="form-check-label"
-                                    for="topic_${topic.id}">
-                                    ${escapeHtml(topic.name)}
-                                </label>
-                            `;
+                                        <label
+                                            class="form-check-label"
+                                            for="topic_${topic.id}">
+                                            ${escapeHtml(topic.name)}
+                                        </label>
+                                    `;
 
 
                     topicContainer.appendChild(wrapper);
@@ -423,26 +436,30 @@
                         "change",
                         loadQuestions
                     );
+
                 });
 
             }
             catch (error) {
+
                 console.error(error);
 
                 topicContainer.innerHTML =
                     '<div class="alert alert-danger">' +
                     'Unable to load topics.' +
                     '</div>';
+
             }
 
         });
 
 
-        // ==========================================
+        // =========================================================
         // Topics -> Questions
-        // ==========================================
+        // =========================================================
 
         async function loadQuestions() {
+
             const selectedTopics =
                 Array.from(
                     document.querySelectorAll(
@@ -457,6 +474,7 @@
 
 
             if (selectedTopics.length === 0) {
+
                 questionContainer.innerHTML =
                     '<div class="alert alert-info">' +
                     'Select one or more topics to display their questions.' +
@@ -467,6 +485,7 @@
 
 
             try {
+
                 const topicIds =
                     selectedTopics.join(",");
 
@@ -477,8 +496,9 @@
                     );
 
 
-                if (!response.ok)
+                if (!response.ok) {
                     throw new Error("Failed to load questions.");
+                }
 
 
                 const questions =
@@ -486,6 +506,7 @@
 
 
                 if (questions.length === 0) {
+
                     questionContainer.innerHTML =
                         '<div class="alert alert-warning">' +
                         'No questions found for the selected topics.' +
@@ -496,31 +517,38 @@
 
 
                 questions.forEach(function(question, index) {
+
                     createQuestionRow(
                         question,
                         index
                     );
+
                 });
 
             }
             catch (error) {
+
                 console.error(error);
 
                 questionContainer.innerHTML =
                     '<div class="alert alert-danger">' +
                     'Unable to load questions.' +
                     '</div>';
+
             }
+
         }
 
 
-        // ==========================================
+        // =========================================================
         // Create Question Row
-        // ==========================================
+        // =========================================================
 
         function createQuestionRow(question, index) {
+
             const wrapper =
                 document.createElement("div");
+
 
             wrapper.className =
                 "card mb-3 question-card";
@@ -528,93 +556,91 @@
 
             wrapper.innerHTML = `
 
-                        <div class="card-body">
+                                <div class="card-body">
 
-                            <div class="form-check mb-2">
+                                    <div class="form-check mb-3">
 
-                                       <input
-            type="hidden"
-            name="Questions[${index}].QuestionId"
-            value="${question.id}"
-        />
+                                        <input
+                                            type="hidden"
+                                            name="Questions[${index}].QuestionId"
+                                            value="${question.id}"
+                                        />
 
-        <input
-            class="form-check-input question-checkbox"
-            type="checkbox"
-            name="Questions[${index}].IsSelected"
-            value="true"
-        />
+                                        <input
+                                            class="form-check-input question-checkbox"
+                                            type="checkbox"
+                                            name="Questions[${index}].IsSelected"
+                                            value="true"
+                                            id="question_${question.id}"
+                                        />
 
-        <input
-            type="hidden"
-            name="Questions[${index}].IsSelected"
-            value="false"
-        />
+                                        <label
+                                            class="form-check-label fw-bold"
+                                            for="question_${question.id}">
 
-                                <label class="form-check-label fw-bold">
+                                            ${escapeHtml(question.questionText)}
 
-                                    ${escapeHtml(question.questionText)}
+                                        </label>
 
-                                </label>
-
-                            </div>
+                                    </div>
 
 
-                            <div class="mb-2">
+                                    <div class="mb-3">
 
-                                <span class="badge bg-secondary">
+                                        <span class="badge bg-secondary">
 
-                                    ${escapeHtml(question.questionFormat)}
+                                            ${escapeHtml(question.questionFormat)}
 
-                                </span>
+                                        </span>
 
-                            </div>
+                                    </div>
 
 
-                            <div class="row question-details"
-                                 style="display:none;">
+                                    <div class="row question-details"
+                                         style="display:none;">
 
-                                <div class="col-md-6">
+                                        <div class="col-md-6">
 
-                                    <label class="form-label">
-                                        Actual Mark
-                                    </label>
+                                            <label class="form-label">
+                                                Actual Mark
+                                            </label>
 
-                                    <input
-                                        type="number"
-                                        step="0.5"
-                                        min="0"
-                                        class="form-control actual-mark"
-                                        name="Questions[${index}].ActualMark"
-                                        value="0"
-                                        disabled
-                                    />
+                                            <input
+                                                type="number"
+                                                step="0.5"
+                                                min="0.5"
+                                                class="form-control actual-mark"
+                                                name="Questions[${index}].ActualMark"
+                                                value="0"
+                                                disabled
+                                            />
+
+                                        </div>
+
+
+                                        <div class="col-md-6">
+
+                                            <label class="form-label">
+                                                Bonus Mark
+                                            </label>
+
+                                            <input
+                                                type="number"
+                                                step="0.5"
+                                                min="0"
+                                                class="form-control bonus-mark"
+                                                name="Questions[${index}].BonusMark"
+                                                value="0"
+                                                disabled
+                                            />
+
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
-
-                                <div class="col-md-6">
-
-                                    <label class="form-label">
-                                        Bonus Mark
-                                    </label>
-
-                                    <input
-                                        type="number"
-                                        step="0.5"
-                                        min="0"
-                                        class="form-control bonus-mark"
-                                        name="Questions[${index}].BonusMark"
-                                        value="0"
-                                        disabled
-                                    />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-                    `;
+                            `;
 
 
             questionContainer.appendChild(wrapper);
@@ -623,42 +649,60 @@
             const checkbox =
                 wrapper.querySelector(".question-checkbox");
 
+
             const details =
                 wrapper.querySelector(".question-details");
 
+
             const actualMark =
                 wrapper.querySelector(".actual-mark");
+
 
             const bonusMark =
                 wrapper.querySelector(".bonus-mark");
 
 
+            // =====================================================
+            // Question checkbox
+            // =====================================================
+
             checkbox.addEventListener("change", function() {
+
                 details.style.display =
                     this.checked ? "flex" : "none";
+
 
                 actualMark.disabled =
                     !this.checked;
 
+
                 bonusMark.disabled =
                     !this.checked;
 
+
                 calculateTotalMarks();
+
             });
 
+
+            // =====================================================
+            // Actual mark
+            // =====================================================
 
             actualMark.addEventListener(
                 "input",
                 calculateTotalMarks
             );
+
         }
 
 
-        // ==========================================
+        // =========================================================
         // Calculate Total Marks
-        // ==========================================
+        // =========================================================
 
         function calculateTotalMarks() {
+
             let total = 0;
 
 
@@ -667,48 +711,63 @@
                     ".question-checkbox:checked"
                 )
                 .forEach(function(checkbox) {
+
                     const card =
-                        checkbox.closest(".question-card");
+                        checkbox.closest(
+                            ".question-card"
+                        );
+
 
                     const actualMark =
-                        card.querySelector(".actual-mark");
+                        card.querySelector(
+                            ".actual-mark"
+                        );
+
 
                     total +=
                         parseFloat(actualMark.value) || 0;
+
                 });
 
 
             totalMarksElement.textContent =
                 total.toFixed(2);
+
         }
 
 
-        // ==========================================
+        // =========================================================
         // Escape HTML
-        // ==========================================
+        // =========================================================
 
         function escapeHtml(text) {
+
             const div =
                 document.createElement("div");
+
 
             div.textContent =
                 text;
 
+
             return div.innerHTML;
+
         }
 
 
-        // ==========================================
-        // Existing Topics From Server
-        // ==========================================
+        // =========================================================
+        // Existing server-rendered topics
+        // =========================================================
 
         document
             .querySelectorAll(".topic-checkbox")
             .forEach(function(checkbox) {
+
                 checkbox.addEventListener(
                     "change",
                     loadQuestions
                 );
+
             });
 
     </script>
