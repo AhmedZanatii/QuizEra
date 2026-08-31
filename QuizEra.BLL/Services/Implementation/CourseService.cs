@@ -31,6 +31,7 @@ namespace QuizEra.BLL.Services
 
             return courses.Select(c => new CourseVM
             {
+                Id = c.Id,
                 CourseName = c.CourseName,
                 CourseLevel = c.CourseLevel,
                 CourseCode = c.CourseCode,
@@ -113,6 +114,7 @@ namespace QuizEra.BLL.Services
 
             return courses.Select(c => new CourseVM
             {
+                Id = c.Id,
                 CourseName = c.CourseName,
                 CourseLevel = c.CourseLevel,
                 CourseCode = c.CourseCode,

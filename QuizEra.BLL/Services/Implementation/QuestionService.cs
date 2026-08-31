@@ -119,8 +119,8 @@ namespace QuizEra.BLL.Services.Implementation
         // =========================================
 
         public async Task AddAsync(
-            QuestionVM vm,
-            string creatorUser)
+     QuestionVM vm,
+     string creatorUser)
         {
             if (vm == null)
                 throw new ArgumentNullException(nameof(vm));
@@ -137,15 +137,23 @@ namespace QuizEra.BLL.Services.Implementation
             await _questionRepo.Create(question);
             await _questionRepo.SaveAsync();
 
-
+            // Create Question Options
+           
             if (vm.Options != null && vm.Options.Any())
             {
-                foreach (var option in vm.Options)
+                for (int i = 0; i < vm.Options.Count; i++)
                 {
+                    var option = vm.Options[i];
+
+                    // The radio button sends the selected option index
+                    bool isCorrect =
+                        vm.CorrectOption.HasValue &&
+                        vm.CorrectOption.Value == i;
+
                     var questionOption = new QuestionOption(
                         question.Id,
                         option.OptionText,
-                        option.IsCorrect);
+                        isCorrect);
 
                     await _optionRepo.Create(questionOption);
                 }
@@ -153,7 +161,6 @@ namespace QuizEra.BLL.Services.Implementation
                 await _optionRepo.SaveAsync();
             }
         }
-
 
         // =========================================
         // Update Question
@@ -202,8 +209,15 @@ namespace QuizEra.BLL.Services.Implementation
 
             if (vm.Options != null)
             {
-                foreach (var option in vm.Options)
+                for (int i = 0; i < vm.Options.Count; i++)
                 {
+                    var option = vm.Options[i];
+
+                    // Radio button sends the selected option index
+                    bool isCorrect =
+                        vm.CorrectOption.HasValue &&
+                        vm.CorrectOption.Value == i;
+
                     var existingOption =
                         existingQuestion.Options
                             .FirstOrDefault(o => o.Id == option.Id);
@@ -212,7 +226,7 @@ namespace QuizEra.BLL.Services.Implementation
                     {
                         existingOption.Update(
                             option.OptionText,
-                            option.IsCorrect);
+                            isCorrect);
 
                         _optionRepo.Update(existingOption);
                     }
@@ -221,7 +235,7 @@ namespace QuizEra.BLL.Services.Implementation
                         var newOption = new QuestionOption(
                             existingQuestion.Id,
                             option.OptionText,
-                            option.IsCorrect);
+                            isCorrect);
 
                         await _optionRepo.Create(newOption);
                     }

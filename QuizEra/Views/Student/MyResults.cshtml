@@ -1,0 +1,73 @@
+@model IEnumerable<QuizEra.BLL.ModelVM.StudentExamAttempt.StudentExamAttemptVM>
+
+@{
+    ViewData["Title"] = "My Results";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+    var attempts = Model ?? Enumerable.Empty<QuizEra.BLL.ModelVM.StudentExamAttempt.StudentExamAttemptVM>();
+}
+
+<div class="mb-4">
+    <h3 class="fw-bold text-dark mb-1">My Results</h3>
+    <p class="text-muted small mb-0">Review your completed and in-progress exam attempts.</p>
+</div>
+
+@if (!attempts.Any())
+{
+    <div class="card dashboard-card border-0 p-5 text-center">
+        <i class="fa-solid fa-square-poll-vertical fs-1 text-secondary opacity-50 mb-3"></i>
+        <h5 class="fw-bold">No Results Yet</h5>
+        <p class="text-muted small mb-0">Your exam results will appear here after you take an exam.</p>
+    </div>
+}
+else
+{
+    <div class="card dashboard-card border-0 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Exam</th>
+                        <th>Started</th>
+                        <th>Status</th>
+                        <th>Score</th>
+                        <th class="text-end pe-4">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var attempt in attempts)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-semibold">Exam #@attempt.ExamId</td>
+                            <td class="text-muted small">@attempt.StartTime.ToLocalTime().ToString("dd MMM yyyy, HH:mm")</td>
+                            <td>
+                                @if (attempt.EndTime.HasValue)
+                                {
+                                    <span class="badge bg-success bg-opacity-10 text-success">Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning bg-opacity-10 text-warning-emphasis">In progress</span>
+                                }
+                            </td>
+                            <td class="fw-semibold">@attempt.StudResult</td>
+                            <td class="text-end pe-4">
+                                @if (attempt.EndTime.HasValue)
+                                {
+                                    <a asp-controller="TakeExam" asp-action="Result" asp-route-examId="@attempt.ExamId" class="btn btn-sm btn-outline-primary">
+                                        <i class="fa-solid fa-chart-line me-1"></i>Details
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="TakeExam" asp-action="StartExam" asp-route-id="@attempt.ExamId" class="btn btn-sm btn-primary">
+                                        <i class="fa-solid fa-arrow-right me-1"></i>Continue
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

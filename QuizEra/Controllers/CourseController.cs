@@ -42,6 +42,26 @@ namespace QuizEra.PL.Controllers
         }
 
         [Authorize(Roles = "Student")]
+        [HttpGet]
+        public async Task<IActionResult> CourseDetailsForStud(int id)
+        {
+            var course = await _courseService.GetCourseByIdAsync(id);
+            if (course == null)
+                return NotFound();
+
+            var topics = await _topicService.GetTopicsByCourseAsync(id);
+            return View(new CourseDetailsVM
+            {
+                Id = course.Id,
+                CourseName = course.CourseName,
+                CourseCode = course.CourseCode,
+                CourseLevel = course.CourseLevel,
+                Description = course.CourseDescription,
+                Topics = topics
+            });
+        }
+
+        [Authorize(Roles = "Student")]
         [HttpPost]
         public async Task<IActionResult> Join(string courseCode)
         {
@@ -150,7 +170,7 @@ namespace QuizEra.PL.Controllers
             {
                 CourseName = course.CourseName,
                 CourseLevel = course.CourseLevel,
-                CourseDescription = course.CourseDescription
+                CourseDescription = course.CourseDescription ?? string.Empty
             };
 
             return View(updateVM);

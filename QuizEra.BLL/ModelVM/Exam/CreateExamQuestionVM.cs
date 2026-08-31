@@ -8,6 +8,8 @@ namespace QuizEra.BLL.ModelVM.Exam
 {
     public class CreateExamQuestionVM
     {
+        public int ExamQuestionId { get; set; }
+
         public int QuestionId { get; set; }
 
         public string QuestionText { get; set; } = string.Empty;

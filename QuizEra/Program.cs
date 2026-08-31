@@ -87,6 +87,12 @@ builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IInstructorService, InstructorService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IStudentExamAttemptService, StudentExamAttemptService>();
+builder.Services.AddScoped<IExamGradingService, ExamGradingService>();
+builder.Services.AddScoped<IExamService, ExamService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services.AddScoped<IExamAttemptResultService, ExamAttemptResultService>();
+builder.Services.AddHttpClient<IAIEvaluationService, GeminiEvaluationService>();
 var app = builder.Build();
 // Role and Admin seeding
 using (var scope = app.Services.CreateScope())

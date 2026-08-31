@@ -31,6 +31,9 @@ namespace QuizEra.BLL.ModelVM.Questions
 
         public List<QuestionOptionVM> Options { get; set; }
     = new List<QuestionOptionVM>();
+
+        // Selected correct option index
+        public int? CorrectOption { get; set; }
         public object? QuestionType { get; set; }
         public bool IsDeleted { get; set; }
     }

@@ -1,0 +1,221 @@
+@model QuizEra.BLL.ModelVM.ExamAttempt.ExamAttemptResultVM
+
+@{
+    ViewData["Title"] = "Exam Result";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <span class="text-muted small">Exam Result</span>
+        <h3 class="fw-bold text-dark mb-1">@Model.ExamTitle</h3>
+        <p class="text-muted small mb-0">Your attempt has been submitted.</p>
+    </div>
+    @if (Model.IsPassed)
+    {
+        <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill"><i class="fa-solid fa-check me-1"></i>Passed</span>
+    }
+    else
+    {
+        <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill"><i class="fa-solid fa-xmark me-1"></i>Failed</span>
+    }
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card dashboard-card border-0 p-4 h-100">
+            <span class="text-muted small">Score</span>
+            <h3 class="fw-bold text-primary mb-0">@Model.TotalScore</h3>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card dashboard-card border-0 p-4 h-100">
+            <span class="text-muted small">Percentage</span>
+            <h3 class="fw-bold mb-0">@Model.Percentage.ToString("0.0")%</h3>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card dashboard-card border-0 p-4 h-100">
+            <span class="text-muted small">Correct</span>
+            <h3 class="fw-bold text-success mb-0">@Model.CorrectAnswersCount</h3>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card dashboard-card border-0 p-4 h-100">
+            <span class="text-muted small">Time</span>
+            <h3 class="fw-bold mb-0">@(Model.CompletionTime?.ToString(@"hh\:mm\:ss") ?? "N/A")</h3>
+        </div>
+    </div>
+</div>
+
+<div class="card dashboard-card border-0 mb-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+            <div>
+                <h5 class="fw-bold mb-1">Question Summary</h5>
+                <p class="text-muted small mb-0">You answered @Model.CorrectAnswersCount of @Model.QuestionBreakdown.Count questions correctly.</p>
+            </div>
+            <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2">@Model.QuestionBreakdown.Count total questions</span>
+        </div>
+    </div>
+</div>
+
+<div class="card dashboard-card border-0">
+    <div class="card-body p-4">
+        <h5 class="fw-bold mb-3">Question Breakdown</h5>
+        @if (!Model.QuestionBreakdown.Any())
+        {
+            <p class="text-muted small mb-0">No question-level answers were recorded.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Question</th>
+                            <th>Time</th>
+                            <th class="text-center">Result</th>
+                            <th class="text-end">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var question in Model.QuestionBreakdown)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-start gap-2">
+                                        <span class="badge rounded-pill bg-light text-dark border">Q@question.QuestionNumber</span>
+                                        <div>
+                                            <div class="fw-semibold">@question.QuestionText</div>
+                                            <small class="text-muted">@question.QuestionFormat</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@question.TimeSpent.ToString(@"mm\:ss")</td>
+                                <td class="text-center">
+                                    @if (question.IsCorrect)
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success">Correct</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger bg-opacity-10 text-danger">Incorrect</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-primary question-detail-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#questionDetailModal"
+                                            data-question-number="Q@question.QuestionNumber"
+                                            data-question-text="@question.QuestionText"
+                                            data-question-format="@question.QuestionFormat"
+                                            data-correct-answer="@(string.IsNullOrWhiteSpace(question.CorrectAnswer) ? "No correct answer recorded." : question.CorrectAnswer)"
+                                            data-student-answer="@(string.IsNullOrWhiteSpace(question.StudentAnswer) ? "No answer recorded." : question.StudentAnswer)"
+                                            data-ai-justification="@(string.IsNullOrWhiteSpace(question.AIJustification) ? "No AI justification available." : question.AIJustification)"
+                                            data-is-correct="@question.IsCorrect.ToString().ToLowerInvariant()">
+                                        <i class="fa-solid fa-eye me-1"></i>Details
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="questionDetailModal" tabindex="-1" aria-labelledby="questionDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-sm">
+            <div class="modal-header">
+                <div>
+                    <span class="text-muted small">Question details</span>
+                    <h5 class="modal-title fw-bold mt-1" id="questionDetailModalLabel">Question</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <span class="badge bg-light text-dark border mb-2" id="modalQuestionFormat">MCQ</span>
+                    <p class="mb-0 fw-semibold" id="modalQuestionText">Question text</p>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="border rounded-3 p-3 bg-light-subtle">
+                            <div class="text-muted small mb-1">Correct answer</div>
+                            <div class="fw-semibold" id="modalCorrectAnswer">-</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="border rounded-3 p-3 bg-light-subtle">
+                            <div class="text-muted small mb-1">Your answer</div>
+                            <div class="fw-semibold" id="modalStudentAnswer">-</div>
+                        </div>
+                    </div>
+                    <div class="col-12" id="aiJustificationBlock" style="display:none;">
+                        <div class="border rounded-3 p-3 bg-light-subtle">
+                            <div class="text-muted small mb-1">AI justification</div>
+                            <div class="text-body" id="modalAiJustification">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span id="modalResultBadge" class="badge rounded-pill px-3 py-2">Result</span>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex gap-2 mt-4">
+    <a asp-controller="Student" asp-action="Results" class="btn btn-outline-primary"><i class="fa-solid fa-list me-2"></i>My Results</a>
+    <a asp-controller="Student" asp-action="Exams" class="btn btn-primary"><i class="fa-solid fa-file-pen me-2"></i>Available Exams</a>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const title = document.getElementById('questionDetailModalLabel');
+            const format = document.getElementById('modalQuestionFormat');
+            const text = document.getElementById('modalQuestionText');
+            const correct = document.getElementById('modalCorrectAnswer');
+            const student = document.getElementById('modalStudentAnswer');
+            const justification = document.getElementById('modalAiJustification');
+            const justificationBlock = document.getElementById('aiJustificationBlock');
+            const resultBadge = document.getElementById('modalResultBadge');
+
+            document.querySelectorAll('.question-detail-btn').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const questionNumber = button.getAttribute('data-question-number');
+                    const questionText = button.getAttribute('data-question-text');
+                    const questionFormat = button.getAttribute('data-question-format');
+                    const correctAnswer = button.getAttribute('data-correct-answer');
+                    const studentAnswer = button.getAttribute('data-student-answer');
+                    const aiJustification = button.getAttribute('data-ai-justification');
+                    const isCorrect = button.getAttribute('data-is-correct') === 'true';
+
+                    title.textContent = questionNumber;
+                    format.textContent = questionFormat;
+                    text.textContent = questionText;
+                    correct.textContent = correctAnswer;
+                    student.textContent = studentAnswer;
+
+                    if (questionFormat && questionFormat.toLowerCase() === 'essay') {
+                        justificationBlock.style.display = 'block';
+                        justification.textContent = aiJustification;
+                    } else {
+                        justificationBlock.style.display = 'none';
+                    }
+
+                    resultBadge.textContent = isCorrect ? 'Correct' : 'Incorrect';
+                    resultBadge.className = 'badge rounded-pill px-3 py-2 ' + (isCorrect ? 'bg-success bg-opacity-10 text-success' : 'bg-danger bg-opacity-10 text-danger');
+                });
+            });
+        });
+    </script>
+}

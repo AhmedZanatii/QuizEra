@@ -7,8 +7,10 @@
 
         public int StudQMarks { get; private set; }
         public string QuestionAnswer { get; private set; }
+        public string? AIJustification { get; private set; }
 
         public TimeSpan TimeSpent { get; private set; }
+        public bool IsCorrect { get; private set; } = false;
 
         // Navigation Properties
         public ExamQuestions ExamQuestions { get; private set; }
@@ -22,8 +24,9 @@
             int studQMarks,
             string questionAnswer,
             string creatorUser,
-            DateTime createdDate,
-            TimeSpan timeSpent)
+            bool isCorrect,
+            TimeSpan timeSpent,
+            string? AIJustification = null)
         : base(creatorUser)
         {
             ExamQuestionsId = examQuestionsId;
@@ -31,14 +34,18 @@
             StudQMarks = studQMarks;
             QuestionAnswer = questionAnswer;
             TimeSpent = timeSpent;
+            IsCorrect = isCorrect;
+            this.AIJustification = AIJustification;
         }
 
-        public void Update(int studQMarks, string questionAnswer, string modifierUser, DateTime modifiedDate, TimeSpan timeSpent)
+        public void Update(int studQMarks, string questionAnswer, string modifierUser, 
+                            bool isCorrect, TimeSpan timeSpent, string? AIJustification = null)
         {
             StudQMarks = studQMarks;
             QuestionAnswer = questionAnswer;
             TimeSpent = timeSpent;
-            // Call the base class Update method to update modifierUser and modifiedDate
+            IsCorrect = isCorrect;
+            this.AIJustification = AIJustification;
             base.Update(modifierUser); 
         }
     }
