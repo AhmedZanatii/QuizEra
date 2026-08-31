@@ -85,7 +85,7 @@
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-start gap-2">
-                                        <span class="badge rounded-pill bg-light text-dark border">Q@question.QuestionNumber</span>
+                                        <span class="badge rounded-pill bg-light text-dark border">@($"Q{question.QuestionNumber}")</span>
                                         <div>
                                             <div class="fw-semibold">@question.QuestionText</div>
                                             <small class="text-muted">@question.QuestionFormat</small>
@@ -108,7 +108,7 @@
                                             class="btn btn-sm btn-outline-primary question-detail-btn"
                                             data-bs-toggle="modal"
                                             data-bs-target="#questionDetailModal"
-                                            data-question-number="Q@question.QuestionNumber"
+                                            data-question-number=@($"Q{question.QuestionNumber}")
                                             data-question-text="@question.QuestionText"
                                             data-question-format="@question.QuestionFormat"
                                             data-correct-answer="@(string.IsNullOrWhiteSpace(question.CorrectAnswer) ? "No correct answer recorded." : question.CorrectAnswer)"

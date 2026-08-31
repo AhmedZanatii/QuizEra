@@ -62,3 +62,58 @@
         </div>
     </div>
 </div>
+
+@{
+    var reviews = Model.Reviews.ToList();
+    var averageRating = reviews.Any() ? Math.Round(reviews.Average(r => r.Rate), 1) : 0;
+}
+
+<div class="card dashboard-card border-0 mt-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h5 class="fw-bold mb-1">Student Reviews</h5>
+                <p class="text-muted small mb-0">@reviews.Count reviews</p>
+            </div>
+            <div class="text-end">
+                <div class="fw-bold text-warning fs-5">@averageRating</div>
+                <div class="text-muted small">Average rating</div>
+            </div>
+        </div>
+
+        @if (!reviews.Any())
+        {
+            <div class="text-center py-4 border rounded-3 bg-light">
+                <i class="fa-regular fa-comment-dots text-muted fs-3 mb-3 d-block"></i>
+                <p class="text-muted mb-0">No reviews yet. Be the first to share your feedback.</p>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column gap-3">
+                @foreach (var review in reviews)
+                {
+                    <div class="border rounded-3 p-3 bg-light-subtle">
+                        <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+                            <div class="fw-semibold text-dark">Student</div>
+                            <div class="text-warning small">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= review.Rate)
+                                    {
+                                        <i class="fa-solid fa-star"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa-regular fa-star"></i>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <p class="text-muted mb-0">@review.Comment</p>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

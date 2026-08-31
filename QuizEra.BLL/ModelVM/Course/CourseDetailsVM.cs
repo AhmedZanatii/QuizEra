@@ -1,4 +1,5 @@
-﻿using QuizEra.BLL.ModelVM.Topic;
+﻿using QuizEra.BLL.ModelVM.Feedback;
+using QuizEra.BLL.ModelVM.Topic;
 
 namespace QuizEra.BLL.ModelVM.Course
 {
@@ -16,5 +17,8 @@ namespace QuizEra.BLL.ModelVM.Course
 
         public IEnumerable<TopicVM> Topics { get; set; }
             = Enumerable.Empty<TopicVM>();
+
+        public IEnumerable<FeedbackVM> Reviews { get; set; }
+            = Enumerable.Empty<FeedbackVM>();
     }
 }

@@ -18,36 +18,23 @@ namespace QuizEra.BLL.Services.Implementation
 
         public async Task<IEnumerable<FeedbackVM>> GetByStudentIdAsync(string id)
         {
-            // Get the Student from the database
             var student = await StudentRepo.GetBy(
                 filter: s => s.AppUserId == id,
                 noTrack: true
             );
 
-            // Retrieve all feedbacks for the given StudentID
-            var feedbacks = (await FeedbackRepo.Get(a => a.StudentID == student.Id)).Where(a => !a.IsDeleted).ToList();
-
-            // Check if any feedbacks were found
-            if(feedbacks == null || !feedbacks.Any())
+            if (student == null)
             {
-                throw new Exception($"No Feedback found for StudentID {id}");
+                return Enumerable.Empty<FeedbackVM>();
             }
 
-            // Map the retrieved feedbacks to FeedbackVM
+            var feedbacks = (await FeedbackRepo.Get(a => a.StudentID == student.Id)).Where(a => !a.IsDeleted).ToList();
             return feedbacks.Select(MapToVM);
         }
+
         public async Task<IEnumerable<FeedbackVM>> GetByCourseIdAsync(int id)
         {
-            // Retrieve all feedbacks for the given CourseID
             var feedbacks = (await FeedbackRepo.Get(a => a.CourseID == id)).Where(a => !a.IsDeleted).ToList();
-
-            // Check if any feedbacks were found
-            if(feedbacks == null || !feedbacks.Any())
-            {
-                throw new Exception($"No Feedback found for CourseID {id}");
-            }
-
-            // Map the retrieved feedbacks to FeedbackVM
             return feedbacks.Select(MapToVM);
         }
 

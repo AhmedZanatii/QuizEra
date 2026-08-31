@@ -12,13 +12,16 @@ namespace QuizEra.PL.Controllers
     {
         private readonly ICourseService _courseService;
         private readonly ITopicService _topicService;
+        private readonly IFeedbackService _feedbackService;
 
         public CourseController(
             ICourseService courseService,
-            ITopicService topicService)
+            ITopicService topicService,
+            IFeedbackService feedbackService)
         {
             _courseService = courseService;
             _topicService = topicService;
+            _feedbackService = feedbackService;
         }
 
         #region Read Operations
@@ -50,6 +53,8 @@ namespace QuizEra.PL.Controllers
                 return NotFound();
 
             var topics = await _topicService.GetTopicsByCourseAsync(id);
+            var reviews = await _feedbackService.GetByCourseIdAsync(id);
+
             return View(new CourseDetailsVM
             {
                 Id = course.Id,
@@ -57,7 +62,8 @@ namespace QuizEra.PL.Controllers
                 CourseCode = course.CourseCode,
                 CourseLevel = course.CourseLevel,
                 Description = course.CourseDescription,
-                Topics = topics
+                Topics = topics,
+                Reviews = reviews
             });
         }
 
