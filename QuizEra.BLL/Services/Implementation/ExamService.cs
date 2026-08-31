@@ -606,6 +606,7 @@ namespace QuizEra.BLL.Services.Implementation
 
                 model.Questions.Add(new CreateExamQuestionVM
                 {
+                    ExamQuestionId = examQuestion.Id,
                     QuestionId = question.Id,
                     QuestionText = question.QuestionText,
                     IsSelected = true,

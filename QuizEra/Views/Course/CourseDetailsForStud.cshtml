@@ -1,0 +1,119 @@
+@model QuizEra.BLL.ModelVM.Course.CourseDetailsVM
+
+@{
+    ViewData["Title"] = Model.CourseName;
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+    <div>
+        <a asp-controller="Student" asp-action="Courses" class="text-decoration-none text-muted small">
+            <i class="fa-solid fa-arrow-left me-1"></i>My Courses
+        </a>
+        <h3 class="fw-bold text-dark mt-2 mb-1">@Model.CourseName</h3>
+        <p class="text-muted mb-0">@Model.Description</p>
+    </div>
+    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2">@Model.CourseLevel</span>
+</div>
+
+<div class="row g-4">
+    <div class="col-12 col-lg-8">
+        <div class="card dashboard-card border-0 h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Course Topics</h5>
+                    <span class="text-muted small">@Model.Topics.Count() topics</span>
+                </div>
+                @if (!Model.Topics.Any())
+                {
+                    <p class="text-muted small mb-0">No topics have been added yet.</p>
+                }
+                else
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var topic in Model.Topics)
+                        {
+                            <div class="list-group-item px-0 py-3 d-flex align-items-center gap-3">
+                                <span class="icon-shape bg-primary bg-opacity-10 text-primary" style="width:40px;height:40px;font-size:1rem;">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </span>
+                                <span class="fw-semibold">@topic.Name</span>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <div class="card dashboard-card border-0 h-100">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4">Course Information</h5>
+                <div class="small text-muted mb-3"><i class="fa-solid fa-signal text-primary me-2"></i>Level <strong class="text-dark float-end">@Model.CourseLevel</strong></div>
+                <div class="small text-muted mb-4"><i class="fa-solid fa-key text-primary me-2"></i>Course code <strong class="text-dark float-end">@Model.CourseCode</strong></div>
+
+                <a asp-controller="TakeExam" asp-action="Exams" class="btn btn-primary w-100 mb-2">
+                    <i class="fa-solid fa-file-pen me-2"></i>View Available Exams
+                </a>
+                <a asp-controller="Feedback" asp-action="Create" asp-route-courseId="@Model.Id" class="btn btn-outline-primary w-100">
+                    <i class="fa-solid fa-star me-2"></i>Give Feedback
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    var reviews = Model.Reviews.ToList();
+    var averageRating = reviews.Any() ? Math.Round(reviews.Average(r => r.Rate), 1) : 0;
+}
+
+<div class="card dashboard-card border-0 mt-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h5 class="fw-bold mb-1">Student Reviews</h5>
+                <p class="text-muted small mb-0">@reviews.Count reviews</p>
+            </div>
+            <div class="text-end">
+                <div class="fw-bold text-warning fs-5">@averageRating</div>
+                <div class="text-muted small">Average rating</div>
+            </div>
+        </div>
+
+        @if (!reviews.Any())
+        {
+            <div class="text-center py-4 border rounded-3 bg-light">
+                <i class="fa-regular fa-comment-dots text-muted fs-3 mb-3 d-block"></i>
+                <p class="text-muted mb-0">No reviews yet. Be the first to share your feedback.</p>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column gap-3">
+                @foreach (var review in reviews)
+                {
+                    <div class="border rounded-3 p-3 bg-light-subtle">
+                        <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+                            <div class="fw-semibold text-dark">Student</div>
+                            <div class="text-warning small">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= review.Rate)
+                                    {
+                                        <i class="fa-solid fa-star"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa-regular fa-star"></i>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <p class="text-muted mb-0">@review.Comment</p>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

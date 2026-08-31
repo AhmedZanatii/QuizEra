@@ -12,13 +12,16 @@ namespace QuizEra.PL.Controllers
     {
         private readonly ICourseService _courseService;
         private readonly ITopicService _topicService;
+        private readonly IFeedbackService _feedbackService;
 
         public CourseController(
             ICourseService courseService,
-            ITopicService topicService)
+            ITopicService topicService,
+            IFeedbackService feedbackService)
         {
             _courseService = courseService;
             _topicService = topicService;
+            _feedbackService = feedbackService;
         }
 
         #region Read Operations
@@ -39,6 +42,29 @@ namespace QuizEra.PL.Controllers
             string userId = GetCurrentUserId();
             var courses = await _courseService.GetCoursesByStudentAsync(userId);
             return View(courses);
+        }
+
+        [Authorize(Roles = "Student")]
+        [HttpGet]
+        public async Task<IActionResult> CourseDetailsForStud(int id)
+        {
+            var course = await _courseService.GetCourseByIdAsync(id);
+            if (course == null)
+                return NotFound();
+
+            var topics = await _topicService.GetTopicsByCourseAsync(id);
+            var reviews = await _feedbackService.GetByCourseIdAsync(id);
+
+            return View(new CourseDetailsVM
+            {
+                Id = course.Id,
+                CourseName = course.CourseName,
+                CourseCode = course.CourseCode,
+                CourseLevel = course.CourseLevel,
+                Description = course.CourseDescription,
+                Topics = topics,
+                Reviews = reviews
+            });
         }
 
         [Authorize(Roles = "Student")]
@@ -150,7 +176,7 @@ namespace QuizEra.PL.Controllers
             {
                 CourseName = course.CourseName,
                 CourseLevel = course.CourseLevel,
-                CourseDescription = course.CourseDescription
+                CourseDescription = course.CourseDescription ?? string.Empty
             };
 
             return View(updateVM);

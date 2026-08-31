@@ -4,7 +4,7 @@ using System.Text;
 
 namespace QuizEra.DAL.Entities
 {
-    public class Feedback
+    public class Feedback : BaseEntity
     {
         public int Id { get; private set; }
         public int StudentID { get; private set; }
@@ -18,7 +18,8 @@ namespace QuizEra.DAL.Entities
 
         protected Feedback() { }
 
-        public Feedback(int studentID, int courseID, string comment, int rate)
+        public Feedback(int studentID, int courseID, string comment, int rate, 
+        string creatorUser) : base(creatorUser)
         {
             StudentID = studentID;
             CourseID = courseID;
@@ -26,10 +27,11 @@ namespace QuizEra.DAL.Entities
             Rate = rate;
         }
 
-        public void Update(string comment, int rate)
+        public void Update(string comment, int rate, string modifierUser)
         {
             Comment = comment;
             Rate = rate;
+            base.Update(modifierUser);
         }
     }
 }

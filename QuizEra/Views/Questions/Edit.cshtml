@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit Question";
-    Layout = "~/Views/Shared/_InstructorLayout.cshtml"; 
+    Layout = "~/Views/Shared/_InstructorLayout.cshtml";
 }
 
 <div class="container-fluid py-4">
@@ -11,21 +11,31 @@
 
             <div class="card shadow-sm border-0 rounded-3">
 
-                <!-- Header -->
+                <!-- HEADER -->
                 <div class="card-header bg-white py-3 border-bottom">
-                    <h4 class="fw-bold mb-1 text-dark">Edit Question</h4>
-                    <p class="text-muted small mb-0">Update the question details and answers.</p>
+                    <h4 class="fw-bold mb-1 text-dark">
+                        Edit Question
+                    </h4>
+                    <p class="text-muted small mb-0">
+                        Update the question details and answers.
+                    </p>
                 </div>
 
-                <!-- Form -->
-                <form asp-controller="Questions" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+                <!-- FORM -->
+                <form asp-controller="Questions"
+                      asp-action="Edit"
+                      asp-route-id="@Model.Id"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="Id" />
 
                     <div class="card-body p-4">
 
-                        <!-- Topic, Format & Difficulty Row -->
+                        <!-- TOPIC / TYPE / DIFFICULTY -->
                         <div class="row g-3 mb-4">
-                            
+
+                            <!-- Topic -->
                             <div class="col-md-4">
                                 <label asp-for="TopicID" class="form-label fw-semibold">Topic</label>
                                 <select asp-for="TopicID" class="form-select">
@@ -43,59 +53,74 @@
                                 <span asp-validation-for="TopicID" class="text-danger small"></span>
                             </div>
 
+                            <!-- Question Type -->
                             <div class="col-md-4">
                                 <label asp-for="QuestionFormat" class="form-label fw-semibold">Question Type</label>
-                                <select asp-for="QuestionFormat" asp-items="Html.GetEnumSelectList<QuizEra.DAL.Entities.Enums.QuestionFormat>()" class="form-select" id="questionFormat">
+                                <select asp-for="QuestionFormat"
+                                        asp-items="Html.GetEnumSelectList<QuizEra.DAL.Entities.Enums.QuestionFormat>()"
+                                        class="form-select"
+                                        id="questionFormat">
                                 </select>
                                 <span asp-validation-for="QuestionFormat" class="text-danger small"></span>
                             </div>
 
+                            <!-- Difficulty -->
                             <div class="col-md-4">
                                 <label asp-for="DifficultyLevel" class="form-label fw-semibold">Difficulty Level</label>
-                                <select asp-for="DifficultyLevel" asp-items="Html.GetEnumSelectList<QuizEra.DAL.Entities.Enums.DifficultyLevel>()" class="form-select">
+                                <select asp-for="DifficultyLevel"
+                                        asp-items="Html.GetEnumSelectList<QuizEra.DAL.Entities.Enums.DifficultyLevel>()"
+                                        class="form-select">
                                 </select>
                                 <span asp-validation-for="DifficultyLevel" class="text-danger small"></span>
                             </div>
 
                         </div>
 
-                        <!-- Question Content -->
+                        <!-- QUESTION CONTENT -->
                         <div class="mb-4">
                             <label asp-for="QuestionText" class="form-label fw-semibold">Question Content</label>
                             <textarea asp-for="QuestionText" class="form-control" rows="4" placeholder="Enter question content..."></textarea>
                             <span asp-validation-for="QuestionText" class="text-danger small"></span>
                         </div>
 
-                        <!-- Essay Model Answer Section -->
-                        <div id="essayAnswerSection" class="mb-4" style="display: none;">
+                        <!-- ESSAY MODEL ANSWER -->
+                        <div id="essayAnswerSection" class="mb-4" style="display:none;">
                             <label asp-for="QuestionAnswer" class="form-label fw-semibold">Model Answer</label>
                             <textarea asp-for="QuestionAnswer" class="form-control" rows="4" placeholder="Enter reference answer..."></textarea>
+                            <span asp-validation-for="QuestionAnswer" class="text-danger small"></span>
                         </div>
-
-                        <!-- MCQ Options -->
+                        <!-- OPTIONS -->
                         <div id="optionsSection" class="border rounded-3 p-3 bg-light mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h6 class="fw-bold m-0 text-dark">Answer Options</h6>
-                                <small class="text-muted">Select the correct answer option</small>
+                                <h6 id="optionsTitle" class="fw-bold m-0 text-dark">Answer Options</h6>
+                                <small id="optionsHelp" class="text-muted">Select the correct answer option</small>
                             </div>
 
+                            <!-- OPTIONS LIST -->
                             <div id="optionsList">
-                                @{ int index = 0; }
-                                @if (Model.Options != null && Model.Options.Any())
+                                @{
+                                    int index = 0;
+                                }
+                                @if (Model.Options!= null && Model.Options.Any())
                                 {
                                     foreach (var option in Model.Options)
                                     {
                                         <div class="option-row d-flex align-items-center gap-2 mb-3">
+                                            <!-- Existing Option ID -->
                                             <input type="hidden" name="Options[@index].Id" value="@option.Id" />
-                                            
-                                            <input type="radio" name="CorrectOption" value="@index" class="form-check-input mt-0 correct-option" @(option.IsCorrect ? "checked" : "") />
 
-                                            <span class="badge bg-secondary rounded-circle d-flex align-items-center justify-content-center option-letter" style="width: 32px; height: 32px;">
+                                            <!-- Correct Option -->
+                                            <input type="radio" name="CorrectOption" value="@index" class="form-check-input mt-0 correct-option" @(option.IsCorrect? "checked" : "") />
+
+                                            <!-- Letter -->
+                                            <span class="badge bg-secondary rounded-circle d-flex align-items-center justify-content-center option-letter" style="width:32px;height:32px;">
                                                 @((char)('A' + index))
                                             </span>
 
-                                            <input type="text" name="Options[@index].OptionText" value="@option.OptionText" class="form-control" required />
+                                            <!-- Option Text -->
+                                            <input type="text" name="Options[@index].OptionText" value="@option.OptionText" class="form-control option-text" placeholder="Option @((char)('A' + index)) text..." required />
 
+                                            <!-- Delete -->
                                             <button type="button" class="btn btn-outline-danger btn-sm border-0" onclick="removeOption(this)">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
@@ -105,18 +130,21 @@
                                 }
                             </div>
 
-                            <button type="button" class="btn btn-sm btn-outline-primary fw-semibold" onclick="addOption()">
-                                <i class="fa-solid fa-plus me-1"></i> Add Option
+                            <!-- ADD OPTION -->
+                            <button type="button" id="addOptionButton" class="btn btn-sm btn-outline-primary fw-semibold" onclick="addOption()">
+                                <i class="fa-solid fa-plus me-1"></i>
+                                Add Option
                             </button>
                         </div>
 
                     </div>
 
-                    <!-- Footer -->
+                    <!-- FOOTER -->
                     <div class="card-footer bg-white py-3 border-top d-flex justify-content-end gap-2">
                         <a asp-controller="Questions" asp-action="Index" class="btn btn-outline-secondary px-4">Cancel</a>
                         <button type="submit" class="btn btn-primary px-4 fw-bold">
-                            Save Changes <i class="fa-solid fa-check ms-1"></i>
+                            Save Changes
+                            <i class="fa-solid fa-check ms-1"></i>
                         </button>
                     </div>
 
@@ -127,74 +155,134 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
         let optionIndex = document.querySelectorAll(".option-row").length;
 
+        // ADD MCQ OPTION
         function addOption() {
             const optionsList = document.getElementById("optionsList");
             const letter = String.fromCharCode(65 + optionIndex);
             const row = document.createElement("div");
-
             row.className = "option-row d-flex align-items-center gap-2 mb-3";
             row.innerHTML = `
-                <input type="hidden" name="Options[${optionIndex}].Id" value="0" />
-                <input type="radio" name="CorrectOption" value="${optionIndex}" class="form-check-input mt-0 correct-option" />
-                <span class="badge bg-secondary rounded-circle d-flex align-items-center justify-content-center option-letter" style="width: 32px; height: 32px;">${letter}</span>
-                <input type="text" name="Options[${optionIndex}].OptionText" class="form-control" placeholder="Option ${letter} text..." required />
-                <button type="button" class="btn btn-outline-danger btn-sm border-0" onclick="removeOption(this)">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            `;
-
+                        <input type="hidden" name="Options[${optionIndex}].Id" value="0" />
+                        <input type="radio" name="CorrectOption" value="${optionIndex}" class="form-check-input mt-0 correct-option" />
+                        <span class="badge bg-secondary rounded-circle d-flex align-items-center justify-content-center option-letter" style="width:32px;height:32px;">${letter}</span>
+                        <input type="text" name="Options[${optionIndex}].OptionText" class="form-control option-text" placeholder="Option ${letter} text..." required />
+                        <button type="button" class="btn btn-outline-danger btn-sm border-0" onclick="removeOption(this)"><i class="fa-solid fa-trash"></i></button>
+                    `;
             optionsList.appendChild(row);
             optionIndex++;
         }
 
+        // REMOVE OPTION
         function removeOption(button) {
             const optionsList = document.getElementById("optionsList");
-            if (optionsList.children.length <= 2) {
-                alert("A question must have at least 2 options.");
-                return;
-            }
+            if (optionsList.children.length <= 2) { alert("A question must have at least 2 options."); return; }
             button.closest(".option-row").remove();
             updateIndexes();
         }
 
+        // UPDATE OPTION INDEXES
         function updateIndexes() {
             const rows = document.querySelectorAll(".option-row");
             rows.forEach((row, index) => {
                 const letter = String.fromCharCode(65 + index);
-                row.querySelector(".option-letter").textContent = letter;
-
+                const letterElement = row.querySelector(".option-letter");
+                if (letterElement) { letterElement.textContent = letter; }
                 const textInput = row.querySelector("input[type='text']");
-                textInput.name = `Options[${index}].OptionText`;
-
+                if (textInput) { textInput.name = `Options[${index}].OptionText`; textInput.placeholder = `Option ${letter} text...`; }
                 const hiddenInput = row.querySelector("input[type='hidden']");
-                if (hiddenInput) hiddenInput.name = `Options[${index}].Id`;
-
+                if (hiddenInput) { hiddenInput.name = `Options[${index}].Id`; }
                 const radio = row.querySelector("input[type='radio']");
-                radio.value = index;
+                if (radio) { radio.value = index; }
             });
             optionIndex = rows.length;
         }
 
+        // CREATE TRUE / FALSE OPTIONS
+        function createTrueFalseOptions() {
+            const optionsList = document.getElementById("optionsList");
+            optionsList.innerHTML = "";
+            optionIndex = 2;
+            const trueRow = document.createElement("div");
+            trueRow.className = "option-row d-flex align-items-center gap-2 mb-3";
+            trueRow.innerHTML = `<input type="hidden" name="Options[0].Id" value="0" /><input type="radio" name="CorrectOption" value="0" class="form-check-input mt-0 correct-option" id="trueOption" /><span class="badge bg-secondary rounded-circle d-flex align-items-center justify-content-center option-letter" style="width:32px;height:32px;">T</span><input type="text" name="Options[0].OptionText" class="form-control option-text" value="True" readonly />`;
+            optionsList.appendChild(trueRow);
+            const falseRow = document.createElement("div");
+            falseRow.className = "option-row d-flex align-items-center gap-2 mb-3";
+            falseRow.innerHTML = `<input type="hidden" name="Options[1].Id" value="0" /><input type="radio" name="CorrectOption" value="1" class="form-check-input mt-0 correct-option" id="falseOption" /><span class="badge bg-secondary rounded-circle d-flex align-items-center justify-content-center option-letter" style="width:32px;height:32px;">F</span><input type="text" name="Options[1].OptionText" class="form-control option-text" value="False" readonly />`;
+            optionsList.appendChild(falseRow);
+        }
+
+        // CREATE MCQ OPTIONS
+        function createMultipleChoiceOptions() {
+            const optionsList = document.getElementById("optionsList");
+            optionsList.innerHTML = "";
+            optionIndex = 0;
+            for (let i = 0; i < 4; i++) {
+                const letter = String.fromCharCode(65 + i);
+                const optionRow = document.createElement("div");
+                optionRow.className = "option-row d-flex align-items-center gap-2 mb-3";
+                optionRow.innerHTML = `<input type="hidden" name="Options[${i}].Id" value="0" /><input type="radio" name="CorrectOption" value="${i}" class="form-check-input mt-0 correct-option" ${i === 0? "checked" : ""} /><span class="badge bg-secondary rounded-circle d-flex align-items-center justify-content-center option-letter" style="width:32px;height:32px;">${letter}</span><input type="text" name="Options[${i}].OptionText" class="form-control option-text" placeholder="Option ${letter} text..." required /><button type="button" class="btn btn-outline-danger btn-sm border-0" onclick="removeOption(this)"><i class="fa-solid fa-trash"></i></button>`;
+                optionsList.appendChild(optionRow);
+                optionIndex++;
+            }
+        }
+
+        // HANDLE QUESTION FORMAT
         function updateQuestionFormat() {
             const formatSelect = document.getElementById("questionFormat");
-            const selectedText = formatSelect.options[formatSelect.selectedIndex]?.text;
+            const selectedText = formatSelect.options[formatSelect.selectedIndex]?.text?.trim();
             const optionsSection = document.getElementById("optionsSection");
+            const optionsList = document.getElementById("optionsList");
             const essaySection = document.getElementById("essayAnswerSection");
+            const optionsTitle = document.getElementById("optionsTitle");
+            const optionsHelp = document.getElementById("optionsHelp");
+            const addOptionButton = document.getElementById("addOptionButton");
 
             if (selectedText === "Essay") {
                 optionsSection.style.display = "none";
                 essaySection.style.display = "block";
-            } else {
+                optionsList.querySelectorAll("input").forEach(input => { input.disabled = true; input.required = false; });
+                return;
+            }
+
+            if (selectedText === "TrueFalse" || selectedText === "True / False" || selectedText === "TrueFalseQuestion") {
                 optionsSection.style.display = "block";
                 essaySection.style.display = "none";
+                optionsTitle.textContent = "True / False Answer";
+                optionsHelp.textContent = "Select the correct answer";
+                addOptionButton.style.display = "none";
+                const currentSelected = document.querySelector("input[name='CorrectOption']:checked");
+                const selectedValue = currentSelected? currentSelected.value : null;
+                createTrueFalseOptions();
+                if (selectedValue!== null) {
+                    const radio = document.querySelector(`input[name='CorrectOption'][value='${selectedValue}']`);
+                    if (radio) { radio.checked = true; }
+                }
+                optionsList.querySelectorAll("input").forEach(input => { input.disabled = false; input.required = false; });
+                return;
             }
+
+            optionsSection.style.display = "block";
+            essaySection.style.display = "none";
+            optionsTitle.textContent = "Multiple Choice Options";
+            optionsHelp.textContent = "Select the radio button for the correct answer";
+            addOptionButton.style.display = "inline-block";
+            const currentRows = document.querySelectorAll(".option-row");
+            let isTrueFalseOptions = false;
+            if (currentRows.length === 2) {
+                const firstText = currentRows[0].querySelector("input[type='text']")?.value?.trim();
+                const secondText = currentRows[1].querySelector("input[type='text']")?.value?.trim();
+                isTrueFalseOptions = (firstText === "True" && secondText === "False");
+            }
+            if (isTrueFalseOptions) { createMultipleChoiceOptions(); }
+            else if (currentRows.length === 0) { createMultipleChoiceOptions(); }
+            optionsList.querySelectorAll("input").forEach(input => { input.disabled = false; if (input.type === "text") { input.required = true; } });
         }
 
         document.getElementById("questionFormat").addEventListener("change", updateQuestionFormat);
