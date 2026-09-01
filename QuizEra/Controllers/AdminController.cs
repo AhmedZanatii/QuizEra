@@ -5,6 +5,7 @@ using QuizEra.BLL.ModelVM.Course;
 using QuizEra.BLL.ModelVM.Questions;
 using QuizEra.BLL.ModelVM.Topic;
 using QuizEra.BLL.Services.Abstraction;
+using QuizEra.BLL.Services.Implementation;
 
 namespace QuizEra.Controllers
 {
@@ -17,14 +18,14 @@ namespace QuizEra.Controllers
         private readonly ICourseService _courseService;
         private readonly ITopicService _topicService;
         private readonly IQuestionService _questionService;
-
+        private readonly IExamService _examService;
         public AdminController(
             IAdminService adminService,
             IStudentService studentService,
             IInstructorService instructorService,
             ICourseService courseService,
             ITopicService topicService,
-            IQuestionService questionService)
+            IQuestionService questionService, IExamService examService)
         {
             _adminService = adminService;
             _studentService = studentService;
@@ -32,6 +33,7 @@ namespace QuizEra.Controllers
             _courseService = courseService;
             _topicService = topicService;
             _questionService = questionService;
+            _examService = examService;
         }
 
         // =========================
@@ -1047,10 +1049,21 @@ namespace QuizEra.Controllers
         // =========================
 
         [HttpGet]
-        public IActionResult Exams()
+        public async Task<IActionResult> Exams()
         {
-            // Exams management not implemented yet
-            return View();
+            var exams = await _examService.GetAllExamsAsync();
+
+            return View(exams);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ExamDetails(int id)
+        {
+            var exam = await _examService.GetExamByIdAsync(id);
+
+            if (exam == null)
+                return NotFound();
+
+            return View(exam);
         }
     }
 }

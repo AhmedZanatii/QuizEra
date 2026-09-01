@@ -1,11 +1,204 @@
+@model IEnumerable<QuizEra.BLL.ModelVM.Exam.ExamVM>
+
 @{
     ViewData["Title"] = "Exams";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="mb-4">
-    <h3 class="fw-bold">Exams</h3>
-    <p class="text-muted small">Exam management is not implemented yet.</p>
-</div>
+<div class="container-fluid py-4">
 
-<div class="alert alert-info">Feature coming soon.</div>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">Exams</h2>
+            <p class="text-muted small mb-0">
+                View and monitor all exams in the QuizEra system.
+            </p>
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="Index"
+           class="btn btn-outline-secondary btn-sm">
+            <i class="fa-solid fa-arrow-left me-1"></i>
+            Back to Dashboard
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+
+            @foreach (var exam in Model)
+            {
+                var now = DateTime.Now;
+
+                string status;
+                string statusClass;
+
+                if (now < exam.StartDate)
+                {
+                    status = "Upcoming";
+                    statusClass = "bg-warning text-dark";
+                }
+                else if (now >= exam.StartDate && now <= exam.EndDate)
+                {
+                    status = "Active";
+                    statusClass = "bg-success";
+                }
+                else
+                {
+                    status = "Closed";
+                    statusClass = "bg-secondary";
+                }
+
+                <div class="col-12 col-md-6 col-xl-4">
+
+                    <div class="card border-0 shadow-sm rounded-3 h-100">
+
+                        <div class="card-body p-4">
+
+                            <!-- Top -->
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+
+                                <span class="badge bg-primary bg-opacity-10 text-primary">
+                                    <i class="fa-solid fa-file-pen me-1"></i>
+                                    Exam
+                                </span>
+
+                                <span class="badge @statusClass">
+                                    @status
+                                </span>
+
+                            </div>
+
+                            <!-- Title -->
+                            <h5 class="fw-bold text-dark mb-3">
+                                @exam.Title
+                            </h5>
+
+                            <!-- Course -->
+                            <div class="small text-muted mb-2">
+                                <i class="fa-solid fa-book me-2"></i>
+                                Course:
+                                <strong class="text-dark">
+                                    @exam.CourseName
+                                </strong>
+                            </div>
+
+                            <!-- Topics -->
+                            <div class="small text-muted mb-2">
+
+                                <i class="fa-solid fa-folder-tree me-2"></i>
+
+                                Topics:
+
+                                <strong class="text-dark">
+                                    @(exam.TopicNames != null && exam.TopicNames.Any()
+                                        ? string.Join(", ", exam.TopicNames)
+                                        : "No topics")
+                                </strong>
+
+                            </div>
+
+                            <!-- Duration -->
+                            <div class="small text-muted mb-2">
+
+                                <i class="fa-regular fa-clock me-2"></i>
+
+                                Duration:
+
+                                <strong class="text-dark">
+                                    @exam.Duration minutes
+                                </strong>
+
+                            </div>
+
+                            <!-- Marks -->
+                            <div class="small text-muted mb-2">
+
+                                <i class="fa-solid fa-star me-2"></i>
+
+                                Total Marks:
+
+                                <strong class="text-dark">
+                                    @exam.TotalMarks
+                                </strong>
+
+                            </div>
+
+                            <!-- Dates -->
+                            <div class="small text-muted mb-2">
+
+                                <i class="fa-solid fa-calendar-days me-2"></i>
+
+                                Start:
+
+                                <strong class="text-dark">
+                                    @exam.StartDate.ToString("dd MMM yyyy hh:mm tt")
+                                </strong>
+
+                            </div>
+
+                            <div class="small text-muted mb-3">
+
+                                <i class="fa-solid fa-calendar-xmark me-2"></i>
+
+                                End:
+
+                                <strong class="text-dark">
+                                    @exam.EndDate.ToString("dd MMM yyyy hh:mm tt")
+                                </strong>
+
+                            </div>
+
+                            <hr />
+
+                            <!-- Questions Count -->
+                            <div class="d-flex justify-content-between align-items-center">
+
+                                <span class="text-muted small">
+                                    <i class="fa-solid fa-circle-question me-1"></i>
+                                    @(exam.Questions?.Count ?? 0) Questions
+                                </span>
+
+                                <a asp-controller="Admin"
+                                   asp-action="ExamDetails"
+                                   asp-route-id="@exam.Id"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fa-solid fa-eye me-1"></i>
+                                    View Details
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm rounded-3 text-center py-5">
+
+            <div class="card-body">
+
+                <i class="fa-solid fa-file-circle-xmark text-muted fs-1 mb-3"></i>
+
+                <h4 class="fw-bold">
+                    No Exams Available
+                </h4>
+
+                <p class="text-muted mb-0">
+                    There are currently no exams in the system.
+                </p>
+
+            </div>
+
+        </div>
+    }
+
+</div>

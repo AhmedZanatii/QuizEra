@@ -1,0 +1,259 @@
+﻿@model QuizEra.BLL.ModelVM.Exam.ExamVM
+
+@{
+    ViewData["Title"] = "Exam Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Navigation -->
+    <div class="mb-4">
+
+        <a asp-controller="Admin"
+           asp-action="Exams"
+           class="btn btn-outline-secondary btn-sm">
+            <i class="fa-solid fa-arrow-left me-1"></i>
+            Back to Exams
+        </a>
+
+    </div>
+
+    <!-- Exam Header -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
+
+        <div class="card-body p-4 p-md-5">
+
+            <div class="d-flex justify-content-between align-items-start mb-4">
+
+                <div>
+
+                    <span class="badge bg-primary bg-opacity-10 text-primary mb-2">
+                        <i class="fa-solid fa-file-pen me-1"></i>
+                        Exam
+                    </span>
+
+                    <h2 class="fw-bold text-dark mb-2">
+                        @Model.Title
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Course:
+                        <strong class="text-dark">
+                            @Model.CourseName
+                        </strong>
+                    </p>
+
+                </div>
+
+                @{
+                    var now = DateTime.Now;
+
+                    string status;
+                    string statusClass;
+
+                    if (now < Model.StartDate)
+                    {
+                        status = "Upcoming";
+                        statusClass = "bg-warning text-dark";
+                    }
+                    else if (now >= Model.StartDate && now <= Model.EndDate)
+                    {
+                        status = "Active";
+                        statusClass = "bg-success";
+                    }
+                    else
+                    {
+                        status = "Closed";
+                        statusClass = "bg-secondary";
+                    }
+                }
+
+                <span class="badge @statusClass fs-6">
+                    @status
+                </span>
+
+            </div>
+
+            <div class="row g-3">
+
+                <div class="col-md-3">
+                    <div class="bg-light rounded-3 p-3">
+                        <small class="text-muted d-block">
+                            Duration
+                        </small>
+
+                        <strong>
+                            @Model.Duration minutes
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="bg-light rounded-3 p-3">
+                        <small class="text-muted d-block">
+                            Total Marks
+                        </small>
+
+                        <strong>
+                            @Model.TotalMarks
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="bg-light rounded-3 p-3">
+                        <small class="text-muted d-block">
+                            Start Date
+                        </small>
+
+                        <strong>
+                            @Model.StartDate.ToString("dd MMM yyyy hh:mm tt")
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="bg-light rounded-3 p-3">
+                        <small class="text-muted d-block">
+                            End Date
+                        </small>
+
+                        <strong>
+                            @Model.EndDate.ToString("dd MMM yyyy hh:mm tt")
+                        </strong>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Topics -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
+
+        <div class="card-body p-4">
+
+            <h5 class="fw-bold mb-3">
+                <i class="fa-solid fa-folder-tree me-2 text-primary"></i>
+                Topics
+            </h5>
+
+            @if (Model.TopicNames != null && Model.TopicNames.Any())
+            {
+                <div class="d-flex flex-wrap gap-2">
+
+                    @foreach (var topic in Model.TopicNames)
+                    {
+                        <span class="badge bg-light text-dark border px-3 py-2">
+                            @topic
+                        </span>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">
+                    No topics assigned.
+                </p>
+            }
+
+        </div>
+
+    </div>
+
+    <!-- Questions -->
+    <div class="card border-0 shadow-sm rounded-3">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div>
+                    <h5 class="fw-bold mb-1">
+                        Questions
+                    </h5>
+
+                    <p class="text-muted small mb-0">
+                        Questions included in this exam.
+                    </p>
+                </div>
+
+                <span class="badge bg-primary">
+                    @(Model.Questions?.Count ?? 0) Questions
+                </span>
+
+            </div>
+
+            @if (Model.Questions != null && Model.Questions.Any())
+            {
+                <div class="d-flex flex-column gap-3">
+
+                    @for (int i = 0; i < Model.Questions.Count; i++)
+                    {
+                        var question = Model.Questions[i];
+
+                        <div class="border rounded-3 p-3">
+
+                            <div class="d-flex align-items-start gap-3">
+
+                                <!-- Number -->
+                                <div class="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center flex-shrink-0"
+                                     style="width: 38px; height: 38px;">
+                                    @(i + 1)
+                                </div>
+
+                                <!-- Question -->
+                                <div class="flex-grow-1">
+
+                                    <div class="fw-semibold text-dark mb-3">
+                                        @question.QuestionText
+                                    </div>
+
+                                    <!-- Marks -->
+                                    <div class="d-flex flex-wrap gap-2">
+
+                                        <span class="badge bg-light text-dark border">
+                                            <i class="fa-solid fa-star me-1"></i>
+                                            Actual Mark:
+                                            @question.ActualMark
+                                        </span>
+
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success">
+                                            <i class="fa-solid fa-plus me-1"></i>
+                                            Bonus:
+                                            @question.BonusMark
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4">
+
+                    <i class="fa-solid fa-circle-question text-muted fs-2 mb-2"></i>
+
+                    <p class="text-muted mb-0">
+                        No questions have been added to this exam.
+                    </p>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

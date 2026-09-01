@@ -12,8 +12,8 @@ using QuizEra.DAL.DataBase;
 namespace QuizEra.DAL.Migrations
 {
     [DbContext(typeof(QuizEraDBContext))]
-    [Migration("20260820115255_AddingAuditToTopic")]
-    partial class AddingAuditToTopic
+    [Migration("20260901140657_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,6 +181,11 @@ namespace QuizEra.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -207,6 +212,9 @@ namespace QuizEra.DAL.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ProfileImage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -300,19 +308,20 @@ namespace QuizEra.DAL.Migrations
                     b.Property<int>("Duration")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TopicID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalMarks")
-                        .HasColumnType("int");
+                    b.Property<double>("TotalMarks")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TopicID");
 
                     b.ToTable("Exams");
                 });
@@ -325,11 +334,17 @@ namespace QuizEra.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ActualMark")
-                        .HasColumnType("int");
+                    b.Property<double>("ActualMark")
+                        .HasColumnType("float");
+
+                    b.Property<double>("BonusMark")
+                        .HasColumnType("float");
 
                     b.Property<int>("ExamId")
                         .HasColumnType("int");
+
+                    b.Property<double>("NegativeMark")
+                        .HasColumnType("float");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
@@ -341,6 +356,30 @@ namespace QuizEra.DAL.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("ExamQuestions");
+                });
+
+            modelBuilder.Entity("QuizEra.DAL.Entities.ExamTopic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ExamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TopicId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TopicId");
+
+                    b.HasIndex("ExamId", "TopicId")
+                        .IsUnique();
+
+                    b.ToTable("ExamTopics");
                 });
 
             modelBuilder.Entity("QuizEra.DAL.Entities.Feedback", b =>
@@ -357,6 +396,28 @@ namespace QuizEra.DAL.Migrations
 
                     b.Property<int>("CourseID")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeleterUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifierUser")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Rate")
                         .HasColumnType("int");
@@ -401,23 +462,43 @@ namespace QuizEra.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeleterUser")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DifficultyLevel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifierUser")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Photo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QuestionAnswer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QuestionFormat")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QuestionText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("QuestionType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -429,6 +510,31 @@ namespace QuizEra.DAL.Migrations
                     b.HasIndex("TopicID");
 
                     b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("QuizEra.DAL.Entities.QuestionOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OptionText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("QuestionOptions");
                 });
 
             modelBuilder.Entity("QuizEra.DAL.Entities.Student", b =>
@@ -474,8 +580,39 @@ namespace QuizEra.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeleterUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("ExamId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifierUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ShuffleSeed")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("StudResult")
                         .HasColumnType("int");
@@ -500,6 +637,9 @@ namespace QuizEra.DAL.Migrations
                     b.Property<int>("StudentExamAttemptId")
                         .HasColumnType("int");
 
+                    b.Property<string>("AIJustification")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -512,6 +652,9 @@ namespace QuizEra.DAL.Migrations
 
                     b.Property<string>("DeleterUser")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -528,6 +671,9 @@ namespace QuizEra.DAL.Migrations
 
                     b.Property<int>("StudQMarks")
                         .HasColumnType("int");
+
+                    b.Property<TimeSpan>("TimeSpent")
+                        .HasColumnType("time");
 
                     b.HasKey("ExamQuestionsId", "StudentExamAttemptId");
 
@@ -642,17 +788,6 @@ namespace QuizEra.DAL.Migrations
                     b.Navigation("Instructor");
                 });
 
-            modelBuilder.Entity("QuizEra.DAL.Entities.Exam", b =>
-                {
-                    b.HasOne("QuizEra.DAL.Entities.Topic", "Topic")
-                        .WithMany("Exams")
-                        .HasForeignKey("TopicID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Topic");
-                });
-
             modelBuilder.Entity("QuizEra.DAL.Entities.ExamQuestions", b =>
                 {
                     b.HasOne("QuizEra.DAL.Entities.Exam", "Exam")
@@ -670,6 +805,25 @@ namespace QuizEra.DAL.Migrations
                     b.Navigation("Exam");
 
                     b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("QuizEra.DAL.Entities.ExamTopic", b =>
+                {
+                    b.HasOne("QuizEra.DAL.Entities.Exam", "Exam")
+                        .WithMany("ExamTopics")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("QuizEra.DAL.Entities.Topic", "Topic")
+                        .WithMany("ExamTopics")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Exam");
+
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("QuizEra.DAL.Entities.Feedback", b =>
@@ -711,6 +865,17 @@ namespace QuizEra.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Topic");
+                });
+
+            modelBuilder.Entity("QuizEra.DAL.Entities.QuestionOption", b =>
+                {
+                    b.HasOne("QuizEra.DAL.Entities.Question", "Question")
+                        .WithMany("Options")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("QuizEra.DAL.Entities.Student", b =>
@@ -814,6 +979,8 @@ namespace QuizEra.DAL.Migrations
                 {
                     b.Navigation("ExamQuestions");
 
+                    b.Navigation("ExamTopics");
+
                     b.Navigation("StudentExamAttempts");
                 });
 
@@ -830,6 +997,8 @@ namespace QuizEra.DAL.Migrations
             modelBuilder.Entity("QuizEra.DAL.Entities.Question", b =>
                 {
                     b.Navigation("ExamQuestions");
+
+                    b.Navigation("Options");
                 });
 
             modelBuilder.Entity("QuizEra.DAL.Entities.Student", b =>
@@ -848,7 +1017,7 @@ namespace QuizEra.DAL.Migrations
 
             modelBuilder.Entity("QuizEra.DAL.Entities.Topic", b =>
                 {
-                    b.Navigation("Exams");
+                    b.Navigation("ExamTopics");
 
                     b.Navigation("Questions");
                 });

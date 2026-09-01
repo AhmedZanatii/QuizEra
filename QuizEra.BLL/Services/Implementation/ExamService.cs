@@ -501,6 +501,10 @@ namespace QuizEra.BLL.Services.Implementation
             t => t.Course
                 });
 
+            var examQuestions = await _examQuestionsRepository.Get();
+
+            var questions = await _questionRepository.Get();
+
             var result = exams.Select(exam =>
             {
                 var selectedTopics = examTopics
@@ -510,6 +514,10 @@ namespace QuizEra.BLL.Services.Implementation
                     .ToList();
 
                 var firstTopic = selectedTopics.FirstOrDefault();
+
+                var selectedExamQuestions = examQuestions
+                    .Where(eq => eq.ExamId == exam.Id)
+                    .ToList();
 
                 return new ExamVM
                 {
@@ -531,7 +539,25 @@ namespace QuizEra.BLL.Services.Implementation
                     Duration = exam.Duration,
                     TotalMarks = exam.TotalMarks,
                     StartDate = exam.StartDate,
-                    EndDate = exam.EndDate
+                    EndDate = exam.EndDate,
+
+                    Questions = selectedExamQuestions
+                        .Select(eq =>
+                        {
+                            var question = questions
+                                .FirstOrDefault(q => q.Id == eq.QuestionId);
+
+                            return new CreateExamQuestionVM
+                            {
+                                ExamQuestionId = eq.Id,
+                                QuestionId = eq.QuestionId,
+                                QuestionText = question?.QuestionText ?? string.Empty,
+                                IsSelected = true,
+                                ActualMark = eq.ActualMark,
+                                BonusMark = eq.BonusMark
+                            };
+                        })
+                        .ToList()
                 };
             });
 
