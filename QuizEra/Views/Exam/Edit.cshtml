@@ -131,7 +131,7 @@
                                        name="TopicIds"
                                        value="@topic.Id"
                                        id="topic_@topic.Id"
-                                       @(selected ? "checked" : "") />
+                                @(selected ? "checked" : "") />
 
                                 <label class="form-check-label"
                                        for="topic_@topic.Id">
@@ -309,7 +309,7 @@
                                     <!-- Checkbox -->
                                     <input class="form-check-input question-checkbox"
                                            type="checkbox"
-                                           @(selected ? "checked" : "") />
+                                    @(selected ? "checked" : "") />
 
                                     <label class="form-check-label fw-bold">
 
@@ -344,7 +344,7 @@
                                                class="form-control actual-mark"
                                                name="Questions[@i].ActualMark"
                                                value="@(selected ? selectedQuestion!.ActualMark : 0)"
-                                               @(selected ? "" : "disabled") />
+                                        @(selected ? "" : "disabled") />
 
                                     </div>
 
@@ -361,7 +361,7 @@
                                                class="form-control bonus-mark"
                                                name="Questions[@i].BonusMark"
                                                value="@(selected ? selectedQuestion!.BonusMark : 0)"
-                                               @(selected ? "" : "disabled") />
+                                        @(selected ? "" : "disabled") />
 
                                     </div>
 
@@ -452,41 +452,38 @@
         // =========================================================
 
         const existingQuestions = @Html.Raw(
-            System.Text.Json.JsonSerializer.Serialize(
-                Model.Questions
-                    .Where(q => q.IsSelected)
+                                    System.Text.Json.JsonSerializer.Serialize(
+                                            Model.Questions
+                                                    .Where(q => q.IsSelected)
                     .ToDictionary(
-                        q => q.QuestionId,
-                        q => new
-                        {
-                            actualMark = q.ActualMark,
-                            bonusMark = q.BonusMark
-                        }
+                    q => q.QuestionId,
+                    q => new
+                    {
+                                                actualMark = q.ActualMark,
+                                                bonusMark = q.BonusMark
+                    }
                     )
-            )
-        );
+                    )
+                    );
 
 
         // =========================================================
         // CALCULATE TOTAL MARKS
         // =========================================================
 
-        function calculateTotalMarks()
-        {
+        function calculateTotalMarks() {
             let total = 0;
 
             document
                 .querySelectorAll(".question-checkbox:checked")
-                .forEach(function (checkbox)
-                {
+                .forEach(function(checkbox) {
                     const card =
                         checkbox.closest(".question-card");
 
                     const actualMark =
                         card.querySelector(".actual-mark");
 
-                    if (actualMark)
-                    {
+                    if (actualMark) {
                         total +=
                             parseFloat(actualMark.value) || 0;
                     }
@@ -501,10 +498,8 @@
         // SETUP QUESTION CHECKBOX
         // =========================================================
 
-        function setupQuestionCheckbox(checkbox)
-        {
-            checkbox.addEventListener("change", function ()
-            {
+        function setupQuestionCheckbox(checkbox) {
+            checkbox.addEventListener("change", function() {
                 const card =
                     this.closest(".question-card");
 
@@ -525,8 +520,7 @@
                 // Update hidden IsSelected value
                 // ---------------------------------------------
 
-                if (hiddenIsSelected)
-                {
+                if (hiddenIsSelected) {
                     hiddenIsSelected.value =
                         this.checked ? "true" : "false";
                 }
@@ -536,8 +530,7 @@
                 // Show / hide mark inputs
                 // ---------------------------------------------
 
-                if (details)
-                {
+                if (details) {
                     details.style.display =
                         this.checked ? "flex" : "none";
                 }
@@ -547,14 +540,12 @@
                 // Enable / disable mark inputs
                 // ---------------------------------------------
 
-                if (actualMark)
-                {
+                if (actualMark) {
                     actualMark.disabled =
                         !this.checked;
                 }
 
-                if (bonusMark)
-                {
+                if (bonusMark) {
                     bonusMark.disabled =
                         !this.checked;
                 }
@@ -580,8 +571,7 @@
 
         document
             .querySelectorAll(".actual-mark")
-            .forEach(function (input)
-            {
+            .forEach(function(input) {
                 input.addEventListener(
                     "input",
                     calculateTotalMarks
@@ -602,8 +592,7 @@
 
         courseSelect.addEventListener(
             "change",
-            async function ()
-            {
+            async function() {
                 const courseId =
                     this.value;
 
@@ -623,8 +612,7 @@
                     "0";
 
 
-                if (!courseId)
-                {
+                if (!courseId) {
                     topicContainer.innerHTML =
                         '<div class="alert alert-info">' +
                         'Select a course first to display its topics.' +
@@ -634,16 +622,14 @@
                 }
 
 
-                try
-                {
+                try {
                     const response =
                         await fetch(
                             `/Exam/GetTopicsByCourse?courseId=${courseId}`
                         );
 
 
-                    if (!response.ok)
-                    {
+                    if (!response.ok) {
                         throw new Error(
                             "Failed to load topics."
                         );
@@ -654,8 +640,7 @@
                         await response.json();
 
 
-                    if (topics.length === 0)
-                    {
+                    if (topics.length === 0) {
                         topicContainer.innerHTML =
                             '<div class="alert alert-warning">' +
                             'No topics found for this course.' +
@@ -665,8 +650,7 @@
                     }
 
 
-                    topics.forEach(function (topic)
-                    {
+                    topics.forEach(function(topic) {
                         const wrapper =
                             document.createElement("div");
 
@@ -675,20 +659,20 @@
 
 
                         wrapper.innerHTML = `
-                            <input
-                                class="form-check-input topic-checkbox"
-                                type="checkbox"
-                                name="TopicIds"
-                                value="${topic.id}"
-                                id="topic_${topic.id}"
-                            />
+                                    <input
+                                        class="form-check-input topic-checkbox"
+                                        type="checkbox"
+                                        name="TopicIds"
+                                        value="${topic.id}"
+                                        id="topic_${topic.id}"
+                                    />
 
-                            <label
-                                class="form-check-label"
-                                for="topic_${topic.id}">
-                                ${escapeHtml(topic.name)}
-                            </label>
-                        `;
+                                    <label
+                                        class="form-check-label"
+                                        for="topic_${topic.id}">
+                                        ${escapeHtml(topic.name)}
+                                    </label>
+                                `;
 
 
                         topicContainer.appendChild(wrapper);
@@ -703,8 +687,7 @@
                     });
 
                 }
-                catch (error)
-                {
+                catch (error) {
                     console.error(error);
 
                     topicContainer.innerHTML =
@@ -720,15 +703,14 @@
         // TOPICS -> QUESTIONS
         // =========================================================
 
-        async function loadQuestions()
-        {
+        async function loadQuestions() {
             const selectedTopics =
                 Array.from(
                     document.querySelectorAll(
                         ".topic-checkbox:checked"
                     )
                 )
-                .map(x => x.value);
+                    .map(x => x.value);
 
 
             questionContainer.innerHTML = "";
@@ -737,8 +719,7 @@
                 "0";
 
 
-            if (selectedTopics.length === 0)
-            {
+            if (selectedTopics.length === 0) {
                 questionContainer.innerHTML =
                     '<div class="alert alert-info">' +
                     'Select one or more topics to display their questions.' +
@@ -748,8 +729,7 @@
             }
 
 
-            try
-            {
+            try {
                 const topicIds =
                     selectedTopics.join(",");
 
@@ -760,8 +740,7 @@
                     );
 
 
-                if (!response.ok)
-                {
+                if (!response.ok) {
                     throw new Error(
                         "Failed to load questions."
                     );
@@ -772,8 +751,7 @@
                     await response.json();
 
 
-                if (questions.length === 0)
-                {
+                if (questions.length === 0) {
                     questionContainer.innerHTML =
                         '<div class="alert alert-warning">' +
                         'No questions found for the selected topics.' +
@@ -783,8 +761,7 @@
                 }
 
 
-                questions.forEach(function (question, index)
-                {
+                questions.forEach(function(question, index) {
                     createQuestionRow(
                         question,
                         index
@@ -795,8 +772,7 @@
                 calculateTotalMarks();
 
             }
-            catch (error)
-            {
+            catch (error) {
                 console.error(error);
 
                 questionContainer.innerHTML =
@@ -811,8 +787,7 @@
         // CREATE QUESTION ROW
         // =========================================================
 
-        function createQuestionRow(question, index)
-        {
+        function createQuestionRow(question, index) {
             const wrapper =
                 document.createElement("div");
 
@@ -847,96 +822,96 @@
 
             wrapper.innerHTML = `
 
-                <div class="card-body">
+                        <div class="card-body">
 
-                    <div class="form-check mb-2">
+                            <div class="form-check mb-2">
 
-                        <!-- Question ID -->
-                        <input
-                            type="hidden"
-                            name="Questions[${index}].QuestionId"
-                            value="${question.id}"
-                        />
+                                <!-- Question ID -->
+                                <input
+                                    type="hidden"
+                                    name="Questions[${index}].QuestionId"
+                                    value="${question.id}"
+                                />
 
-                        <!--
-                            IMPORTANT:
-                            Only this hidden input is submitted
-                            for IsSelected.
-                        -->
-                        <input
-                            type="hidden"
-                            class="is-selected"
-                            name="Questions[${index}].IsSelected"
-                            value="${isSelected ? "true" : "false"}"
-                        />
+                                <!--
+                                    IMPORTANT:
+                                    Only this hidden input is submitted
+                                    for IsSelected.
+                                -->
+                                <input
+                                    type="hidden"
+                                    class="is-selected"
+                                    name="Questions[${index}].IsSelected"
+                                    value="${isSelected ? "true" : "false"}"
+                                />
 
-                        <!-- Checkbox -->
-                        <input
-                            class="form-check-input question-checkbox"
-                            type="checkbox"
-                            ${isSelected ? "checked" : ""}
-                        />
+                                <!-- Checkbox -->
+                                <input
+                                    class="form-check-input question-checkbox"
+                                    type="checkbox"
+                                    ${isSelected ? "checked" : ""}
+                                />
 
-                        <label class="form-check-label fw-bold">
-                            ${escapeHtml(question.questionText)}
-                        </label>
+                                <label class="form-check-label fw-bold">
+                                    ${escapeHtml(question.questionText)}
+                                </label>
 
-                    </div>
-
-
-                    <div class="mb-2">
-
-                        <span class="badge bg-secondary">
-                            ${escapeHtml(question.questionFormat)}
-                        </span>
-
-                    </div>
+                            </div>
 
 
-                    <div class="row question-details"
-                         style="display:${isSelected ? "flex" : "none"};">
+                            <div class="mb-2">
 
-                        <div class="col-md-6">
+                                <span class="badge bg-secondary">
+                                    ${escapeHtml(question.questionFormat)}
+                                </span>
 
-                            <label class="form-label">
-                                Actual Mark
-                            </label>
+                            </div>
 
-                            <input
-                                type="number"
-                                step="0.5"
-                                min="0"
-                                class="form-control actual-mark"
-                                name="Questions[${index}].ActualMark"
-                                value="${actualMark}"
-                                ${isSelected ? "" : "disabled"}
-                            />
+
+                            <div class="row question-details"
+                                 style="display:${isSelected ? "flex" : "none"};">
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label">
+                                        Actual Mark
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        step="0.5"
+                                        min="0"
+                                        class="form-control actual-mark"
+                                        name="Questions[${index}].ActualMark"
+                                        value="${actualMark}"
+                                        ${isSelected ? "" : "disabled"}
+                                    />
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label">
+                                        Bonus Mark
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        step="0.5"
+                                        min="0"
+                                        class="form-control bonus-mark"
+                                        name="Questions[${index}].BonusMark"
+                                        value="${bonusMark}"
+                                        ${isSelected ? "" : "disabled"}
+                                    />
+
+                                </div>
+
+                            </div>
 
                         </div>
-
-
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Bonus Mark
-                            </label>
-
-                            <input
-                                type="number"
-                                step="0.5"
-                                min="0"
-                                class="form-control bonus-mark"
-                                name="Questions[${index}].BonusMark"
-                                value="${bonusMark}"
-                                ${isSelected ? "" : "disabled"}
-                            />
-
-                        </div>
-
-                    </div>
-
-                </div>
-            `;
+                    `;
 
 
             questionContainer.appendChild(wrapper);
@@ -974,8 +949,7 @@
         // ESCAPE HTML
         // =========================================================
 
-        function escapeHtml(text)
-        {
+        function escapeHtml(text) {
             const div =
                 document.createElement("div");
 
@@ -992,8 +966,7 @@
 
         document
             .querySelectorAll(".topic-checkbox")
-            .forEach(function (checkbox)
-            {
+            .forEach(function(checkbox) {
                 checkbox.addEventListener(
                     "change",
                     loadQuestions

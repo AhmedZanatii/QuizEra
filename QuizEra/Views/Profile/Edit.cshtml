@@ -5,29 +5,51 @@
 
     var role = ViewBag.Role as string ?? "";
 
-    // تحديد الـ Layout تلقائياً بناءً على الدور من الـ ViewBag
     Layout = role.ToLower() == "instructor"
         ? "_InstructorLayout"
         : "_StudentLayout";
 }
 
-<div class="container-fluid py-4">
+<style>
+    .btn-qe-primary {
+        background-color: var(--qe-primary-purple);
+        border-color: var(--qe-primary-purple);
+        color: #ffffff;
+    }
+
+        .btn-qe-primary:hover {
+            background-color: var(--qe-active-bg);
+            border-color: var(--qe-active-bg);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(80, 49, 184, 0.3);
+        }
+
+    .icon-qe-purple {
+        background-color: var(--qe-primary-soft);
+        color: var(--qe-primary-purple);
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--qe-primary-purple);
+        box-shadow: 0 0 0 0.25rem rgba(108, 92, 231, 0.15);
+    }
+</style>
+
+<div class="container-fluid py-2">
     <div class="row justify-content-center">
         <div class="col-lg-8 col-xl-7">
 
-            <div class="card shadow-sm border-0 rounded-4">
+            <div class="card dashboard-card border-0 shadow-sm overflow-hidden">
 
-                <!-- Card Header -->
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
-                    <h5 class="fw-bold m-0 text-dark">
-                        <i class="fa-solid fa-user-gear text-primary me-2"></i>Edit Profile
+                    <h5 class="fw-bold m-0 text-dark d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-user-gear text-qe-purple"></i> Edit Profile
                     </h5>
-                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm fw-semibold rounded-3">
+                    <a asp-action="Index" class="btn btn-sm btn-outline-secondary fw-semibold px-3 rounded-2">
                         <i class="fa-solid fa-arrow-left me-1"></i> Back to Profile
                     </a>
                 </div>
 
-                <!-- Card Body / Form -->
                 <div class="card-body p-4 p-md-5">
 
                     <form asp-action="Edit" method="post" enctype="multipart/form-data">
@@ -35,34 +57,31 @@
 
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4 rounded-3" role="alert"></div>
 
-                        <!-- Profile Avatar Section -->
                         <div class="text-center mb-4">
                             <div class="position-relative d-inline-block">
                                 @if (!string.IsNullOrEmpty(Model.CurrentProfileImage))
                                 {
                                     <img id="imagePreview" src="@Model.CurrentProfileImage"
                                          alt="Profile Image"
-                                         class="rounded-circle border border-3 border-primary-subtle shadow-sm"
-                                         style="width:120px; height:120px; object-fit:cover;" />
+                                         class="rounded-circle border border-3 shadow-sm"
+                                         style="width:120px; height:120px; object-fit:cover; border-color: var(--qe-primary-soft) !important;" />
                                 }
                                 else
                                 {
-                                    <div id="imagePlaceholder" class="rounded-circle bg-primary bg-opacity-10 text-primary border border-3 border-primary-subtle shadow-sm d-flex align-items-center justify-content-center mx-auto fw-bold"
-                                         style="width:120px; height:120px; font-size:40px;">
+                                    <div id="imagePlaceholder" class="rounded-circle icon-qe-purple border border-3 shadow-sm d-flex align-items-center justify-content-center mx-auto fw-bold"
+                                         style="width:120px; height:120px; font-size:40px; border-color: var(--qe-primary-soft) !important;">
                                         @(string.IsNullOrEmpty(Model.FirstName) ? "U" : Model.FirstName.Substring(0, 1).ToUpper())
                                     </div>
-                                    <img id="imagePreview" src="#" alt="Profile Image" class="rounded-circle border border-3 border-primary-subtle shadow-sm d-none" style="width:120px; height:120px; object-fit:cover;" />
+                                    <img id="imagePreview" src="#" alt="Profile Image" class="rounded-circle border border-3 shadow-sm d-none" style="width:120px; height:120px; object-fit:cover; border-color: var(--qe-primary-soft) !important;" />
                                 }
                             </div>
-                            <p class="text-muted small mt-2">Update your avatar and personal details below</p>
+                            <p class="text-muted small mt-2 mb-0">Update your avatar and personal details below</p>
                         </div>
 
-                        <!-- Form Input Fields -->
                         <div class="row g-3 mb-4">
 
-                            <!-- First Name -->
                             <div class="col-md-6">
-                                <label asp-for="FirstName" class="form-label fw-semibold text-dark">First Name</label>
+                                <label asp-for="FirstName" class="form-label fw-bold text-dark small text-uppercase">First Name</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0"><i class="fa-regular fa-user text-muted"></i></span>
                                     <input asp-for="FirstName" class="form-control border-start-0 ps-0" placeholder="Enter first name" />
@@ -70,9 +89,8 @@
                                 <span asp-validation-for="FirstName" class="text-danger small"></span>
                             </div>
 
-                            <!-- Last Name -->
                             <div class="col-md-6">
-                                <label asp-for="LastName" class="form-label fw-semibold text-dark">Last Name</label>
+                                <label asp-for="LastName" class="form-label fw-bold text-dark small text-uppercase">Last Name</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0"><i class="fa-regular fa-user text-muted"></i></span>
                                     <input asp-for="LastName" class="form-control border-start-0 ps-0" placeholder="Enter last name" />
@@ -80,9 +98,8 @@
                                 <span asp-validation-for="LastName" class="text-danger small"></span>
                             </div>
 
-                            <!-- Phone Number -->
                             <div class="col-12">
-                                <label asp-for="PhoneNumber" class="form-label fw-semibold text-dark">Phone Number</label>
+                                <label asp-for="PhoneNumber" class="form-label fw-bold text-dark small text-uppercase">Phone Number</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-phone text-muted"></i></span>
                                     <input asp-for="PhoneNumber" class="form-control border-start-0 ps-0" placeholder="e.g. +20 123 456 7890" />
@@ -90,9 +107,8 @@
                                 <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
                             </div>
 
-                            <!-- Profile Image File Upload -->
                             <div class="col-12">
-                                <label asp-for="ProfileImage" class="form-label fw-semibold text-dark">Profile Picture</label>
+                                <label asp-for="ProfileImage" class="form-label fw-bold text-dark small text-uppercase">Profile Picture</label>
                                 <div class="input-group">
                                     <input asp-for="ProfileImage" id="fileInput" type="file" class="form-control" accept="image/*" />
                                     <label class="input-group-text bg-light" for="fileInput"><i class="fa-solid fa-upload text-muted me-1"></i> Upload</label>
@@ -102,12 +118,11 @@
 
                         </div>
 
-                        <!-- Form Actions -->
                         <div class="d-flex justify-content-end gap-2 border-top pt-4">
                             <a asp-action="Index" class="btn btn-light px-4 fw-semibold border rounded-3">
                                 Cancel
                             </a>
-                            <button type="submit" class="btn btn-primary px-4 fw-semibold rounded-3">
+                            <button type="submit" class="btn btn-qe-primary px-4 fw-bold rounded-3">
                                 <i class="fa-solid fa-floppy-disk me-1"></i> Save Changes
                             </button>
                         </div>
@@ -125,7 +140,6 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // معاينة الصورة فور اختياها من جهاز المستخدم
         document.getElementById('fileInput').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {

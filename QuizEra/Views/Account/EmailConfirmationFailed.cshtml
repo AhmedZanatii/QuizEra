@@ -3,40 +3,187 @@
     Layout = "AuthLayout";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 text-center">
+<style>
+    /* Base Variables */
+    :root {
+        --qz-purple-btn: #4D2197;
+        --qz-dark-text: #1B2559;
+        --qz-sub-text: #707EAE;
+        --qz-bg-gradient: radial-gradient(circle at 50% 50%, #F5F7FD 0%, #E9EFFC 100%);
+        --qz-error-red: #EE5D50;
+    }
 
-            <div class="mb-4">
-                <i class="bi bi-x-circle-fill text-danger"
-                   style="font-size: 4rem;"></i>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: var(--qz-bg-gradient) !important;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Screen Flex Wrapper */
+    .qz-screen-wrapper {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 40px 20px 20px 20px;
+        box-sizing: border-box;
+    }
+
+    /* Main Container */
+    .qz-main-container {
+        width: 100%;
+        max-width: 480px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: auto;
+    }
+
+    /* Logo Header OUTSIDE Card */
+    .qz-outer-logo {
+        max-width: 220px;
+        height: auto;
+        margin-bottom: 25px;
+    }
+
+    /* White Card */
+    .qz-card {
+        background: #FFFFFF;
+        border-radius: 20px;
+        padding: 40px 30px;
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+        box-shadow: 0px 15px 45px rgba(112, 144, 176, 0.18);
+    }
+
+    .qz-icon-badge-danger {
+        width: 75px;
+        height: 75px;
+        background-color: #FFF0F0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px auto;
+        color: var(--qz-error-red);
+        font-size: 2.2rem;
+    }
+
+    .qz-title {
+        color: var(--qz-dark-text);
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0 0 10px 0;
+    }
+
+    .qz-description {
+        color: var(--qz-sub-text);
+        font-size: 0.875rem;
+        line-height: 1.5;
+        margin-bottom: 25px;
+    }
+
+    .qz-actions {
+        display: flex;
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    /* Primary Button */
+    .qz-btn-primary {
+        display: block;
+        width: 100%;
+        padding: 13px;
+        background: var(--qz-purple-btn);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-decoration: none;
+        box-shadow: 0 8px 16px rgba(77, 33, 151, 0.2);
+        transition: opacity 0.2s, transform 0.2s;
+        box-sizing: border-box;
+    }
+
+        .qz-btn-primary:hover {
+            opacity: 0.95;
+            color: #FFFFFF;
+            transform: translateY(-1px);
+        }
+
+    /* Outline Button */
+    .qz-btn-outline {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background: #FFFFFF;
+        color: var(--qz-purple-btn);
+        border: 2px solid var(--qz-purple-btn);
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+    }
+
+        .qz-btn-outline:hover {
+            background-color: var(--qz-purple-btn);
+            color: #FFFFFF;
+        }
+
+    /* Footer */
+    .qz-footer {
+        color: var(--qz-sub-text);
+        font-size: 0.8rem;
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="qz-screen-wrapper">
+    <div class="qz-main-container">
+
+        <!-- Outer Header Logo -->
+        <img src="~/images/logo-header.png" class="qz-outer-logo" alt="QuizEra Header Logo" />
+
+        <!-- Card -->
+        <div class="qz-card">
+
+            <!-- Icon Badge -->
+            <div class="qz-icon-badge-danger">
+                <i class="bi bi-x-circle-fill"></i>
             </div>
 
-            <h2>Confirmation Failed</h2>
+            <!-- Title -->
+            <h1 class="qz-title">Confirmation Failed</h1>
 
-            <p class="text-muted mt-3">
-                We couldn't confirm your email address.
+            <!-- Description -->
+            <p class="qz-description">
+                We couldn't confirm your email address. The confirmation link may have expired or is no longer valid.
             </p>
 
-            <p class="text-muted">
-                The confirmation link may have expired or
-                may no longer be valid.
-            </p>
-
-            <div class="mt-4">
-                <a asp-controller="Account"
-                   asp-action="Login"
-                   class="btn btn-primary">
+            <!-- Buttons -->
+            <div class="qz-actions">
+                <a asp-controller="Account" asp-action="Login" class="qz-btn-primary">
                     Go to Login
                 </a>
-
-                <a asp-controller="Account"
-                   asp-action="Register"
-                   class="btn btn-outline-secondary ms-2">
+                <a asp-controller="Account" asp-action="ChooseRole" class="qz-btn-outline">
                     Register Again
                 </a>
             </div>
 
         </div>
+    </div>
+
+    <!-- Page Footer -->
+    <div class="qz-footer">
+        © 2026 QuizEra. All rights reserved.
     </div>
 </div>

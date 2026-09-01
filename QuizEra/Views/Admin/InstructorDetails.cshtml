@@ -5,36 +5,149 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="mb-4">
-    <h3 class="fw-bold text-dark m-0">Instructor Details</h3>
+<style>
+    .qz-card {
+        background: #FFFFFF;
+        border: 1px solid var(--qz-border-color);
+        border-radius: 20px;
+        box-shadow: var(--qz-card-shadow);
+    }
+
+    .btn-qz-outline {
+        border: 1px solid var(--qz-border-color);
+        background: #FFFFFF;
+        color: var(--qz-dark-text);
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 8px 18px;
+    }
+
+        .btn-qz-outline:hover {
+            background: #F4F7FE;
+            color: var(--qz-purple);
+        }
+
+    .btn-qz-primary {
+        background-color: var(--qz-purple);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 8px 20px;
+        transition: all 0.2s ease;
+    }
+
+        .btn-qz-primary:hover {
+            background-color: var(--qz-purple-hover);
+            color: #FFFFFF;
+            box-shadow: 0px 6px 16px rgba(77, 33, 151, 0.25);
+        }
+
+    .badge-status-active {
+        background-color: rgba(5, 205, 153, 0.1);
+        color: #05CD99;
+        font-weight: 700;
+        padding: 6px 16px;
+        border-radius: 10px;
+    }
+
+    .badge-status-inactive {
+        background-color: rgba(238, 93, 80, 0.1);
+        color: #EE5D50;
+        font-weight: 700;
+        padding: 6px 16px;
+        border-radius: 10px;
+    }
+
+    .detail-row {
+        padding: 16px 0;
+        border-bottom: 1px solid #F4F7FE;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+    .avatar-circle {
+        width: 70px;
+        height: 70px;
+        background-color: #F4F7FE;
+        color: var(--qz-purple);
+        font-weight: 800;
+        font-size: 1.6rem;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<!-- Navigation Header -->
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h3 class="fw-bold m-0" style="color: #1B2559;">Instructor Details</h3>
+        <p class="text-muted small m-0 mt-1">Overview of instructor profile and account status.</p>
+    </div>
+    <a asp-action="Instructors" class="btn btn-qz-outline text-decoration-none">
+        <i class="fa-solid fa-arrow-left me-2"></i>Back to Instructors
+    </a>
 </div>
 
-<div class="card dashboard-card p-4">
-    <div class="row g-3">
-        <div class="col-sm-3 text-muted fw-medium">ID</div>
-        <div class="col-sm-9 fw-bold">#@Model.Id</div>
-
-        <div class="col-sm-3 text-muted fw-medium">Full Name</div>
-        <div class="col-sm-9">@Model.FirstName @Model.LastName</div>
-
-        <div class="col-sm-3 text-muted fw-medium">Email</div>
-        <div class="col-sm-9">@Model.Email</div>
-
-        <div class="col-sm-3 text-muted fw-medium">Status</div>
-        <div class="col-sm-9">
-            @if (Model.IsActive)
-            {
-                <span class="badge bg-success bg-opacity-10 text-success">Active</span>
-            }
-            else
-            {
-                <span class="badge bg-danger bg-opacity-10 text-danger">Inactive</span>
-            }
+<div class="qz-card p-4 p-md-5">
+    <!-- Top Identity Section -->
+    <div class="d-flex align-items-center gap-4 mb-4 pb-4 border-bottom" style="border-color: #F4F7FE !important;">
+        <div class="avatar-circle">
+            @(string.IsNullOrEmpty(Model.FirstName) ? "I" : Model.FirstName.Substring(0, 1).ToUpper())
+        </div>
+        <div>
+            <h4 class="fw-bold m-0" style="color: #1B2559;">@Model.FirstName @Model.LastName</h4>
+            <span class="text-muted small">Instructor ID: #@Model.Id</span>
         </div>
     </div>
 
-    <div class="mt-4 pt-3 border-top">
-        <a asp-action="EditInstructor" asp-route-id="@Model.Id" class="btn btn-warning px-4">Edit</a>
-        <a asp-action="Instructors" class="btn btn-outline-secondary px-4 ms-2">Back</a>
+    <!-- Info List -->
+    <div class="d-flex flex-column mb-4">
+        <div class="row align-items-center detail-row">
+            <div class="col-sm-3 text-muted fw-bold small text-uppercase" style="color: #A3AED0 !important;">Instructor ID</div>
+            <div class="col-sm-9 fw-bold" style="color: #1B2559;">#@Model.Id</div>
+        </div>
+
+        <div class="row align-items-center detail-row">
+            <div class="col-sm-3 text-muted fw-bold small text-uppercase" style="color: #A3AED0 !important;">Full Name</div>
+            <div class="col-sm-9 fw-bold" style="color: #1B2559;">@Model.FirstName @Model.LastName</div>
+        </div>
+
+        <div class="row align-items-center detail-row">
+            <div class="col-sm-3 text-muted fw-bold small text-uppercase" style="color: #A3AED0 !important;">Email Address</div>
+            <div class="col-sm-9 fw-bold" style="color: #1B2559;"><i class="fa-regular fa-envelope me-2 text-muted"></i>@Model.Email</div>
+        </div>
+
+        <div class="row align-items-center detail-row">
+            <div class="col-sm-3 text-muted fw-bold small text-uppercase" style="color: #A3AED0 !important;">Account Status</div>
+            <div class="col-sm-9">
+                @if (Model.IsActive)
+                {
+                    <span class="badge-status-active d-inline-flex align-items-center gap-1">
+                        <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> Active
+                    </span>
+                }
+                else
+                {
+                    <span class="badge-status-inactive d-inline-flex align-items-center gap-1">
+                        <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> Inactive
+                    </span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="pt-3 d-flex gap-2">
+        <a asp-action="EditInstructor" asp-route-id="@Model.Id" class="btn btn-qz-primary text-decoration-none">
+            <i class="fa-solid fa-pen-to-square me-2"></i>Edit Profile
+        </a>
+        <a asp-action="Instructors" class="btn btn-qz-outline text-decoration-none">
+            Back
+        </a>
     </div>
 </div>

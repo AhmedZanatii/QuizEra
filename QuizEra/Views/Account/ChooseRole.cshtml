@@ -4,186 +4,235 @@
 }
 
 <style>
-    .role-page {
+    /* Reset & Base Variables matched to Design Image */
+    :root {
+        --qz-purple-btn: #4D2197;
+        --qz-dark-text: #1B2559;
+        --qz-sub-text: #707EAE;
+        --qz-bg-gradient: radial-gradient(circle at 50% 50%, #F5F7FD 0%, #E9EFFC 100%);
+        --qz-border-color: #B8C7E0;
+        --qz-error-red: #EE5D50;
+    }
+
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: var(--qz-bg-gradient) !important;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Screen Wrapper */
+    .qz-screen-wrapper {
         min-height: 100vh;
+        width: 100%;
         display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         align-items: center;
-        justify-content: center;
-        background: #f8f9fa;
-        padding: 40px 20px;
+        padding: 40px 20px 20px 20px;
+        box-sizing: border-box;
+    }
+
+    /* Main Container */
+    .qz-main-container {
+        width: 100%;
+        max-width: 900px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         margin: auto;
     }
 
-    .role-container {
-        width: 100%;
-        max-width: 850px;
+    /* Header Logo */
+    .qz-outer-logo {
+        max-width: 220px;
+        height: auto;
+        margin-bottom: 25px;
     }
 
-    .role-title {
-        font-weight: 700;
-        color: #212529;
+    /* Centered Titles */
+    .qz-title-container {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .qz-title {
+        color: var(--qz-dark-text);
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin: 0 0 8px 0;
+    }
+
+    .qz-subtitle {
+        color: var(--qz-sub-text);
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    /* Role Cards Grid Container */
+    .qz-roles-grid {
+        width: 100%;
+        display: flex;
+        gap: 25px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Role Card */
+    .qz-role-card {
+        background: #FFFFFF;
+        border-radius: 20px;
+        padding: 35px 25px;
+        flex: 1;
+        min-width: 280px;
+        max-width: 380px;
+        text-align: center;
+        box-sizing: border-box;
+        box-shadow: 0px 15px 45px rgba(112, 144, 176, 0.15);
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+        .qz-role-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(77, 33, 151, 0.3);
+            box-shadow: 0px 20px 50px rgba(112, 144, 176, 0.25);
+        }
+
+    .qz-role-icon {
+        font-size: 55px;
+        margin-bottom: 15px;
+        line-height: 1;
+    }
+
+    .qz-role-card h3 {
+        color: var(--qz-dark-text);
+        font-weight: 800;
+        font-size: 1.3rem;
         margin-bottom: 10px;
     }
 
-    .role-subtitle {
-        color: #6c757d;
-        margin-bottom: 35px;
+    .qz-role-card p {
+        color: var(--qz-sub-text);
+        font-size: 0.875rem;
+        line-height: 1.5;
+        margin-bottom: 25px;
+        min-height: 42px;
     }
 
-    .role-card {
-        background: white;
-        border-radius: 15px;
-        padding: 40px 25px;
-        text-align: center;
-        height: 100%;
-        border: 1px solid #dee2e6;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-        transition: 0.3s;
+    /* Uniform Unified Button */
+    .qz-btn-primary {
+        width: 100%;
+        padding: 13px;
+        background: var(--qz-purple-btn);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        box-shadow: 0 8px 16px rgba(77, 33, 151, 0.2);
+        transition: all 0.2s ease;
     }
 
-        .role-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        .qz-btn-primary:hover {
+            opacity: 0.92;
+            color: #FFFFFF;
+            transform: translateY(-1px);
         }
 
-    .role-icon {
-        font-size: 60px;
-        margin-bottom: 20px;
-    }
-
-    .role-card h3 {
-        font-weight: 700;
-        margin-bottom: 12px;
-    }
-
-    .role-card p {
-        color: #6c757d;
-        min-height: 48px;
-    }
-
-    .role-btn {
+    /* Alert Styling */
+    .qz-alert-error {
         width: 100%;
-        padding: 12px;
-        border-radius: 8px;
+        max-width: 800px;
+        color: var(--qz-error-red);
+        background-color: #FFF0F0;
+        border: 1px solid #FFD0D0;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 0.85rem;
         font-weight: 600;
-        margin-top: 15px;
+        margin-bottom: 25px;
+        text-align: center;
+        box-sizing: border-box;
     }
 
-    .choose-error {
-        border-radius: 8px;
+    /* Footer */
+    .qz-footer {
+        color: var(--qz-sub-text);
+        font-size: 0.8rem;
+        text-align: center;
+        margin-top: 20px;
     }
 </style>
 
-<div class="role-page">
+<div class="qz-screen-wrapper">
+    <div class="qz-main-container">
 
-    <div class="container role-container">
+        <!-- Outer Logo Header -->
+        <img src="~/images/logo-header.png" class="qz-outer-logo" alt="QuizEra Header Logo" />
 
-        <div class="text-center">
-
-            <h1 class="role-title">
-                Welcome to QuizEra!
-            </h1>
-
-            <p class="role-subtitle">
-                How would you like to use QuizEra?
-            </p>
-
+        <!-- Titles -->
+        <div class="qz-title-container">
+            <h1 class="qz-title">Welcome to QuizEra!</h1>
+            <p class="qz-subtitle">How would you like to use QuizEra?</p>
         </div>
 
         @if (!ViewData.ModelState.IsValid)
         {
-            <div class="alert alert-danger choose-error">
-
-                @foreach (var error in ViewData.ModelState.Values
-                    .SelectMany(v => v.Errors))
+            <div class="qz-alert-error">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
                 {
-                    <div>
-                        @error.ErrorMessage
-                    </div>
+                    <div>@error.ErrorMessage</div>
                 }
-
             </div>
         }
 
-        <div class="row justify-content-center g-4">
+        <!-- Cards Container -->
+        <div class="qz-roles-grid">
 
-            <!-- Student -->
-
-            <div class="col-md-5">
-
-                <div class="role-card">
-
-                    <div class="role-icon">
-                        🎓
-                    </div>
-
-                    <h3>
-                        Student
-                    </h3>
-
-                    <p>
-                        Join courses, take exams and track your progress.
-                    </p>
-
-                    <form asp-controller="Account"
-                          asp-action="ChooseRole"
-                          method="post">
-
-                        <input type="hidden"
-                               name="role"
-                               value="Student" />
-
-                        <button type="submit"
-                                class="btn btn-primary role-btn">
-                            Continue as Student
-                        </button>
-
-                    </form>
-
+            <!-- Student Card -->
+            <div class="qz-role-card">
+                <div>
+                    <div class="qz-role-icon">🎓</div>
+                    <h3>Student</h3>
+                    <p>Join courses, take exams and track your progress.</p>
                 </div>
 
+                <form asp-controller="Account" asp-action="ChooseRole" method="post">
+                    <input type="hidden" name="role" value="Student" />
+                    <button type="submit" class="qz-btn-primary">
+                        Continue as Student
+                    </button>
+                </form>
             </div>
 
-
-            <!-- Instructor -->
-
-            <div class="col-md-5">
-
-                <div class="role-card">
-
-                    <div class="role-icon">
-                        👨‍🏫
-                    </div>
-
-                    <h3>
-                        Instructor
-                    </h3>
-
-                    <p>
-                        Create courses, manage exams and help students learn.
-                    </p>
-
-                    <form asp-controller="Account"
-                          asp-action="ChooseRole"
-                          method="post">
-
-                        <input type="hidden"
-                               name="role"
-                               value="Instructor" />
-
-                        <button type="submit"
-                                class="btn btn-outline-primary role-btn">
-                            Continue as Instructor
-                        </button>
-
-                    </form>
-
+            <!-- Instructor Card -->
+            <div class="qz-role-card">
+                <div>
+                    <div class="qz-role-icon">👨‍🏫</div>
+                    <h3>Instructor</h3>
+                    <p>Create courses, manage exams and help students learn.</p>
                 </div>
 
+                <form asp-controller="Account" asp-action="ChooseRole" method="post">
+                    <input type="hidden" name="role" value="Instructor" />
+                    <button type="submit" class="qz-btn-primary">
+                        Continue as Instructor
+                    </button>
+                </form>
             </div>
 
         </div>
 
     </div>
 
+    <!-- Footer -->
+    <div class="qz-footer">
+        © 2026 QuizEra. All rights reserved.
+    </div>
 </div>

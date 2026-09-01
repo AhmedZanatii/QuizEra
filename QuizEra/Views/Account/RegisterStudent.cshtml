@@ -3,259 +3,295 @@
 @{
     ViewData["Title"] = "Register as Student";
     Layout = "AuthLayout";
-
 }
 
 <style>
-    .register-page {
-        min-height: calc(100vh - 56px);
+    /* Base Variables */
+    :root {
+        --qz-purple-btn: #4D2197;
+        --qz-dark-text: #1B2559;
+        --qz-sub-text: #707EAE;
+        --qz-bg-gradient: radial-gradient(circle at 50% 50%, #F5F7FD 0%, #E9EFFC 100%);
+        --qz-border-color: #B8C7E0;
+        --qz-error-red: #EE5D50;
+    }
+
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: var(--qz-bg-gradient) !important;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Screen Flex Wrapper */
+    .qz-screen-wrapper {
+        min-height: 100vh;
+        width: 100%;
         display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         align-items: center;
-        justify-content: center;
-        background: #f8f9fa;
-        padding: 40px 20px;
+        padding: 40px 20px 20px 20px;
+        box-sizing: border-box;
+    }
+
+    /* Main Container */
+    .qz-main-container {
+        width: 100%;
+        max-width: 480px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         margin: auto;
     }
 
-    .register-container {
+    /* Logo Header OUTSIDE Card */
+    .qz-outer-logo {
+        max-width: 220px;
+        height: auto;
+        margin-bottom: 25px;
+    }
+
+    /* White Card */
+    .qz-card {
+        background: #FFFFFF;
+        border-radius: 20px;
+        padding: 35px 30px;
         width: 100%;
-        max-width: 550px;
+        box-sizing: border-box;
+        box-shadow: 0px 15px 45px rgba(112, 144, 176, 0.18);
     }
 
-    .register-card {
-        background: white;
-        border-radius: 15px;
-        padding: 40px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    /* Role Icon & Title */
+    .qz-header-icon {
+        font-size: 50px;
+        margin-bottom: 10px;
+        line-height: 1;
     }
 
-    .register-title {
+    .qz-title-container {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .qz-title {
+        color: var(--qz-dark-text);
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0 0 6px 0;
+    }
+
+    .qz-subtitle {
+        color: var(--qz-sub-text);
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* Inputs Styling */
+    .qz-form-group {
+        margin-bottom: 16px;
+        text-align: left;
+    }
+
+    .qz-label {
+        display: block;
+        color: var(--qz-dark-text);
         font-weight: 700;
-        color: #212529;
-        margin-bottom: 8px;
+        font-size: 0.85rem;
+        margin-bottom: 6px;
     }
 
-    .register-subtitle {
-        color: #6c757d;
-        margin-bottom: 30px;
+    .qz-input {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1.5px solid var(--qz-border-color);
+        background-color: #FFFFFF;
+        font-size: 0.875rem;
+        color: var(--qz-dark-text);
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    .form-control {
-        border-radius: 8px;
-        padding: 12px 15px;
-    }
-
-        .form-control:focus {
-            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+        .qz-input:focus {
+            border-color: var(--qz-purple-btn);
         }
 
-    .register-btn {
-        border-radius: 8px;
-        padding: 12px;
-        font-weight: 600;
-    }
+        .qz-input::placeholder {
+            color: #A3AED0;
+        }
 
-    .validation-error {
-        color: #dc3545;
-        font-size: 0.9rem;
+        .qz-input.input-validation-error {
+            border-color: var(--qz-error-red) !important;
+            background-color: #FFF8F8;
+        }
+
+    /* Errors Styling */
+    .qz-error-msg {
+        color: var(--qz-error-red);
+        font-size: 0.775rem;
+        font-weight: 600;
         margin-top: 5px;
         display: block;
     }
 
-    .register-error {
+    .qz-alert-error {
+        color: var(--qz-error-red);
+        background-color: #FFF0F0;
+        border: 1px solid #FFD0D0;
+        padding: 10px 12px;
         border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        text-align: center;
     }
 
-    .login-link {
+    /* Submit Button */
+    .qz-btn-submit {
+        width: 100%;
+        padding: 13px;
+        background: var(--qz-purple-btn);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        cursor: pointer;
+        box-shadow: 0 8px 16px rgba(77, 33, 151, 0.2);
+        transition: opacity 0.2s;
+        margin-top: 10px;
+    }
+
+        .qz-btn-submit:hover {
+            opacity: 0.95;
+        }
+
+    /* Bottom Links */
+    .qz-footer-links {
+        text-align: center;
+        margin-top: 22px;
+        font-size: 0.825rem;
+        color: var(--qz-sub-text);
+    }
+
+    .qz-link-purple {
+        color: var(--qz-purple-btn);
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .qz-link-secondary {
+        display: inline-block;
+        margin-top: 10px;
+        color: var(--qz-sub-text);
         text-decoration: none;
         font-weight: 600;
+        transition: color 0.2s;
     }
 
-    .role-icon {
-        font-size: 55px;
-        margin-bottom: 10px;
+        .qz-link-secondary:hover {
+            color: var(--qz-dark-text);
+        }
+
+    /* Footer */
+    .qz-footer {
+        color: var(--qz-sub-text);
+        font-size: 0.8rem;
+        text-align: center;
+        margin-top: 20px;
     }
 </style>
 
+<div class="qz-screen-wrapper">
+    <div class="qz-main-container">
 
-<div class="register-page">
+        <!-- Outer Header Logo -->
+        <img src="~/images/logo-header.png" class="qz-outer-logo" alt="QuizEra Header Logo" />
 
-    <div class="register-container">
+        <!-- Register Card -->
+        <div class="qz-card">
 
-        <div class="register-card">
-
-            <!-- Header -->
-
-            <div class="text-center">
-
-                <div class="role-icon">
-                    🎓
-                </div>
-
-                <h1 class="register-title">
-                    Student Registration
-                </h1>
-
-                <p class="register-subtitle">
-                    Create your QuizEra student account
-                </p>
-
+            <!-- Title & Icon -->
+            <div class="qz-title-container">
+                <div class="qz-header-icon">🎓</div>
+                <h1 class="qz-title">Student Registration</h1>
+                <p class="qz-subtitle">Create your QuizEra student account</p>
             </div>
 
-
             <!-- Registration Form -->
-
-            <form asp-controller="Account"
-                  asp-action="RegisterStudent"
-                  method="post">
+            <form asp-controller="Account" asp-action="RegisterStudent" method="post">
 
                 <!-- First Name -->
-
-                <div class="mb-3">
-
-                    <label asp-for="FirstName"
-                           class="form-label">
-                        First Name
-                    </label>
-
-                    <input asp-for="FirstName"
-                           class="form-control"
-                           placeholder="Enter your first name" />
-
-                    <span asp-validation-for="FirstName"
-                          class="validation-error">
-                    </span>
-
+                <div class="qz-form-group">
+                    <label asp-for="FirstName" class="qz-label">First Name</label>
+                    <input asp-for="FirstName" class="qz-input" placeholder="Enter your first name" />
+                    <span asp-validation-for="FirstName" class="qz-error-msg"></span>
                 </div>
-
 
                 <!-- Last Name -->
-
-                <div class="mb-3">
-
-                    <label asp-for="LastName"
-                           class="form-label">
-                        Last Name
-                    </label>
-
-                    <input asp-for="LastName"
-                           class="form-control"
-                           placeholder="Enter your last name" />
-
-                    <span asp-validation-for="LastName"
-                          class="validation-error">
-                    </span>
-
+                <div class="qz-form-group">
+                    <label asp-for="LastName" class="qz-label">Last Name</label>
+                    <input asp-for="LastName" class="qz-input" placeholder="Enter your last name" />
+                    <span asp-validation-for="LastName" class="qz-error-msg"></span>
                 </div>
-
 
                 <!-- Email -->
-
-                <div class="mb-3">
-
-                    <label asp-for="Email"
-                           class="form-label">
-                        Email Address
-                    </label>
-
-                    <input asp-for="Email"
-                           type="email"
-                           class="form-control"
-                           placeholder="Enter your email" />
-
-                    <span asp-validation-for="Email"
-                          class="validation-error">
-                    </span>
-
+                <div class="qz-form-group">
+                    <label asp-for="Email" class="qz-label">Email Address</label>
+                    <input asp-for="Email" type="email" class="qz-input" placeholder="Enter your email" />
+                    <span asp-validation-for="Email" class="qz-error-msg"></span>
                 </div>
-
 
                 <!-- Password -->
-
-                <div class="mb-3">
-
-                    <label asp-for="Password"
-                           class="form-label">
-                        Password
-                    </label>
-
-                    <input asp-for="Password"
-                           type="password"
-                           class="form-control"
-                           placeholder="Enter your password" />
-
-                    <span asp-validation-for="Password"
-                          class="validation-error">
-                    </span>
-
+                <div class="qz-form-group">
+                    <label asp-for="Password" class="qz-label">Password</label>
+                    <input asp-for="Password" type="password" class="qz-input" placeholder="Enter your password" />
+                    <span asp-validation-for="Password" class="qz-error-msg"></span>
                 </div>
-
 
                 <!-- General Errors -->
                 @if (!ViewData.ModelState.IsValid)
                 {
-                    <div class="alert alert-danger register-error">
-
-                        @foreach (var error in ViewData.ModelState.Values
-                            .SelectMany(v => v.Errors))
+                    <div class="qz-alert-error">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
                         {
-                            <div>
-                                @error.ErrorMessage
-                            </div>
+                            <div>@error.ErrorMessage</div>
                         }
-
                     </div>
                 }
 
-
-                <!-- Register Button -->
-
-                <div class="d-grid mt-4">
-
-                    <button type="submit"
-                            class="btn btn-primary btn-lg register-btn">
-                        Create Student Account
-                    </button>
-
-                </div>
+                <!-- Submit Button -->
+                <button type="submit" class="qz-btn-submit">
+                    Create Student Account
+                </button>
 
             </form>
 
-
-            <!-- Back / Login -->
-
-            <div class="text-center mt-4">
-
-                <p class="mb-2">
-
+            <!-- Navigation Links -->
+            <div class="qz-footer-links">
+                <div>
                     Already have an account?
-
-                    <a asp-controller="Account"
-                       asp-action="Login"
-                       class="login-link">
-                        Login
+                    <a asp-controller="Account" asp-action="Login" class="qz-link-purple">Login</a>
+                </div>
+                <div>
+                    <a asp-controller="Account" asp-action="ChooseRole" class="qz-link-secondary">
+                        ← Back to account type
                     </a>
-
-                </p>
-
-                <a asp-controller="Account"
-                   asp-action="Register"
-                   class="text-secondary text-decoration-none">
-                    ← Back to account type
-                </a>
-
+                </div>
             </div>
 
         </div>
-
     </div>
 
+    <!-- Page Footer -->
+    <div class="qz-footer">
+        © 2026 QuizEra. All rights reserved.
+    </div>
 </div>
 
-
 @section Scripts {
-
     <partial name="_ValidationScriptsPartial" />
-
 }
-

@@ -1,31 +1,41 @@
-html {
-  font-size: 14px;
+/* Custom Purple Theme Rules */
+
+.text-purple {
+    color: #6f42c1 !important;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+.bg-purple-subtle {
+    background-color: rgba(111, 66, 193, 0.1) !important;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* Primary Purple Button */
+.btn-purple {
+    background-color: #6f42c1 !important;
+    color: #ffffff !important;
+    border-color: #6f42c1 !important;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+    .btn-purple:hover,
+    .btn-purple:focus,
+    .btn-purple:active {
+        background-color: #5a2898 !important;
+        color: #ffffff !important;
+        border-color: #5a2898 !important;
+        box-shadow: none !important;
+    }
+
+/* Secondary/Action Purple Button */
+.btn-action-purple {
+    background-color: rgba(111, 66, 193, 0.1) !important;
+    color: #6f42c1 !important;
+    border: 1px solid rgba(111, 66, 193, 0.2) !important;
 }
 
-body {
-  margin-bottom: 60px;
-}
-
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
-}
-
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
-}
+    .btn-action-purple:hover,
+    .btn-action-purple:focus,
+    .btn-action-purple:active {
+        background-color: #6f42c1 !important;
+        color: #ffffff !important;
+        border-color: #6f42c1 !important;
+        box-shadow: none !important;
+    }

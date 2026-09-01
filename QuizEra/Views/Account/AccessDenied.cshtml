@@ -1,107 +1,154 @@
 ﻿@{
     ViewData["Title"] = "Access Denied";
+    Layout = "AuthLayout";
 }
 
 <style>
-    .access-denied-page {
-        min-height: calc(100vh - 56px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #f8f9fa;
-        padding: 40px 20px;
+    /* Base Variables */
+    :root {
+        --qz-purple-btn: #4D2197;
+        --qz-dark-text: #1B2559;
+        --qz-sub-text: #707EAE;
+        --qz-bg-gradient: radial-gradient(circle at 50% 50%, #F5F7FD 0%, #E9EFFC 100%);
+        --qz-error-red: #EE5D50;
     }
 
-    .access-denied-container {
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: var(--qz-bg-gradient) !important;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Screen Flex Wrapper */
+    .qz-screen-wrapper {
+        min-height: 100vh;
         width: 100%;
-        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 40px 20px 20px 20px;
+        box-sizing: border-box;
     }
 
-    .access-denied-card {
-        background: white;
-        border-radius: 15px;
-        padding: 50px 40px;
+    /* Main Container */
+    .qz-main-container {
+        width: 100%;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: auto;
+    }
+
+    /* Logo Header OUTSIDE Card */
+    .qz-outer-logo {
+        max-width: 220px;
+        height: auto;
+        margin-bottom: 25px;
+    }
+
+    /* White Card */
+    .qz-card {
+        background: #FFFFFF;
+        border-radius: 20px;
+        padding: 40px 30px;
+        width: 100%;
         text-align: center;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        box-sizing: border-box;
+        box-shadow: 0px 15px 45px rgba(112, 144, 176, 0.18);
     }
 
-    .access-icon {
-        font-size: 80px;
-        margin-bottom: 20px;
-    }
-
-    .access-code {
-        font-size: 70px;
-        font-weight: 800;
-        color: #0d6efd;
+    .qz-icon {
+        font-size: 60px;
+        margin-bottom: 10px;
         line-height: 1;
-        margin-bottom: 15px;
     }
 
-    .access-title {
-        font-weight: 700;
-        color: #212529;
-        margin-bottom: 12px;
+    .qz-error-code {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: var(--qz-purple-btn);
+        line-height: 1;
+        margin-bottom: 10px;
     }
 
-    .access-description {
-        color: #6c757d;
-        font-size: 1.05rem;
+    .qz-title {
+        color: var(--qz-dark-text);
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0 0 10px 0;
+    }
+
+    .qz-description {
+        color: var(--qz-sub-text);
+        font-size: 0.9rem;
+        line-height: 1.5;
         margin-bottom: 30px;
     }
 
-    .access-btn {
-        border-radius: 8px;
-        padding: 12px 30px;
-        font-weight: 600;
+    /* Primary Button */
+    .qz-btn-primary {
+        display: inline-block;
+        width: 100%;
+        padding: 13px;
+        background: var(--qz-purple-btn);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-decoration: none;
+        box-shadow: 0 8px 16px rgba(77, 33, 151, 0.2);
+        transition: opacity 0.2s, transform 0.2s;
+        box-sizing: border-box;
+    }
+
+        .qz-btn-primary:hover {
+            opacity: 0.95;
+            color: #FFFFFF;
+            transform: translateY(-1px);
+        }
+
+    /* Footer */
+    .qz-footer {
+        color: var(--qz-sub-text);
+        font-size: 0.8rem;
+        text-align: center;
+        margin-top: 20px;
     }
 </style>
 
+<div class="qz-screen-wrapper">
+    <div class="qz-main-container">
 
-<div class="access-denied-page">
+        <!-- Outer Header Logo -->
+        <img src="~/images/logo-header.png" class="qz-outer-logo" alt="QuizEra Header Logo" />
 
-    <div class="access-denied-container">
+        <!-- Access Denied Card -->
+        <div class="qz-card">
 
-        <div class="access-denied-card">
+            <div class="qz-icon">🔒</div>
 
-            <!-- Icon -->
+            <div class="qz-error-code">403</div>
 
-            <div class="access-icon">
-                🔒
-            </div>
+            <h1 class="qz-title">Access Denied</h1>
 
-
-            <!-- Error Code -->
-
-            <div class="access-code">
-                403
-            </div>
-
-
-            <!-- Title -->
-
-            <h1 class="access-title">
-                Access Denied
-            </h1>
-
-
-            <!-- Description -->
-
-            <p class="access-description">
+            <p class="qz-description">
                 Sorry, you don't have permission to access this page.
             </p>
 
-
-            <!-- Button -->
-
-            <a asp-controller="Home"
-               asp-action="Index"
-               class="btn btn-primary access-btn">
+            <a asp-controller="Home" asp-action="Index" class="qz-btn-primary">
                 Back to Home
             </a>
 
         </div>
-
     </div>
 
+    <!-- Page Footer -->
+    <div class="qz-footer">
+        © 2026 QuizEra. All rights reserved.
+    </div>
 </div>

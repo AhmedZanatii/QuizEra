@@ -9,13 +9,28 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts (Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+            :root {
+                --qz-purple: #4D2197;
+                --qz-purple-hover: #3b1975;
+                --qz-dark-sidebar: #111C44;
+                --qz-sidebar-hover: rgba(255, 255, 255, 0.08);
+                --qz-dark-text: #1B2559;
+                --qz-sub-text: #A3AED0;
+                --qz-bg-main: #F4F7FE;
+                --qz-border-color: #E9EDF7;
+                --qz-card-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+            }
+
             body {
-                font-family: 'Inter', sans-serif;
-                background-color: #f8f9fa;
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                background-color: var(--qz-bg-main);
+                color: var(--qz-dark-text);
+                margin: 0;
+                overflow-x: hidden;
             }
 
             .wrapper {
@@ -24,137 +39,200 @@
                 min-height: 100vh;
             }
 
+            /* Modern Dark Sidebar */
             #sidebar {
-                min-width: 260px;
-                max-width: 260px;
-                background: #ffffff;
-                border-right: 1px solid #e9ecef;
+                min-width: 280px;
+                max-width: 280px;
+                background: var(--qz-dark-sidebar);
+                display: flex;
+                flex-direction: column;
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
+                z-index: 100;
+            }
+
+                #sidebar .sidebar-header {
+                    padding: 30px 24px 20px 24px;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                    text-align: center;
+                }
+
+            /* Bigger Logo Container */
+            .sidebar-logo {
+                max-width: 210px; 
+                width: 100%;
+                height: auto;
+                filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.2));
+            }
+
+            .sidebar-badge {
+                display: inline-block;
+                background: rgba(255, 255, 255, 0.1);
+                color: #7090B0;
+                font-size: 0.72rem;
+                font-weight: 700;
+                padding: 4px 12px;
+                border-radius: 20px;
+                letter-spacing: 1px;
+                margin-top: 10px;
+            }
+
+            #sidebar ul.components {
+                padding: 20px 14px;
+            }
+
+            #sidebar ul li {
+                margin-bottom: 6px;
+            }
+
+                #sidebar ul li a {
+                    padding: 14px 18px;
+                    font-size: 0.95rem;
+                    display: flex;
+                    align-items: center;
+                    color: #8F9BBA;
+                    text-decoration: none;
+                    font-weight: 600;
+                    border-radius: 14px;
+                    transition: all 0.25s ease;
+                }
+
+                    #sidebar ul li a:hover {
+                        color: #FFFFFF;
+                        background: var(--qz-sidebar-hover);
+                    }
+
+                #sidebar ul li.active > a {
+                    color: #FFFFFF;
+                    background: var(--qz-purple);
+                    box-shadow: 0px 10px 20px rgba(77, 33, 151, 0.35);
+                }
+
+                #sidebar ul li a i {
+                    margin-right: 14px;
+                    font-size: 1.15rem;
+                    width: 22px;
+                    text-align: center;
+                }
+
+            /* Content Area */
+            #content {
+                flex-grow: 1;
+                min-height: 100vh;
+                background-color: var(--qz-bg-main);
                 display: flex;
                 flex-direction: column;
             }
 
-                #sidebar .sidebar-header {
-                    padding: 20px;
-                    border-bottom: 1px solid #e9ecef;
-                }
-
-                #sidebar ul li a {
-                    padding: 12px 25px;
-                    font-size: 0.95rem;
-                    display: flex;
-                    align-items: center;
-                    color: #6c757d;
-                    text-decoration: none;
-                    font-weight: 500;
-                    transition: 0.2s;
-                }
-
-                    #sidebar ul li a:hover, #sidebar ul li.active > a {
-                        color: #0d6efd;
-                        background: #f0f7ff;
-                        border-left: 4px solid #0d6efd;
-                    }
-
-                    #sidebar ul li a i {
-                        margin-right: 12px;
-                        font-size: 1.1rem;
-                        width: 20px;
-                        text-align: center;
-                    }
-
-            #content {
-                width: 100%;
-                min-height: 100vh;
-            }
-
             .top-navbar {
-                padding: 15px 30px;
-                background: #ffffff;
-                border-bottom: 1px solid #e9ecef;
+                padding: 20px 40px;
+                background: #FFFFFF;
+                border-bottom: 1px solid var(--qz-border-color);
+                box-shadow: 0 4px 25px rgba(112, 144, 176, 0.06);
             }
 
-            .dashboard-card {
+            .user-profile-badge {
+                background: #F4F7FE;
+                padding: 8px 16px;
+                border-radius: 30px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                border: 1px solid var(--qz-border-color);
+            }
+
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                background: var(--qz-purple);
+                color: #FFFFFF;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.9rem;
+                font-weight: 700;
+            }
+
+            /* Logout Button */
+            .btn-qz-logout {
+                background: rgba(238, 93, 80, 0.12);
+                color: #EE5D50;
                 border: none;
                 border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-                background: #ffffff;
+                padding: 12px 16px;
+                font-weight: 700;
+                font-size: 0.9rem;
+                width: 100%;
+                transition: all 0.2s ease;
             }
+
+                .btn-qz-logout:hover {
+                    background: #EE5D50;
+                    color: #FFFFFF;
+                }
     </style>
 </head>
 <body>
     <div class="wrapper">
-        <!-- Sidebar -->
+        <!-- Dark Professional Sidebar -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h4 class="fw-bold text-primary m-0"><i class="fa-solid fa-graduation-cap me-2"></i>QuizEra</h4>
-                <small class="text-muted">Admin Panel</small>
+                <!-- اللوجو بالحجم الجديد -->
+                <img src="~/images/logo-header.png" alt="QuizEra Logo" class="sidebar-logo" />
+                <div>
+                    <span class="sidebar-badge text-uppercase">Admin Portal</span>
+                </div>
             </div>
-            <ul class="list-unstyled components mb-auto py-3">
-                
-                <ul class="list-unstyled components mb-auto py-3">
 
-                    <!-- Dashboard -->
-                    <li>
-                        <a asp-controller="Admin" asp-action="Index">
-                            <i class="fa-solid fa-chart-pie"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-
-                    <!-- Students -->
-                    <li>
-                        <a asp-controller="Admin" asp-action="Students">
-                            <i class="fa-solid fa-user-graduate"></i>
-                            <span>Students</span>
-                        </a>
-                    </li>
-
-                    <!-- Instructors -->
-                    <li>
-                        <a asp-controller="Admin" asp-action="Instructors">
-                            <i class="fa-solid fa-chalkboard-user"></i>
-                            <span>Instructors</span>
-                        </a>
-                    </li>
-
-                    <!-- Courses -->
-                    <li>
-                        <a asp-controller="Admin" asp-action="Courses">
-                            <i class="fa-solid fa-book-open"></i>
-                            <span>Courses</span>
-                        </a>
-                    </li>
-
-                    <!-- Topics -->
-                    <li>
-                        <a asp-controller="Admin" asp-action="Topics">
-                            <i class="fa-solid fa-folder-tree"></i>
-                            <span>Topics</span>
-                        </a>
-                    </li>
-
-                    <!-- Questions -->
-                    <li>
-                        <a asp-controller="Admin" asp-action="Questions">
-                            <i class="fa-solid fa-circle-question"></i>
-                            <span>Questions</span>
-                        </a>
-                    </li>
-
-                    <!-- Exams -->
-                    <li>
-                        <a asp-controller="Admin" asp-action="Exams">
-                            <i class="fa-solid fa-file-pen"></i>
-                            <span>Exams</span>
-                        </a>
-                    </li>
-
-                </ul>
+            <ul class="list-unstyled components mb-auto">
+                <li class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+                    <a asp-controller="Admin" asp-action="Index">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Students" ? "active" : "")">
+                    <a asp-controller="Admin" asp-action="Students">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        <span>Students</span>
+                    </a>
+                </li>
+                <li class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Instructors" ? "active" : "")">
+                    <a asp-controller="Admin" asp-action="Instructors">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                        <span>Instructors</span>
+                    </a>
+                </li>
+                <li class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Courses" ? "active" : "")">
+                    <a asp-controller="Admin" asp-action="Courses">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span>Courses</span>
+                    </a>
+                </li>
+                <li class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Topics" ? "active" : "")">
+                    <a asp-controller="Admin" asp-action="Topics">
+                        <i class="fa-solid fa-folder-tree"></i>
+                        <span>Topics</span>
+                    </a>
+                </li>
+                <li class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Questions" ? "active" : "")">
+                    <a asp-controller="Admin" asp-action="Questions">
+                        <i class="fa-solid fa-circle-question"></i>
+                        <span>Questions</span>
+                    </a>
+                </li>
+                <li class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Exams" ? "active" : "")">
+                    <a asp-controller="Admin" asp-action="Exams">
+                        <i class="fa-solid fa-file-pen"></i>
+                        <span>Exams</span>
+                    </a>
+                </li>
             </ul>
-            <div class="p-3 border-top">
+
+            <div class="p-3">
                 <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
                     @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-outline-danger w-100 btn-sm text-start">
+                    <button type="submit" class="btn btn-qz-logout text-center">
                         <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
                     </button>
                 </form>
@@ -163,13 +241,23 @@
 
         <!-- Main Content -->
         <div id="content">
-            <div class="top-navbar d-flex justify-content-end align-items-center">
-                <div class="d-flex align-items-center gap-3">
-                    <span class="text-muted small">Welcome, Admin</span>
-                    <i class="fa-solid fa-circle-user fs-4 text-primary"></i>
+            <!-- Top Navbar -->
+            <div class="top-navbar d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small fw-semibold">Pages / Dashboard</span>
+                    <h5 class="fw-bold m-0" style="color: var(--qz-dark-text);">Main Dashboard</h5>
+                </div>
+                <div class="user-profile-badge">
+                    <div class="user-avatar">A</div>
+                    <div class="d-flex flex-column text-start">
+                        <span class="fw-bold small" style="color: var(--qz-dark-text); line-height: 1.2;">Admin User</span>
+                        <span class="text-muted" style="font-size: 0.72rem;">System Administrator</span>
+                    </div>
                 </div>
             </div>
-            <div class="container-fluid p-4">
+
+            <!-- Page Body -->
+            <div class="container-fluid p-4 p-md-5">
                 @RenderBody()
             </div>
         </div>

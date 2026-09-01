@@ -1,26 +1,119 @@
 ﻿@{
-    ViewData["Title"] = "Student Home";
+    ViewData["Title"] = "Student Dashboard";
     Layout = "~/Views/Shared/_StudentLayout.cshtml";
 }
 
-<div class="row justify-content-center my-4">
-    <div class="col-md-9 col-lg-8">
-        <div class="card dashboard-card p-5 text-center">
-            <div class="card-body">
-                <div class="mb-4">
-                    <div class="icon-shape bg-primary bg-opacity-10 text-primary mx-auto" style="width: 80px; height: 80px; font-size: 2.5rem; border-radius: 50%;">
+<!-- Style Enhancements for Theme Consistency -->
+<style>
+    .btn-qe-primary {
+        background-color: var(--qe-primary-purple);
+        border-color: var(--qe-primary-purple);
+        color: #ffffff;
+    }
+
+        .btn-qe-primary:hover {
+            background-color: var(--qe-active-bg);
+            border-color: var(--qe-active-bg);
+            color: #ffffff;
+        }
+
+    .btn-qe-outline {
+        color: var(--qe-primary-purple);
+        border-color: var(--qe-primary-purple);
+        background-color: transparent;
+    }
+
+        .btn-qe-outline:hover {
+            background-color: var(--qe-primary-soft);
+            color: var(--qe-active-bg);
+            border-color: var(--qe-primary-purple);
+        }
+
+    .badge-qe-purple {
+        background-color: var(--qe-primary-soft);
+        color: var(--qe-primary-purple);
+    }
+
+    .icon-qe-purple {
+        background-color: var(--qe-primary-soft);
+        color: var(--qe-primary-purple);
+    }
+
+    .text-qe-purple {
+        color: var(--qe-primary-purple) !important;
+    }
+</style>
+
+<!-- Welcome Banner -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card dashboard-card border-0 p-4 p-md-5 bg-white shadow-sm position-relative overflow-hidden">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <span class="badge badge-qe-purple fs-6 px-3 py-1.5 rounded-pill mb-3 fw-semibold">
+                        Student Portal
+                    </span>
+                    <h1 class="fw-extrabold text-dark mb-2" style="letter-spacing: -0.5px;">Welcome Back to QuizEra!</h1>
+                    <p class="text-muted fs-6 mb-4">
+                        Ready to test your knowledge today? Explore your enrolled courses, take upcoming exams, and check your overall academic progress.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a asp-controller="Student" asp-action="Courses" class="btn btn-qe-primary fw-bold px-4 py-2.5 rounded-3">
+                            <i class="fa-solid fa-book-open me-2"></i>My Enrolled Courses
+                        </a>
+                        <a asp-controller="Student" asp-action="Exams" class="btn btn-qe-outline fw-bold px-4 py-2.5 rounded-3">
+                            <i class="fa-solid fa-file-pen me-2"></i>View Available Exams
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center d-none d-md-block">
+                    <div class="icon-shape icon-qe-purple rounded-circle mx-auto" style="width: 140px; height: 140px; font-size: 4rem;">
                         <i class="fa-solid fa-graduation-cap"></i>
                     </div>
                 </div>
-
-                <h2 class="fw-bold text-dark mb-2">Welcome to QuizEra!</h2>
-                <span class="badge bg-primary bg-opacity-10 text-primary fs-6 px-3 py-2 rounded-pill mb-3">Student Portal</span>
-
-                <p class="text-muted fs-5 mb-4">
-                    Explore your courses, take exams, and track your academic progress with ease.
-                </p>
-
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Navigation Cards -->
+<div class="row g-4">
+    <div class="col-12 col-md-4">
+        <div class="card dashboard-card h-100 border-0 p-4 shadow-sm">
+            <div class="icon-shape icon-qe-purple p-3 rounded-3 mb-3" style="width: fit-content;">
+                <i class="fa-solid fa-book-open fs-3"></i>
+            </div>
+            <h5 class="fw-bold text-dark">My Courses</h5>
+            <p class="text-muted small mb-4">View your registered courses and enter course access codes.</p>
+            <a asp-controller="Student" asp-action="Courses" class="text-qe-purple fw-bold text-decoration-none small mt-auto">
+                Go to Courses <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="card dashboard-card h-100 border-0 p-4 shadow-sm">
+            <div class="icon-shape bg-warning bg-opacity-10 text-warning p-3 rounded-3 mb-3" style="width: fit-content;">
+                <i class="fa-solid fa-file-pen fs-3"></i>
+            </div>
+            <h5 class="fw-bold text-dark">Available Exams</h5>
+            <p class="text-muted small mb-4">Check active exams that are ready for you to take right now.</p>
+            <a asp-controller="Student" asp-action="Exams" class="text-qe-purple fw-bold text-decoration-none small mt-auto">
+                Take Exams <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="card dashboard-card h-100 border-0 p-4 shadow-sm">
+            <div class="icon-shape bg-success bg-opacity-10 text-success p-3 rounded-3 mb-3" style="width: fit-content;">
+                <i class="fa-solid fa-square-poll-vertical fs-3"></i>
+            </div>
+            <h5 class="fw-bold text-dark">My Results</h5>
+            <p class="text-muted small mb-4">Review past attempt scores and get detailed feedback on your performance.</p>
+            <a asp-controller="Student" asp-action="Results" class="text-qe-purple fw-bold text-decoration-none small mt-auto">
+                View Performance <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
         </div>
     </div>
 </div>

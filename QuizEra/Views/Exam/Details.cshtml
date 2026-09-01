@@ -6,356 +6,154 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-
     <div>
-        <h2 class="fw-bold text-dark mb-1">
-            Exam Details
-        </h2>
-
-        <p class="text-muted mb-0">
-            View exam information, topics, and questions.
-        </p>
+        <h2 class="fw-bold text-dark mb-1">Exam Details</h2>
+        <p class="text-muted mb-0">View exam information, topics, and questions.</p>
     </div>
 
     <div class="d-flex gap-2">
-
-        <a asp-controller="Exam"
-           asp-action="Index"
-           class="btn btn-outline-secondary">
-
-            <i class="fa-solid fa-arrow-left me-2"></i>
-            Back to Exams
-
+        <a asp-controller="Exam" asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left me-2"></i>Back to Exams
         </a>
-
-        <a asp-controller="Exam"
-           asp-action="Edit"
-           asp-route-id="@Model.Id"
-           class="btn btn-primary">
-
-            <i class="fa-solid fa-pen me-2"></i>
-            Edit Exam
-
+        <a asp-controller="Exam" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+            <i class="fa-solid fa-pen me-2"></i>Edit Exam
         </a>
-
     </div>
-
 </div>
 
-
-<!-- ========================= -->
 <!-- Exam Information -->
-<!-- ========================= -->
-
 <div class="card dashboard-card mb-4">
-
     <div class="card-body">
-
         <h4 class="fw-bold mb-4">
-            <i class="fa-solid fa-file-signature me-2 text-success"></i>
-            Exam Information
+            <i class="fa-solid fa-file-signature me-2 text-success"></i>Exam Information
         </h4>
-
 
         <div class="row g-4">
-
-            <!-- Exam Title -->
             <div class="col-md-6">
-
-                <label class="form-label fw-semibold">
-                    Exam Title
-                </label>
-
-                <div class="form-control bg-light">
-                    @Model.Title
-                </div>
-
+                <label class="form-label fw-semibold">Exam Title</label>
+                <div class="form-control bg-light">@Model.Title</div>
             </div>
 
-
-            <!-- Course -->
             <div class="col-md-6">
-
-                <label class="form-label fw-semibold">
-                    Course
-                </label>
-
+                <label class="form-label fw-semibold">Course</label>
                 <div class="form-control bg-light">
-
-                    @(string.IsNullOrEmpty(Model.CourseName)
-                        ? "N/A"
-                        : Model.CourseName)
-
+                    @(string.IsNullOrEmpty(Model.CourseName) ? "N/A" : Model.CourseName)
                 </div>
-
             </div>
 
-
-            <!-- Duration -->
             <div class="col-md-4">
-
-                <label class="form-label fw-semibold">
-                    Duration
-                </label>
-
-                <div class="form-control bg-light">
-
-                    @Model.Duration minutes
-
-                </div>
-
+                <label class="form-label fw-semibold">Duration</label>
+                <div class="form-control bg-light">@Model.Duration minutes</div>
             </div>
 
-
-            <!-- Total Marks -->
             <div class="col-md-4">
-
-                <label class="form-label fw-semibold">
-                    Total Marks
-                </label>
-
-                <div class="form-control bg-light">
-
-                    @Model.TotalMarks.ToString("0.##")
-
-                </div>
-
+                <label class="form-label fw-semibold">Total Marks</label>
+                <div class="form-control bg-light">@Model.TotalMarks.ToString("0.##")</div>
             </div>
 
-
-            <!-- Questions Count -->
             <div class="col-md-4">
-
-                <label class="form-label fw-semibold">
-                    Number of Questions
-                </label>
-
-                <div class="form-control bg-light">
-
-                    @(Model.Questions?.Count ?? 0)
-
-                </div>
-
+                <label class="form-label fw-semibold">Number of Questions</label>
+                <div class="form-control bg-light">@(Model.Questions?.Count ?? 0)</div>
             </div>
 
-
-            <!-- Start Date -->
             <div class="col-md-6">
-
-                <label class="form-label fw-semibold">
-                    Start Date
-                </label>
-
-                <div class="form-control bg-light">
-
-                    @Model.StartDate.ToString("dd/MM/yyyy HH:mm")
-
-                </div>
-
+                <label class="form-label fw-semibold">Start Date</label>
+                <div class="form-control bg-light">@Model.StartDate.ToString("dd/MM/yyyy HH:mm")</div>
             </div>
 
-
-            <!-- End Date -->
             <div class="col-md-6">
-
-                <label class="form-label fw-semibold">
-                    End Date
-                </label>
-
-                <div class="form-control bg-light">
-
-                    @Model.EndDate.ToString("dd/MM/yyyy HH:mm")
-
-                </div>
-
+                <label class="form-label fw-semibold">End Date</label>
+                <div class="form-control bg-light">@Model.EndDate.ToString("dd/MM/yyyy HH:mm")</div>
             </div>
-
         </div>
-
     </div>
-
 </div>
 
-
-
-<!-- ========================= -->
 <!-- Topics -->
-<!-- ========================= -->
-
 <div class="card dashboard-card mb-4">
-
     <div class="card-body">
-
         <h4 class="fw-bold mb-3">
-
-            <i class="fa-solid fa-tags me-2 text-success"></i>
-            Topics
-
+            <i class="fa-solid fa-tags me-2 text-success"></i>Topics
         </h4>
-
 
         @if (Model.TopicNames != null && Model.TopicNames.Any())
         {
             <div class="d-flex flex-wrap gap-2">
-
                 @foreach (var topic in Model.TopicNames)
                 {
                     <span class="badge bg-success bg-opacity-10 text-success fs-6 px-3 py-2">
-
-                        <i class="fa-solid fa-tag me-1"></i>
-
-                        @topic
-
+                        <i class="fa-solid fa-tag me-1"></i>@topic
                     </span>
                 }
-
             </div>
         }
         else
         {
-            <p class="text-muted mb-0">
-                No topics assigned to this exam.
-            </p>
+            <p class="text-muted mb-0">No topics assigned to this exam.</p>
         }
-
     </div>
-
 </div>
 
-
-
-<!-- ========================= -->
 <!-- Questions -->
-<!-- ========================= -->
-
 <div class="card dashboard-card mb-4">
-
     <div class="card-body">
-
         <div class="d-flex justify-content-between align-items-center mb-4">
-
             <div>
-
                 <h4 class="fw-bold mb-1">
-
-                    <i class="fa-solid fa-circle-question me-2 text-success"></i>
-                    Questions
-
+                    <i class="fa-solid fa-circle-question me-2 text-success"></i>Questions
                 </h4>
-
-                <p class="text-muted mb-0">
-                    Questions included in this exam.
-                </p>
-
+                <p class="text-muted mb-0">Questions included in this exam.</p>
             </div>
-
             <span class="badge bg-success fs-6">
-
-                @(Model.Questions?.Count ?? 0)
-                Questions
-
+                @(Model.Questions?.Count ?? 0) Questions
             </span>
-
         </div>
-
 
         @if (Model.Questions != null && Model.Questions.Any())
         {
             <div class="d-flex flex-column gap-3">
-
                 @{
                     int questionNumber = 1;
                 }
-
                 @foreach (var question in Model.Questions)
                 {
                     <div class="border rounded p-3">
-
                         <div class="d-flex justify-content-between align-items-start">
-
                             <div class="flex-grow-1">
-
                                 <div class="fw-bold mb-2">
-
-                                    @questionNumber)
-                                    @question.QuestionText
-
+                                    @questionNumber) @question.QuestionText
                                 </div>
-
                             </div>
-
                             <span class="badge bg-secondary ms-3">
-
-                                @(question.ActualMark + question.BonusMark)
-                                Marks
-
+                                @(question.ActualMark + question.BonusMark) Marks
                             </span>
-
                         </div>
-
 
                         <div class="mt-2">
-
-                            <span class="badge bg-secondary me-2">
-                                Actual Mark:
-                                @question.ActualMark
-                            </span>
-
-                            <span class="badge bg-warning text-dark">
-                                Bonus Mark:
-                                @question.BonusMark
-                            </span>
-
+                            <span class="badge bg-secondary me-2">Actual Mark: @question.ActualMark</span>
+                            <span class="badge bg-warning text-dark">Bonus Mark: @question.BonusMark</span>
                         </div>
-
                     </div>
-
                     questionNumber++;
                 }
-
             </div>
         }
         else
         {
             <div class="text-center py-4">
-
                 <i class="fa-solid fa-circle-question fs-1 text-muted mb-3"></i>
-
-                <p class="text-muted mb-0">
-                    No questions assigned to this exam.
-                </p>
-
+                <p class="text-muted mb-0">No questions assigned to this exam.</p>
             </div>
         }
-
     </div>
-
 </div>
 
-
-<!-- ========================= -->
 <!-- Bottom Navigation -->
-<!-- ========================= -->
-
 <div class="d-flex justify-content-end gap-2">
-
-    <a asp-controller="Exam"
-       asp-action="Index"
-       class="btn btn-outline-secondary">
-
-        <i class="fa-solid fa-arrow-left me-2"></i>
-        Back to Exams
-
+    <a asp-controller="Exam" asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-arrow-left me-2"></i>Back to Exams
     </a>
-
-    <a asp-controller="Exam"
-       asp-action="Edit"
-       asp-route-id="@Model.Id"
-       class="btn btn-primary">
-
-        <i class="fa-solid fa-pen me-2"></i>
-        Edit Exam
-
+    <a asp-controller="Exam" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+        <i class="fa-solid fa-pen me-2"></i>Edit Exam
     </a>
-
 </div>

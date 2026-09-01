@@ -509,6 +509,9 @@ namespace QuizEra.BLL.Services.Implementation
 
             var examTopics = await _examTopicRepository.Get();
 
+            // 1. جلب كل الأسئلة المرتبطة بالامتحانات
+            var examQuestions = await _examQuestionsRepository.Get();
+
             var topics = await _topicRepository.Get(
                 includeProperties: new List<Expression<Func<Topic, object>>>
                 {
@@ -524,6 +527,9 @@ namespace QuizEra.BLL.Services.Implementation
                     .ToList();
 
                 var firstTopic = selectedTopics.FirstOrDefault();
+
+                // 2. حساب عدد الأسئلة لهذا الامتحان تحديداً
+                int questionsCount = examQuestions.Count(eq => eq.ExamId == exam.Id);
 
                 return new ExamVM
                 {
@@ -545,7 +551,10 @@ namespace QuizEra.BLL.Services.Implementation
                     Duration = exam.Duration,
                     TotalMarks = exam.TotalMarks,
                     StartDate = exam.StartDate,
-                    EndDate = exam.EndDate
+                    EndDate = exam.EndDate,
+
+                    // 3. ربط النتيجة بالـ ViewModel
+                    QuestionsCount = questionsCount
                 };
             });
 

@@ -5,99 +5,153 @@
     Layout = "~/Views/Shared/_StudentLayout.cshtml";
 }
 
+<style>
+    .btn-qe-primary {
+        background-color: var(--qe-primary-purple);
+        border-color: var(--qe-primary-purple);
+        color: #ffffff;
+    }
+
+        .btn-qe-primary:hover {
+            background-color: var(--qe-active-bg);
+            border-color: var(--qe-active-bg);
+            color: #ffffff;
+        }
+
+    .btn-qe-outline {
+        color: var(--qe-primary-purple);
+        border-color: var(--qe-primary-purple);
+        background-color: transparent;
+    }
+
+        .btn-qe-outline:hover {
+            background-color: var(--qe-primary-soft);
+            color: var(--qe-active-bg);
+            border-color: var(--qe-primary-purple);
+        }
+
+    .badge-qe-purple {
+        background-color: var(--qe-primary-soft);
+        color: var(--qe-primary-purple);
+    }
+
+    .badge-qe-solid {
+        background-color: var(--qe-primary-purple);
+        color: #ffffff;
+    }
+
+    .text-qe-purple {
+        color: var(--qe-primary-purple) !important;
+    }
+</style>
+
 <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
     <div>
-        <a asp-controller="Student" asp-action="Courses" class="text-decoration-none text-muted small">
+        <a asp-controller="Student" asp-action="Courses" class="text-decoration-none text-muted small fw-semibold">
             <i class="fa-solid fa-arrow-left me-1"></i>My Courses
         </a>
         <h3 class="fw-bold text-dark mt-2 mb-1">@Model.CourseName</h3>
         <p class="text-muted mb-0">@Model.Description</p>
     </div>
-    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2">@Model.CourseLevel</span>
+    <span class="badge badge-qe-purple rounded-pill px-3 py-2 fw-semibold fs-6">@Model.CourseLevel</span>
 </div>
 
 <div class="row g-4">
-    <div class="col-12 col-lg-8">
-        <div class="card dashboard-card border-0 h-100">
+    <div class="col-12 col-lg-7">
+        <div class="card dashboard-card border-0 shadow-sm h-100">
             <div class="card-body p-4">
-                <h5 class="fw-bold mb-4">Course Information</h5>
+                <h5 class="fw-bold mb-4 text-dark border-bottom pb-3">Course Information</h5>
+
                 @if (Model.Topics.Any())
                 {
-                    <div class="small text-muted mb-3">
-                        <i class="fa-solid fa-layer-group me-2 text-primary"></i>
-                        <div class="d-flex flex-wrap gap-2 mt-2">
+                    <div class="small text-muted mb-4">
+                        <div class="fw-semibold text-dark mb-2">
+                            <i class="fa-solid fa-layer-group me-2 text-qe-purple"></i>Topics
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
                             @foreach (var topic in Model.Topics)
                             {
-                                <span class="badge bg-primary">@topic.Name</span>
+                                <span class="badge badge-qe-solid px-3 py-2 rounded-2 fw-normal">@topic.Name</span>
                             }
                         </div>
                     </div>
                 }
-                <div class="small text-muted mb-3"><i class="fa-solid fa-signal text-primary me-2"></i>Level <strong class="text-dark float-end">@Model.CourseLevel</strong></div>
-                <div class="small text-muted mb-4"><i class="fa-solid fa-key text-primary me-2"></i>Course code <strong class="text-dark float-end">@Model.CourseCode</strong></div>
 
-                <a asp-controller="Student" asp-action="Exams" class="btn btn-primary w-100 mb-2">
-                    <i class="fa-solid fa-file-pen me-2"></i>View Available Exams
-                </a>
-                <a asp-controller="Feedback" asp-action="Create" asp-route-courseId="@Model.Id" class="btn btn-outline-primary w-100">
-                    <i class="fa-solid fa-star me-2"></i>Give Feedback
-                </a>
+                <div class="small text-muted mb-3 p-3 bg-light rounded-3 d-flex justify-content-between align-items-center">
+                    <span><i class="fa-solid fa-signal text-qe-purple me-2"></i>Level</span>
+                    <strong class="text-dark">@Model.CourseLevel</strong>
+                </div>
+
+                <div class="small text-muted mb-4 p-3 bg-light rounded-3 d-flex justify-content-between align-items-center">
+                    <span><i class="fa-solid fa-key text-qe-purple me-2"></i>Course Code</span>
+                    <strong class="text-dark">@Model.CourseCode</strong>
+                </div>
+
+                <div class="d-flex flex-column gap-2 mt-4">
+                    <a asp-controller="Student" asp-action="Exams" class="btn btn-qe-primary w-100 py-2.5 fw-semibold rounded-3">
+                        <i class="fa-solid fa-file-pen me-2"></i>View Available Exams
+                    </a>
+                    <a asp-controller="Feedback" asp-action="Create" asp-route-courseId="@Model.Id" class="btn btn-qe-outline w-100 py-2.5 fw-semibold rounded-3">
+                        <i class="fa-solid fa-star me-2"></i>Give Feedback
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-12 col-lg-4">
 
-@{
-    var reviews = Model.Reviews.ToList();
-    var averageRating = reviews.Any() ? Math.Round(reviews.Average(r => r.Rate), 1) : 0;
-}
-
-<div class="card dashboard-card border-0 mt-4">
-    <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h5 class="fw-bold mb-1">Student Reviews</h5>
-                <p class="text-muted small mb-0">@reviews.Count reviews</p>
-            </div>
-            <div class="text-end">
-                <div class="fw-bold text-warning fs-5">@averageRating</div>
-                <div class="text-muted small">Average rating</div>
-            </div>
-        </div>
-
-        @if (!reviews.Any())
-        {
-            <div class="text-center py-4 border rounded-3 bg-light">
-                <i class="fa-regular fa-comment-dots text-muted fs-3 mb-3 d-block"></i>
-                <p class="text-muted mb-0">No reviews yet. Be the first to share your feedback.</p>
-            </div>
+    <div class="col-12 col-lg-5">
+        @{
+            var reviews = Model.Reviews.ToList();
+            var averageRating = reviews.Any() ? Math.Round(reviews.Average(r => r.Rate), 1) : 0;
         }
-        else
-        {
-            <div class="d-flex flex-column gap-3">
-                @foreach (var review in reviews)
+        <div class="card dashboard-card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                    <div>
+                        <h5 class="fw-bold mb-1 text-dark">Student Reviews</h5>
+                        <p class="text-muted small mb-0">@reviews.Count reviews</p>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-bold text-warning fs-4">@averageRating <i class="fa-solid fa-star fs-6"></i></div>
+                        <div class="text-muted small">Average rating</div>
+                    </div>
+                </div>
+
+                @if (!reviews.Any())
                 {
-                    <div class="border rounded-3 p-3 bg-light-subtle">
-                        <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                            <div class="fw-semibold text-dark">Student</div>
-                            <div class="text-warning small">
-                                @for (int i = 1; i <= 5; i++)
-                                {
-                                    if (i <= review.Rate)
-                                    {
-                                        <i class="fa-solid fa-star"></i>
-                                    }
-                                    else
-                                    {
-                                        <i class="fa-regular fa-star"></i>
-                                    }
-                                }
+                    <div class="text-center py-5 border rounded-3 bg-light">
+                        <i class="fa-regular fa-comment-dots text-muted fs-2 mb-3 d-block"></i>
+                        <p class="text-muted mb-0 small">No reviews yet. Be the first to share your feedback!</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex flex-column gap-3 overflow-auto" style="max-height: 400px;">
+                        @foreach (var review in reviews)
+                        {
+                            <div class="border rounded-3 p-3 bg-light">
+                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+                                    <div class="fw-semibold text-dark small">Student</div>
+                                    <div class="text-warning small">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= review.Rate)
+                                            {
+                                                <i class="fa-solid fa-star"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa-regular fa-star text-muted opacity-50"></i>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                <p class="text-muted small mb-0">@review.Comment</p>
                             </div>
-                        </div>
-                        <p class="text-muted mb-0">@review.Comment</p>
+                        }
                     </div>
                 }
             </div>
-        }
+        </div>
     </div>
 </div>

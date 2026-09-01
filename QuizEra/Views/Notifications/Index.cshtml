@@ -5,48 +5,83 @@
     Layout = "_StudentLayout";
 }
 
-<div class="container my-4">
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+<style>
+    .btn-qe-primary {
+        background-color: var(--qe-primary-purple);
+        border-color: var(--qe-primary-purple);
+        color: #ffffff;
+    }
+
+        .btn-qe-primary:hover {
+            background-color: var(--qe-active-bg);
+            border-color: var(--qe-active-bg);
+            color: #ffffff;
+        }
+
+    .icon-qe-purple {
+        background-color: var(--qe-primary-soft);
+        color: var(--qe-primary-purple);
+    }
+
+    .text-qe-purple {
+        color: var(--qe-primary-purple) !important;
+    }
+
+    .notification-item {
+        transition: all 0.2s ease;
+    }
+
+        .notification-item:hover {
+            background-color: rgba(108, 92, 231, 0.03);
+        }
+</style>
+
+<div class="container-fluid py-2">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold mb-1"><i class="bi bi-bell-fill text-primary me-2"></i>Notifications</h2>
-            <p class="text-muted small mb-0">Stay updated with course announcements and new exams</p>
+            <h3 class="fw-bold text-dark m-0">Notifications</h3>
+            <p class="text-muted small mb-0">Stay updated with course announcements, new exams, and system activity.</p>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-lg-10 mx-auto">
+        <div class="col-lg-10 col-xl-9 mx-auto">
             @if (!Model.Any())
             {
-                <div class="card shadow-sm border-0 text-center py-5">
+                <div class="card dashboard-card border-0 text-center py-5 shadow-sm">
                     <div class="card-body">
-                        <i class="bi bi-bell-slash text-muted display-4"></i>
-                        <h5 class="mt-3 text-secondary">No notifications yet</h5>
-                        <p class="text-muted small">When exams or updates are posted, they will appear here.</p>
+                        <div class="icon-shape icon-qe-purple rounded-circle mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="fa-solid fa-bell-slash"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-1">No notifications yet</h5>
+                        <p class="text-muted small mb-0">When exams or updates are posted, they will appear here.</p>
                     </div>
                 </div>
             }
             else
             {
-                <div class="list-group shadow-sm border-0">
-                    @foreach (var item in Model)
-                    {
-                        <a href="@(item.ExamId.HasValue ? Url.Action("Details", "Exam", new { id = item.ExamId }) : "#")"
-                           class="list-group-item list-group-item-action p-3 border-start-0 border-end-0 border-top-0 border-bottom d-flex align-items-start justify-content-between )">
+                <div class="card dashboard-card border-0 shadow-sm overflow-hidden">
+                    <div class="list-group list-group-flush">
+                        @foreach (var item in Model)
+                        {
+                            <a href="@(item.ExamId.HasValue ? Url.Action("Details", "Exam", new { id = item.ExamId }) : "#")"
+                               class="list-group-item list-group-item-action p-3.5 border-bottom notification-item d-flex align-items-start justify-content-between text-decoration-none">
 
-                            <div class="d-flex align-items-start">
-                                <div class="badge rounded-circle bg-primary-subtle text-primary p-2 me-3 mt-1">
-                                    <i class="bi bi-journal-text fs-5"></i>
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="icon-shape icon-qe-purple p-3 rounded-3 flex-shrink-0">
+                                        <i class="fa-solid fa-envelope-open-text fs-5"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-1">@item.Title</h6>
+                                        <p class="text-secondary small mb-1">@item.Message</p>
+                                        <small class="text-muted extra-small">
+                                            <i class="fa-regular fa-clock me-1 text-qe-purple"></i>@item.TimeAgo
+                                        </small>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h6 class="mb-1 text-dark">@item.Title</h6>
-                                    <p class="mb-1 text-secondary fw-normal small">@item.Message</p>
-                                    <small class="text-muted fw-normal extra-small">
-                                        <i class="bi bi-clock me-1"></i>@item.TimeAgo
-                                    </small>
-                                </div>
-                            </div>
-                        </a>
-                    }
+                            </a>
+                        }
+                    </div>
                 </div>
             }
         </div>

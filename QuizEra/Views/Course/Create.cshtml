@@ -5,45 +5,59 @@
     Layout = "~/Views/Shared/_InstructorLayout.cshtml";
 }
 
+<style>
+    .btn-qe-primary {
+        background-color: var(--qe-primary-purple);
+        border-color: var(--qe-primary-purple);
+        color: #ffffff;
+    }
+
+        .btn-qe-primary:hover {
+            background-color: var(--qe-active-bg);
+            border-color: var(--qe-active-bg);
+            color: #ffffff;
+        }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--qe-primary-purple);
+        box-shadow: 0 0 0 0.25rem rgba(108, 92, 231, 0.25);
+    }
+</style>
+
 <div class="row justify-content-center">
     <div class="col-lg-10 col-xl-8">
         <form asp-action="Create" method="post">
             @Html.AntiForgeryToken()
 
-            <!-- Header Section -->
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
                 <div>
                     <h3 class="fw-bold text-dark m-0">Add New Course</h3>
                     <p class="text-muted small mb-0">Create a new course container to organize your question banks and exams.</p>
                 </div>
                 <div class="d-flex gap-2">
-                    <a asp-action="Index" class="btn btn-outline-secondary px-4 fw-medium">Cancel</a>
-                    <button type="submit" class="btn btn-success px-4 fw-medium">
+                    <a asp-controller="Instructor" asp-action="Courses" class="btn btn-outline-secondary px-4 fw-medium rounded-3">Cancel</a>                    <button type="submit" class="btn btn-qe-primary px-4 fw-medium rounded-3">
                         <i class="fa-solid fa-plus me-1"></i> Create Course
                     </button>
                 </div>
             </div>
 
-            <!-- Course Details Card -->
-            <div class="card dashboard-card p-4">
+            <div class="card dashboard-card border-0 shadow-sm p-4">
                 <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom">Course Details</h5>
 
-                <!-- Course Name Field -->
                 <div class="mb-3">
                     <label asp-for="CourseName" class="form-label fw-semibold text-secondary small">
                         Course Name <span class="text-danger">*</span>
                     </label>
-                    <input asp-for="CourseName" class="form-control" placeholder="e.g., Introduction to Advanced Calculus" />
+                    <input asp-for="CourseName" class="form-control rounded-3" placeholder="e.g., Introduction to Advanced Calculus" />
                     <div class="form-text text-muted small">The official name of the course.</div>
                     <span asp-validation-for="CourseName" class="text-danger small"></span>
                 </div>
 
-                <!-- Course Level Field -->
                 <div class="mb-3">
                     <label asp-for="CourseLevel" class="form-label fw-semibold text-secondary small">
                         Course Level <span class="text-danger">*</span>
                     </label>
-                    <select asp-for="CourseLevel" class="form-select">
+                    <select asp-for="CourseLevel" class="form-select rounded-3">
                         <option value="">Select Level...</option>
                         <option value="Beginner">Beginner</option>
                         <option value="Intermediate">Intermediate</option>
@@ -53,10 +67,9 @@
                     <span asp-validation-for="CourseLevel" class="text-danger small"></span>
                 </div>
 
-                <!-- Course Description Field -->
                 <div class="mb-2">
                     <label asp-for="CourseDescription" class="form-label fw-semibold text-secondary small">Course Description</label>
-                    <textarea asp-for="CourseDescription" class="form-control" rows="4" placeholder="Provide a brief overview of the course objectives and content..."></textarea>
+                    <textarea asp-for="CourseDescription" class="form-control rounded-3" rows="4" placeholder="Provide a brief overview of the course objectives and content..."></textarea>
                     <span asp-validation-for="CourseDescription" class="text-danger small"></span>
                 </div>
             </div>

@@ -8,19 +8,40 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - QuizEra Instructor</title>
+    <title>@ViewData["Title"] - QuizEra Instructor Portal</title>
 
-    <!-- Bootstrap 5 CSS -->
+    <!-- Google Fonts (Plus Jakarta Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome Icons -->
+    <!-- FontAwesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts (Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
+            :root {
+                /* Theme Colors based on Admin & Student Design */
+                --qe-admin-bg: #110d32;
+                --qe-admin-sidebar: #0d0a27;
+                --qe-active-bg: #5031b8;
+                --qe-primary-purple: #6c5ce7;
+                --qe-primary-soft: #f0edff;
+                --qe-body-bg: #f4f6fa;
+                --qe-text-dark: #1e293b;
+                --qe-text-muted: #8c98a9;
+                --qe-border: #e2e8f0;
+                --qe-sidebar-width: 260px;
+            }
+
             body {
-                font-family: 'Inter', sans-serif;
-                background-color: #f8f9fa;
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                background-color: var(--qe-body-bg);
+                color: var(--qe-text-dark);
+                overflow-x: hidden;
+                margin: 0;
+                padding: 0;
             }
 
             .wrapper {
@@ -29,100 +50,228 @@
                 min-height: 100vh;
             }
 
+            /* Dark Admin-Style Sidebar */
             #sidebar {
-                min-width: 260px;
-                max-width: 260px;
-                background: #ffffff;
-                border-right: 1px solid #e9ecef;
+                width: var(--qe-sidebar-width);
+                min-width: var(--qe-sidebar-width);
+                background-color: var(--qe-admin-sidebar);
                 display: flex;
                 flex-direction: column;
+                transition: all 0.3s ease-in-out;
+                z-index: 1040;
+                padding: 2rem 1.25rem 1.5rem;
             }
 
-                #sidebar .sidebar-header {
-                    padding: 20px;
-                    border-bottom: 1px solid #e9ecef;
+                #sidebar.collapsed {
+                    margin-left: calc(-1 * var(--qe-sidebar-width));
                 }
 
-                #sidebar ul li a {
-                    padding: 12px 25px;
-                    font-size: 0.95rem;
+            /* Brand Logo Area - Centered & Scaled to match Admin/Student */
+            .sidebar-brand {
+                padding: 0 0 2rem 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .brand-logo {
+                max-width: 170px;
+                width: 100%;
+                height: auto;
+                filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.2));
+                margin-bottom: 0.75rem;
+            }
+
+            .brand-badge {
+                display: inline-block;
+                background: rgba(255, 255, 255, 0.08);
+                color: #7090b0;
+                font-size: 0.65rem;
+                font-weight: 700;
+                padding: 5px 14px;
+                border-radius: 20px;
+                letter-spacing: 1.2px;
+                text-transform: uppercase;
+            }
+
+            /* Sidebar Navigation Items */
+            .sidebar-menu {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+                .sidebar-menu .nav-link {
+                    padding: 0.85rem 1.25rem;
+                    color: #94a3b8;
+                    font-size: 0.925rem;
+                    font-weight: 600;
+                    border-radius: 14px;
                     display: flex;
                     align-items: center;
-                    color: #6c757d;
+                    gap: 14px;
+                    transition: all 0.25s ease;
                     text-decoration: none;
-                    font-weight: 500;
-                    transition: 0.2s;
                 }
 
-                    #sidebar ul li a:hover, #sidebar ul li.active > a {
-                        color: #198754;
-                        background: #f0fff4;
-                        border-left: 4px solid #198754;
-                    }
-
-                    #sidebar ul li a i {
-                        margin-right: 12px;
-                        font-size: 1.1rem;
-                        width: 20px;
+                    .sidebar-menu .nav-link i {
+                        font-size: 1.15rem;
+                        width: 22px;
                         text-align: center;
                     }
 
+                    .sidebar-menu .nav-link:hover {
+                        color: #ffffff;
+                        background-color: rgba(255, 255, 255, 0.06);
+                    }
+
+                    .sidebar-menu .nav-link.active {
+                        color: #ffffff;
+                        background-color: var(--qe-active-bg);
+                        box-shadow: 0 4px 20px rgba(80, 49, 184, 0.4);
+                        font-weight: 700;
+                    }
+
+            /* Content Area */
             #content {
-                width: 100%;
-                min-height: 100vh;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
             }
 
+            /* Header Navbar */
             .top-navbar {
-                padding: 12px 30px;
+                height: 80px;
                 background: #ffffff;
-                border-bottom: 1px solid #e9ecef;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+                border-bottom: 1px solid var(--qe-border);
+                padding: 0 2rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                position: sticky;
+                top: 0;
+                z-index: 1020;
+            }
+
+            .btn-toggle-sidebar {
+                background: transparent;
+                border: none;
+                color: var(--qe-text-muted);
+                font-size: 1.25rem;
+                cursor: pointer;
+                padding: 6px 10px;
+                border-radius: 8px;
+                transition: background 0.2s;
+            }
+
+                .btn-toggle-sidebar:hover {
+                    background-color: var(--qe-body-bg);
+                    color: var(--qe-text-dark);
+                }
+
+            .breadcrumb-sub {
+                font-size: 0.8rem;
+                color: var(--qe-text-muted);
+                margin-bottom: 2px;
+            }
+
+            .page-title-header {
+                font-size: 1.15rem;
+                font-weight: 700;
+                color: var(--qe-text-dark);
+                margin: 0;
+            }
+
+            /* Reusable Card Styles Matching Admin */
+            .dashboard-card {
+                border: none !important;
+                border-radius: 20px !important;
+                box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03) !important;
+                background: #ffffff;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+                .dashboard-card:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06) !important;
+                }
+
+            @@media (max-width: 991.98px) {
+                #sidebar {
+                    position: fixed;
+                    height: 100vh;
+                    margin-left: calc(-1 * var(--qe-sidebar-width));
+                }
+
+                    #sidebar.show {
+                        margin-left: 0;
+                    }
             }
     </style>
 </head>
 <body>
     <div class="wrapper">
-        <!-- Sidebar -->
+        <!-- Dark Sidebar (Matching Admin & Student) -->
         <nav id="sidebar">
-            <div class="sidebar-header">
-                <h4 class="fw-bold text-success m-0"><i class="fa-solid fa-graduation-cap me-2"></i>QuizEra</h4>
-                <small class="text-muted">Instructor Portal</small>
+            <div class="sidebar-brand">
+                <a asp-controller="Instructor" asp-action="Index" class="d-flex flex-column align-items-center text-decoration-none">
+                    <img src="~/images/logo-header.png" alt="QuizEra Logo" class="brand-logo" />
+                    <span class="brand-badge">INSTRUCTOR PORTAL</span>
+                </a>
             </div>
-            <ul class="list-unstyled components mb-auto py-3">
+
+            <ul class="sidebar-menu">
                 <li>
-                    <a asp-controller="Instructor" asp-action="Index">
-                        <i class="fa-solid fa-house"></i> Home
+                    <a asp-controller="Instructor" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Instructor" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="Instructor" asp-action="Courses">
-                        <i class="fa-solid fa-book-bookmark"></i> My Courses
+                    <a asp-controller="Instructor" asp-action="Courses" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Courses" ? "active" : "")">
+                        <i class="fa-solid fa-book-bookmark"></i>
+                        <span>My Courses</span>
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="Exam" asp-action="Index">
-                        <i class="fa-solid fa-file-signature"></i> Manage Exams
+                    <a asp-controller="Exam" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Exam" ? "active" : "")">
+                        <i class="fa-solid fa-file-signature"></i>
+                        <span>Manage Exams</span>
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="Questions" asp-action="Index">
-                        <i class="fa-solid fa-list-check"></i> Question Bank
+                    <a asp-controller="Questions" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Questions" ? "active" : "")">
+                        <i class="fa-solid fa-list-check"></i>
+                        <span>Question Bank</span>
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="Instructor" asp-action="Students">
-                        <i class="fa-solid fa-users"></i> Students Progress
+                    <a asp-controller="Instructor" asp-action="Students" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Students" ? "active" : "")">
+                        <i class="fa-solid fa-users"></i>
+                        <span>Students Progress</span>
                     </a>
                 </li>
             </ul>
         </nav>
 
-        <!-- Main Content -->
+        <!-- Main Content Area -->
         <div id="content">
             <!-- Top Navbar -->
-            <div class="top-navbar d-flex justify-content-between align-items-center">
-                <div>
-                    <span class="text-muted small fw-medium">Instructor Workspace</span>
+            <header class="top-navbar">
+                <div class="d-flex align-items-center gap-3">
+                    <button id="sidebarToggle" class="btn-toggle-sidebar" type="button">
+                        <i class="fa-solid fa-bars-staggered"></i>
+                    </button>
+                    <div>
+                        <div class="breadcrumb-sub">Pages / Instructor</div>
+                        <h4 class="page-title-header">@ViewData["Title"]</h4>
+                    </div>
                 </div>
 
                 <div class="d-flex align-items-center gap-3">
@@ -131,15 +280,33 @@
                         @await Component.InvokeAsync("UserProfile")
                     }
                 </div>
-            </div>
+            </header>
 
-            <div class="container-fluid p-4">
+            <!-- Page Body -->
+            <main class="container-fluid p-4">
                 @RenderBody()
-            </div>
+            </main>
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const sidebar = document.getElementById("sidebar");
+                const sidebarToggle = document.getElementById("sidebarToggle");
+
+                sidebarToggle?.addEventListener("click", function() {
+                    if (window.innerWidth < 992) {
+                        sidebar.classList.toggle("show");
+                    } else {
+                        sidebar.classList.toggle("collapsed");
+                    }
+                });
+            });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

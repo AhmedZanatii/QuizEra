@@ -24,5 +24,6 @@ namespace QuizEra.BLL.ModelVM.Exam
         public DateTime EndDate { get; set; }
 
         public List<CreateExamQuestionVM> Questions { get; set; } = new();
+        public int QuestionsCount { get; set; }
     }
 }

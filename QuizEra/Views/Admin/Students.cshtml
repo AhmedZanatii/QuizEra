@@ -5,95 +5,200 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<style>
+    .qz-card {
+        background: #FFFFFF;
+        border: 1px solid var(--qz-border-color);
+        border-radius: 20px;
+        box-shadow: var(--qz-card-shadow);
+    }
+
+    .btn-qz-primary {
+        background-color: var(--qz-purple);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 10px 20px;
+        transition: all 0.2s ease;
+    }
+
+        .btn-qz-primary:hover {
+            background-color: var(--qz-purple-hover);
+            color: #FFFFFF;
+            box-shadow: 0px 6px 16px rgba(77, 33, 151, 0.25);
+        }
+
+    .badge-status-active {
+        background-color: rgba(5, 205, 153, 0.1);
+        color: #05CD99;
+        font-weight: 700;
+        padding: 5px 12px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+    }
+
+    .badge-status-inactive {
+        background-color: rgba(238, 93, 80, 0.1);
+        color: #EE5D50;
+        font-weight: 700;
+        padding: 5px 12px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+    }
+
+    .qz-table th {
+        background-color: #F4F7FE;
+        color: #A3AED0;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 700;
+        padding: 16px;
+        border: none;
+    }
+
+    .qz-table td {
+        padding: 16px;
+        color: #1B2559;
+        border-bottom: 1px solid #F4F7FE;
+    }
+
+    .qz-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .action-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #E0E5F2;
+        background-color: #FFFFFF;
+        color: #1B2559;
+        transition: all 0.2s ease;
+    }
+
+        .action-btn:hover {
+            background-color: #F4F7FE;
+            color: var(--qz-purple);
+        }
+
+    .action-btn-danger:hover {
+        background-color: rgba(238, 93, 80, 0.1);
+        color: #EE5D50;
+        border-color: rgba(238, 93, 80, 0.2);
+    }
+
+    .action-btn-success:hover {
+        background-color: rgba(5, 205, 153, 0.1);
+        color: #05CD99;
+        border-color: rgba(5, 205, 153, 0.2);
+    }
+</style>
+
+<!-- Header -->
+<div class="mb-4 d-flex justify-content-between align-items-center">
     <div>
-        <h3 class="fw-bold text-dark m-0">Students</h3>
-        <p class="text-muted small mb-0">Manage student accounts and records.</p>
+        <h3 class="fw-bold m-0" style="color: #1B2559;">Students Management</h3>
+        <p class="text-muted small m-0 mt-1">Manage student accounts, directory, and status.</p>
     </div>
-    <a asp-action="CreateStudent" class="btn btn-primary btn-sm">
-        <i class="fa-solid fa-plus me-1"></i> Add Student
+    <a asp-action="CreateStudent" class="btn btn-qz-primary text-decoration-none">
+        <i class="fa-solid fa-plus me-2"></i>Add Student
     </a>
 </div>
 
 @if (TempData["Success"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["Success"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="alert alert-success border-0 rounded-3 shadow-sm mb-4 d-flex align-items-center alert-dismissible fade show" role="alert" style="background-color: rgba(5, 205, 153, 0.1); color: #05CD99;">
+        <i class="fa-solid fa-circle-check me-2"></i>
+        <div>@TempData["Success"]</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["Error"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="alert alert-danger border-0 rounded-3 shadow-sm mb-4 d-flex align-items-center alert-dismissible fade show" role="alert" style="background-color: rgba(238, 93, 80, 0.1); color: #EE5D50;">
+        <i class="fa-solid fa-circle-exclamation me-2"></i>
+        <div>@TempData["Error"]</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
-<div class="card dashboard-card">
-    <div class="card-body p-0">
-        @if (!Model.Any())
-        {
-            <div class="p-4 text-center text-muted">No students found.</div>
-        }
-        else
-        {
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="ps-3">Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Status</th>
-                            <th class="text-end pe-3">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var student in Model)
-                        {
-                            <tr>
-                                <td class="ps-3 fw-medium">@student.FirstName @student.LastName</td>
-                                <td>@student.Email</td>
-                                <td>@(string.IsNullOrEmpty(student.PhoneNumber) ? "-" : student.PhoneNumber)</td>
-                                <td>
-                                    @if (student.IsActive)
-                                    {
-                                        <span class="badge bg-success bg-opacity-10 text-success">Active</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary bg-opacity-10 text-secondary">Inactive</span>
-                                    }
-                                </td>
-                                <td class="text-end pe-3">
-                                    <a asp-action="StudentDetails" asp-route-id="@student.Id" class="btn btn-outline-info btn-sm me-1">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </a>
-                                    <a asp-action="EditStudent" asp-route-id="@student.Id" class="btn btn-outline-warning btn-sm me-1">
-                                        <i class="fa-solid fa-pen"></i>
-                                    </a>
-                                    @if (student.IsActive)
-                                    {
-                                        <a asp-action="DeactivateStudent" asp-route-id="@student.Id" class="btn btn-outline-danger btn-sm">
-                                            <i class="fa-solid fa-user-slash"></i>
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <form asp-action="RestoreStudent" asp-route-id="@student.Id" method="post" style="display:inline;">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-outline-success btn-sm">
-                                                <i class="fa-solid fa-rotate-left"></i>
-                                            </button>
-                                        </form>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+<div class="qz-card overflow-hidden">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="text-center py-5 px-4">
+            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 72px; height: 72px; background-color: #F4F7FE; color: #A3AED0;">
+                <i class="fa-solid fa-user-graduate fs-2"></i>
             </div>
-        }
-    </div>
+            <h5 class="fw-bold" style="color: #1B2559;">No Students Found</h5>
+            <p class="text-muted small m-0">There are currently no students registered in the system.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table qz-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in Model)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-bold">@student.FirstName @student.LastName</td>
+                            <td class="text-muted"><i class="fa-regular fa-envelope me-2"></i>@student.Email</td>
+                            <td class="text-muted"><i class="fa-solid fa-phone me-2"></i>@(string.IsNullOrEmpty(student.PhoneNumber) ? "-" : student.PhoneNumber)</td>
+                            <td>
+                                @if (student.IsActive)
+                                {
+                                    <span class="badge-status-active d-inline-flex align-items-center gap-1">
+                                        <i class="fa-solid fa-circle" style="font-size: 0.4rem;"></i> Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge-status-inactive d-inline-flex align-items-center gap-1">
+                                        <i class="fa-solid fa-circle" style="font-size: 0.4rem;"></i> Inactive
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <a asp-action="StudentDetails" asp-route-id="@student.Id" class="action-btn text-decoration-none me-1" title="View Details">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                <a asp-action="EditStudent" asp-route-id="@student.Id" class="action-btn text-decoration-none me-1" title="Edit">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                @if (student.IsActive)
+                                {
+                                    <a asp-action="DeactivateStudent" asp-route-id="@student.Id" class="action-btn action-btn-danger text-decoration-none" title="Deactivate">
+                                        <i class="fa-solid fa-user-slash"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <form asp-action="RestoreStudent" asp-route-id="@student.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="action-btn action-btn-success" title="Restore">
+                                            <i class="fa-solid fa-rotate-left"></i>
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 </div>

@@ -5,51 +5,107 @@
     Layout = "~/Views/Shared/_StudentLayout.cshtml";
 }
 
-<div class="card dashboard-card border-0">
-    <div class="card-body p-4 p-lg-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <a asp-controller="Course" asp-action="CourseDetailsForStud" asp-route-id="@Model.CourseID" class="text-decoration-none text-muted small">
-                    <i class="fa-solid fa-arrow-left me-1"></i>Back to Course
-                </a>
-                <h3 class="fw-bold text-dark mt-2 mb-1">Leave a Review</h3>
+<style>
+    .btn-qe-primary {
+        background-color: var(--qe-primary-purple);
+        border-color: var(--qe-primary-purple);
+        color: #ffffff;
+        transition: all 0.25s ease;
+    }
+
+        .btn-qe-primary:hover {
+            background-color: var(--qe-active-bg);
+            border-color: var(--qe-active-bg);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(80, 49, 184, 0.3);
+        }
+
+    .form-control:focus {
+        border-color: var(--qe-primary-purple);
+        box-shadow: 0 0 0 0.25rem rgba(108, 92, 231, 0.15);
+    }
+
+    /* Star Rating Custom Card Buttons */
+    .rating-option-btn {
+        cursor: pointer;
+        border: 2px solid var(--qe-border);
+        border-radius: 12px;
+        padding: 0.6rem 1.2rem;
+        transition: all 0.2s ease;
+        background-color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        user-select: none;
+    }
+
+    .rating-option-input:checked + .rating-option-btn {
+        border-color: #ffc107;
+        background-color: #fff9e6;
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+    }
+
+    .rating-option-btn:hover {
+        border-color: #ffc107;
+    }
+
+    .text-qe-purple {
+        color: var(--qe-primary-purple) !important;
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="card dashboard-card border-0 shadow-sm overflow-hidden">
+            <div class="card-body p-4 p-lg-5">
+
+                <div class="mb-4">
+                    <a asp-controller="Course" asp-action="CourseDetailsForStud" asp-route-id="@Model.CourseID" class="text-decoration-none text-muted small fw-semibold">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Back to Course
+                    </a>
+                    <h3 class="fw-bold text-dark mt-2 mb-1">Leave a Review</h3>
+                    <p class="text-muted small mb-0">Help us improve by sharing your experience and feedback on this course.</p>
+                </div>
+
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="CourseID" type="hidden" />
+                    <input asp-for="StudentID" type="hidden" />
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-dark small text-uppercase" style="letter-spacing: 0.5px;">Your Rating</label>
+                        <div class="d-flex flex-wrap gap-2 mt-1">
+                            @for (int i = 5; i >= 1; i--)
+                            {
+                                <div class="position-relative">
+                                    <input class="form-check-input d-none rating-option-input" type="radio" asp-for="Rate" value="@i" id="rating-@i" />
+                                    <label class="rating-option-btn fw-bold text-dark small" for="rating-@i">
+                                        <i class="fa-solid fa-star text-warning fs-6"></i> @i
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <span asp-validation-for="Rate" class="text-danger small d-block mt-2"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Comment" class="form-label fw-bold text-dark small text-uppercase" style="letter-spacing: 0.5px;">Your Feedback</label>
+                        <textarea asp-for="Comment" class="form-control rounded-3 p-3" rows="5" placeholder="Share what you liked about this course and how it could be improved..."></textarea>
+                        <span asp-validation-for="Comment" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-end align-items-center gap-3 pt-2">
+                        <a asp-controller="Course" asp-action="CourseDetailsForStud" asp-route-id="@Model.CourseID" class="btn btn-light fw-semibold px-4 py-2 rounded-3 border-0">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-qe-primary fw-bold px-4 py-2 rounded-3">
+                            <i class="fa-solid fa-paper-plane me-2"></i>Submit Feedback
+                        </button>
+                    </div>
+                </form>
+
             </div>
         </div>
-
-        <form asp-action="Create" method="post">
-            @Html.AntiForgeryToken()
-            <input asp-for="CourseID" type="hidden" />
-            <input asp-for="StudentID" type="hidden" />
-
-            <div class="mb-4">
-                <label class="form-label fw-semibold text-secondary">Your Rating</label>
-                <div class="d-flex flex-wrap gap-3 mt-2">
-                    @for (int i = 5; i >= 1; i--)
-                    {
-                        <div class="form-check form-check-inline m-0">
-                            <input class="form-check-input" type="radio" asp-for="Rate" value="@i" id="rating-@i" />
-                            <label class="form-check-label fw-semibold text-warning" for="rating-@i">
-                                <i class="fa-solid fa-star"></i> @i
-                            </label>
-                        </div>
-                    }
-                </div>
-                <span asp-validation-for="Rate" class="text-danger small d-block mt-2"></span>
-            </div>
-
-            <div class="mb-4">
-                <label asp-for="Comment" class="form-label fw-semibold text-secondary">Review</label>
-                <textarea asp-for="Comment" class="form-control" rows="6" placeholder="Share what you liked about this course and how it could improve..."></textarea>
-                <span asp-validation-for="Comment" class="text-danger small"></span>
-            </div>
-
-            <div class="d-flex justify-content-end gap-2">
-                <a asp-controller="Course" asp-action="CourseDetailsForStud" asp-route-id="@Model.CourseID" class="btn btn-light">Cancel</a>
-                <button type="submit" class="btn btn-primary px-4">
-                    <i class="fa-solid fa-paper-plane me-2"></i>Submit Feedback
-                </button>
-            </div>
-        </form>
     </div>
 </div>
 

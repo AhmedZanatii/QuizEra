@@ -5,196 +5,218 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<style>
+    :root {
+        --qz-purple: #4D2197;
+        --qz-dark-text: #1B2559;
+        --qz-sub-text: #707EAE;
+        --qz-bg-light: #F4F7FE;
+        --qz-border-color: #E9EFFC;
+    }
+
+    .qz-admin-card {
+        background: #FFFFFF;
+        border-radius: 16px;
+        border: 1px solid var(--qz-border-color);
+        box-shadow: 0px 10px 30px rgba(112, 144, 176, 0.08);
+        overflow: hidden;
+    }
+
+    .qz-title {
+        color: var(--qz-dark-text);
+        font-weight: 800;
+    }
+
+    .qz-btn-primary {
+        background: var(--qz-purple);
+        color: #FFFFFF;
+        border-radius: 10px;
+        font-weight: 700;
+        padding: 9px 20px;
+        border: none;
+        transition: all 0.2s;
+    }
+
+        .qz-btn-primary:hover {
+            opacity: 0.9;
+            color: #FFFFFF;
+        }
+
+    .qz-table th {
+        background-color: var(--qz-bg-light);
+        color: var(--qz-sub-text);
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 16px;
+        border: none;
+    }
+
+    .qz-table td {
+        padding: 16px;
+        color: var(--qz-dark-text);
+        border-bottom: 1px solid var(--qz-border-color);
+    }
+
+    .qz-action-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--qz-bg-light);
+        color: var(--qz-dark-text);
+        text-decoration: none;
+        border: none;
+        transition: all 0.2s;
+    }
+
+        .qz-action-btn:hover {
+            background: var(--qz-purple);
+            color: #FFFFFF;
+        }
+
+        .qz-action-btn.danger:hover {
+            background: #EE5D50;
+            color: #FFFFFF;
+        }
+
+        .qz-action-btn.success:hover {
+            background: #05CD99;
+            color: #FFFFFF;
+        }
+
+    .qz-badge-active {
+        background-color: #E6F9F5;
+        color: #05CD99;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.78rem;
+    }
+
+    .qz-badge-deleted {
+        background-color: #FFEAE6;
+        color: #EE5D50;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.78rem;
+    }
+</style>
+
 <div class="container-fluid py-4">
 
-    <!-- Header -->
+    <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold text-dark mb-1">Courses</h2>
-            <p class="text-muted small mb-0">
-                Manage all courses in the system.
-            </p>
+            <h2 class="qz-title mb-1">Courses Management</h2>
+            <p class="text-muted small mb-0">Overview and control of all registered courses.</p>
         </div>
 
-        <a asp-controller="Admin"
-           asp-action="CreateCourse"
-           class="btn btn-primary fw-semibold">
-            <i class="fa-solid fa-plus me-1"></i>
-            Add Course
+        <a asp-controller="Admin" asp-action="CreateCourse" class="btn qz-btn-primary">
+            <i class="fa-solid fa-plus me-2"></i>Add Course
         </a>
     </div>
 
-    <!-- Back -->
+    <!-- Back Navigation -->
     <div class="mb-3">
-        <a asp-controller="Admin"
-           asp-action="Index"
-           class="btn btn-outline-secondary btn-sm">
-            <i class="fa-solid fa-arrow-left me-1"></i>
-            Back to Dashboard
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-sm btn-outline-secondary rounded-2">
+            <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard
         </a>
     </div>
 
     @if (Model != null && Model.Any())
     {
-        <div class="card border-0 shadow-sm rounded-3">
-            <div class="card-body p-0">
-
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-
-                        <thead class="table-light">
-                            <tr>
-                                <th class="px-4">Course</th>
-                                <th>Code</th>
-                                <th>Level</th>
-                                <th>Status</th>
-                                <th class="text-end px-4">Actions</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            @foreach (var course in Model)
-                            {
-                                <tr class="@(course.IsDeleted ? "table-secondary" : "")">
-
-                                    <td class="px-4">
-                                        <div>
-                                            <div class="fw-semibold">
-                                                @course.CourseName
-                                            </div>
-
-                                            @if (!string.IsNullOrWhiteSpace(course.CourseDescription))
-                                            {
-                                                <small class="text-muted">
-                                                    @(course.CourseDescription.Length > 70
-                                                        ? course.CourseDescription.Substring(0, 70) + "..."
-                                                        : course.CourseDescription)
-                                                </small>
-                                            }
+        <div class="qz-admin-card">
+            <div class="table-responsive">
+                <table class="table qz-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Course</th>
+                            <th>Code</th>
+                            <th>Level</th>
+                            <th>Status</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var course in Model)
+                        {
+                            <tr style="@(course.IsDeleted ? "opacity: 0.65; background-color: #FAFBFD;" : "")">
+                                <td class="ps-4">
+                                    <div class="fw-bold fs-6">@course.CourseName</div>
+                                    @if (!string.IsNullOrWhiteSpace(course.CourseDescription))
+                                    {
+                                        <div class="text-muted small">
+                                            @(course.CourseDescription.Length > 65 ? course.CourseDescription.Substring(0, 65) + "..." : course.CourseDescription)
                                         </div>
-                                    </td>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border px-2 py-1">@course.CourseCode</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary px-2 py-1">@course.CourseLevel</span>
+                                </td>
+                                <td>
+                                    @if (course.IsDeleted)
+                                    {
+                                        <span class="qz-badge-deleted"><i class="fa-solid fa-trash-can me-1"></i> Deleted</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="qz-badge-active"><i class="fa-solid fa-circle-check me-1"></i> Active</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a asp-controller="Admin" asp-action="CourseDetails" asp-route-id="@course.Id" class="qz-action-btn" title="Details">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
 
-                                    <td>
-                                        <span class="badge bg-light text-dark border">
-                                            @course.CourseCode
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <span class="badge bg-primary bg-opacity-10 text-primary">
-                                            @course.CourseLevel
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        @if (course.IsDeleted)
+                                        @if (!course.IsDeleted)
                                         {
-                                            <span class="badge bg-danger">
-                                                <i class="fa-solid fa-trash-can me-1"></i>
-                                                Deleted
-                                            </span>
+                                            <a asp-controller="Admin" asp-action="EditCourse" asp-route-id="@course.Id" class="qz-action-btn" title="Edit">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+
+                                            <form asp-controller="Admin" asp-action="DeleteCourse" asp-route-id="@course.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this course?');">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="qz-action-btn danger" title="Delete">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                            </form>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-success">
-                                                <i class="fa-solid fa-circle-check me-1"></i>
-                                                Active
-                                            </span>
+                                            <form asp-controller="Admin" asp-action="RestoreCourse" asp-route-id="@course.Id" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="qz-action-btn success" title="Restore">
+                                                    <i class="fa-solid fa-trash-arrow-up"></i>
+                                                </button>
+                                            </form>
                                         }
-                                    </td>
-
-                                    <td class="text-end px-4">
-
-                                        <div class="d-flex justify-content-end gap-2">
-
-                                            <a asp-controller="Admin"
-                                               asp-action="CourseDetails"
-                                               asp-route-id="@course.Id"
-                                               class="btn btn-sm btn-light text-secondary"
-                                               title="Details">
-                                                <i class="fa-solid fa-eye"></i>
-                                            </a>
-
-                                            @if (!course.IsDeleted)
-                                            {
-                                                <a asp-controller="Admin"
-                                                   asp-action="EditCourse"
-                                                   asp-route-id="@course.Id"
-                                                   class="btn btn-sm btn-light text-primary"
-                                                   title="Edit">
-                                                    <i class="fa-solid fa-pen-to-square"></i>
-                                                </a>
-
-                                                <form asp-controller="Admin"
-                                                      asp-action="DeleteCourse"
-                                                      asp-route-id="@course.Id"
-                                                      method="post"
-                                                      class="d-inline"
-                                                      onsubmit="return confirm('Are you sure you want to delete this course?');">
-
-                                                    @Html.AntiForgeryToken()
-
-                                                    <button type="submit"
-                                                            class="btn btn-sm btn-light text-danger"
-                                                            title="Delete">
-                                                        <i class="fa-solid fa-trash-can"></i>
-                                                    </button>
-                                                </form>
-                                            }
-                                            else
-                                            {
-                                                <form asp-controller="Admin"
-                                                      asp-action="RestoreCourse"
-                                                      asp-route-id="@course.Id"
-                                                      method="post"
-                                                      class="d-inline">
-
-                                                    @Html.AntiForgeryToken()
-
-                                                    <button type="submit"
-                                                            class="btn btn-sm btn-light text-success"
-                                                            title="Restore">
-                                                        <i class="fa-solid fa-trash-arrow-up"></i>
-                                                    </button>
-                                                </form>
-                                            }
-
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-
-                    </table>
-                </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     }
     else
     {
-        <div class="card border-0 shadow-sm text-center py-5">
-            <div class="card-body">
-
-                <i class="fa-solid fa-book-open text-muted fs-1 mb-3"></i>
-
-                <h4 class="fw-bold">
-                    No Courses Yet
-                </h4>
-
-                <p class="text-muted">
-                    There are no courses in the system.
-                </p>
-
-                <a asp-controller="Admin"
-                   asp-action="CreateCourse"
-                   class="btn btn-primary">
-                    <i class="fa-solid fa-plus me-1"></i>
-                    Create First Course
-                </a>
-
-            </div>
+        <div class="qz-admin-card text-center py-5">
+            <i class="fa-solid fa-book-open text-muted fs-1 mb-3"></i>
+            <h4 class="fw-bold text-dark">No Courses Yet</h4>
+            <p class="text-muted">There are no courses currently available in the system.</p>
+            <a asp-controller="Admin" asp-action="CreateCourse" class="btn qz-btn-primary mt-2">
+                <i class="fa-solid fa-plus me-2"></i>Create First Course
+            </a>
         </div>
     }
-
 </div>

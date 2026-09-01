@@ -5,18 +5,79 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="card dashboard-card p-4 col-md-8 mx-auto mt-4">
-    <div class="text-center mb-4">
-        <i class="fa-solid fa-triangle-exclamation text-warning fs-1 mb-2"></i>
-        <h4 class="fw-bold">Deactivate Instructor</h4>
-        <p class="text-muted">Are you sure you want to deactivate <strong>@Model.FirstName @Model.LastName</strong> (@Model.Email)?</p>
+<style>
+    .qz-confirm-card {
+        background: #FFFFFF;
+        border: 1px solid var(--qz-border-color);
+        border-radius: 20px;
+        box-shadow: var(--qz-card-shadow);
+    }
+
+    .qz-warning-icon-wrapper {
+        width: 72px;
+        height: 72px;
+        background: #FEEFEE;
+        color: #EE5D50;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 20px auto;
+    }
+
+    .btn-qz-danger {
+        background-color: #EE5D50;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        padding: 10px 24px;
+        transition: all 0.2s ease;
+    }
+
+        .btn-qz-danger:hover {
+            background-color: #E33B2E;
+            color: #FFFFFF;
+            box-shadow: 0px 8px 20px rgba(238, 93, 80, 0.25);
+        }
+
+    .btn-qz-outline {
+        border: 1px solid var(--qz-border-color);
+        background: #FFFFFF;
+        color: var(--qz-dark-text);
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 10px 24px;
+    }
+
+        .btn-qz-outline:hover {
+            background: #F4F7FE;
+            color: var(--qz-purple);
+        }
+</style>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="qz-confirm-card p-4 p-md-5 text-center">
+            <div class="qz-warning-icon-wrapper">
+                <i class="fa-solid fa-user-slash"></i>
+            </div>
+
+            <h4 class="fw-bold mb-2" style="color: #1B2559;">Deactivate Instructor</h4>
+            <p class="text-muted mb-4">
+                Are you sure you want to deactivate <strong style="color: #1B2559;">@Model.FirstName @Model.LastName</strong> (@Model.Email)?
+            </p>
+
+            <form asp-action="DeactivateInstructorConfirmed" method="post" class="d-flex justify-content-center gap-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <a asp-action="Instructors" class="btn btn-qz-outline text-decoration-none">Cancel</a>
+                <button type="submit" class="btn btn-qz-danger">
+                    <i class="fa-solid fa-circle-xmark me-2"></i>Yes, Deactivate
+                </button>
+            </form>
+        </div>
     </div>
-
-    <form asp-action="DeactivateInstructorConfirmed" method="post" class="text-center">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="id" value="@Model.Id" />
-
-        <button type="submit" class="btn btn-danger px-4">Yes, Deactivate</button>
-        <a asp-action="Instructors" class="btn btn-outline-secondary px-4 ms-2">Cancel</a>
-    </form>
 </div>

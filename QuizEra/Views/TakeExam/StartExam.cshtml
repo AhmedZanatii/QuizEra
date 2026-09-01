@@ -10,65 +10,183 @@
     <meta charset="UTF-8">
     <title>@Model.ExamTitle - QuizEra</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        body { background-color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; overflow: hidden; }
-        .exam-header { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 12px 24px; height: 65px; }
-        .sidebar { background: #fff; border-right: 1px solid #e2e8f0; width: 300px; height: calc(100vh - 65px); padding: 20px; float: left; overflow-y: auto; }
-        .main-content { margin-left: 300px; padding: 40px; height: calc(100vh - 65px); overflow-y: auto; }
-        
-        /* Navigator Grid */
-        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 15px; }
-        .nav-btn { height: 40px; border-radius: 6px; border: 1px solid #e2e8f0; background: #fff; font-weight: 500; }
-        .nav-btn.answered { background-color: #86efac; border-color: #4ade80; color: #166534; }
-        .nav-btn.current { background-color: #1d4ed8; color: #fff; border-color: #1e3a8a; }
-        .nav-btn.flagged { background-color: #fed7aa; border-color: #fdba74; position: relative; }
-        .nav-btn.flagged::after { content: ''; position: absolute; top: 4px; right: 4px; width: 6px; height: 6px; background: #c2410c; border-radius: 50%; }
+            :root {
+                --qe-primary-purple: #6c5ce7;
+                --qe-active-bg: #5031b8;
+                --qe-primary-soft: #f0edff;
+                --qe-dark: #0d0a27;
+            }
 
-        /* Question Elements */
-        .question-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .option-box { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; }
-        .option-box:hover { border-color: #3b82f6; }
-        .option-box.selected { border-color: #1d4ed8; background-color: #eff6ff; border-width: 2px; }
-        
-        .timer-box { background-color: #eff6ff; color: #1e40af; border-radius: 6px; padding: 6px 16px; font-weight: 600; font-family: monospace; font-size: 1.1rem; }
+            body {
+                background-color: #f8fafc;
+                font-family: system-ui, -apple-system, sans-serif;
+                overflow: hidden;
+            }
+
+            .exam-header {
+                background: #fff;
+                border-bottom: 1px solid #e2e8f0;
+                padding: 12px 24px;
+                height: 65px;
+            }
+
+            .sidebar {
+                background: #fff;
+                border-right: 1px solid #e2e8f0;
+                width: 300px;
+                height: calc(100vh - 65px);
+                padding: 20px;
+                float: left;
+                overflow-y: auto;
+            }
+
+            .main-content {
+                margin-left: 300px;
+                padding: 40px;
+                height: calc(100vh - 65px);
+                overflow-y: auto;
+            }
+
+            /* Navigator Grid */
+            .nav-grid {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+            .nav-btn {
+                height: 40px;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+                background: #fff;
+                font-weight: 600;
+                color: #475569;
+                transition: all 0.2s;
+            }
+
+                .nav-btn.answered {
+                    background-color: var(--qe-primary-soft);
+                    border-color: var(--qe-primary-purple);
+                    color: var(--qe-primary-purple);
+                }
+
+                .nav-btn.current {
+                    background-color: var(--qe-primary-purple);
+                    color: #fff;
+                    border-color: var(--qe-primary-purple);
+                    box-shadow: 0 4px 10px rgba(108, 92, 231, 0.25);
+                }
+
+                .nav-btn.flagged {
+                    background-color: #fed7aa;
+                    border-color: #fdba74;
+                    position: relative;
+                }
+
+                    .nav-btn.flagged::after {
+                        content: '';
+                        position: absolute;
+                        top: 4px;
+                        right: 4px;
+                        width: 6px;
+                        height: 6px;
+                        background: #c2410c;
+                        border-radius: 50%;
+                    }
+
+            /* Question Elements */
+            .question-card {
+                background: #fff;
+                border-radius: 12px;
+                border: 1px solid #e2e8f0;
+                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            }
+
+            .option-box {
+                border: 1.5px solid #e2e8f0;
+                border-radius: 10px;
+                padding: 16px;
+                margin-bottom: 12px;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+                .option-box:hover {
+                    border-color: var(--qe-primary-purple);
+                }
+
+                .option-box.selected {
+                    border-color: var(--qe-primary-purple);
+                    background-color: var(--qe-primary-soft);
+                    border-width: 2px;
+                }
+
+            .timer-box {
+                background-color: var(--qe-primary-soft);
+                color: var(--qe-primary-purple);
+                border-radius: 8px;
+                padding: 6px 16px;
+                font-weight: 700;
+                font-family: monospace;
+                font-size: 1.1rem;
+            }
+
+            .btn-qe-primary {
+                background-color: var(--qe-primary-purple);
+                border-color: var(--qe-primary-purple);
+                color: #ffffff;
+            }
+
+                .btn-qe-primary:hover {
+                    background-color: var(--qe-active-bg);
+                    border-color: var(--qe-active-bg);
+                    color: #ffffff;
+                }
+
+            .progress-bar-qe {
+                background-color: var(--qe-primary-purple);
+            }
     </style>
 </head>
 <body>
 
     <header class="exam-header d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-3">
-            <h4 class="m-0 fw-bold text-primary">QuizEra</h4>
+            <h4 class="m-0 fw-bold" style="color: var(--qe-primary-purple);">QuizEra</h4>
             <span class="text-muted">|</span>
             <span class="fw-semibold text-secondary">@Model.ExamTitle</span>
         </div>
         <div class="d-flex align-items-center gap-4">
-            <div class="timer-box" id="timer">00:00:00</div>
+            <div class="timer-box" id="timer"><i class="fa-regular fa-clock me-1"></i>00:00:00</div>
             @using (Html.BeginForm("SubmitExam", "TakeExam", FormMethod.Post, new { id = "submitForm" }))
             {
                 <input type="hidden" name="examId" value="@Model.ExamId" />
-                <button type="submit" class="btn btn-danger fw-bold px-4">Submit Exam</button>
+                <button type="submit" class="btn btn-danger fw-bold px-4 rounded-3"><i class="fa-solid fa-paper-plane me-1"></i> Submit Exam</button>
             }
         </div>
     </header>
 
     <aside class="sidebar">
-        <h6 class="fw-bold mb-3">Question Navigator</h6>
+        <h6 class="fw-bold mb-3 text-dark">Question Navigator</h6>
         <div class="progress mb-2" style="height: 8px;">
-            <div id="progressBar" class="progress-bar bg-primary" style="width: 0%"></div>
+            <div id="progressBar" class="progress-bar progress-bar-qe" style="width: 0%"></div>
         </div>
-        <div class="d-flex justify-content-between text-muted small mb-4">
+        <div class="d-flex justify-content-between text-muted small mb-4 fw-semibold">
             <span id="progressPercent">0% Completed</span>
             <span id="progressCount">0/0 Answered</span>
         </div>
 
-        <div class="d-flex flex-wrap gap-3 mb-4 small">
-            <div class="d-flex align-items-center gap-1"><span class="border rounded p-2 bg-white"></span> Unvisited</div>
-            <div class="d-flex align-items-center gap-1"><span class="border rounded p-2 bg-primary"></span> Current</div>
-            <div class="d-flex align-items-center gap-1"><span class="border rounded p-2" style="background:#86efac"></span> Answered</div>
-            <div class="d-flex align-items-center gap-1"><span class="border rounded p-2" style="background:#fed7aa"></span> Flagged</div>
+        <div class="d-flex flex-wrap gap-2 mb-4 small">
+            <div class="d-flex align-items-center gap-1"><span class="border rounded p-1.5 bg-white"></span> Unvisited</div>
+            <div class="d-flex align-items-center gap-1"><span class="border rounded p-1.5" style="background: var(--qe-primary-purple)"></span> Current</div>
+            <div class="d-flex align-items-center gap-1"><span class="border rounded p-1.5" style="background: var(--qe-primary-soft)"></span> Answered</div>
+            <div class="d-flex align-items-center gap-1"><span class="border rounded p-1.5" style="background: #fed7aa"></span> Flagged</div>
         </div>
 
         <div class="nav-grid" id="navigatorGrid"></div>
@@ -77,222 +195,217 @@
     <main class="main-content">
         <div class="question-card p-5">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="m-0 fw-bold" id="questionTitle">Question 1 of 40</h4>
-                <button class="btn btn-light border text-muted" id="flagBtn" onclick="toggleFlag()">
-                    <span id="flagIcon">⚑</span> Flag
+                <h4 class="m-0 fw-bold text-dark" id="questionTitle">Question 1 of 40</h4>
+                <button class="btn btn-light border text-muted fw-semibold rounded-3" id="flagBtn" onclick="toggleFlag()">
+                    <span id="flagIcon"><i class="fa-regular fa-flag me-1"></i></span> Flag
                 </button>
             </div>
 
-            <div id="questionBody" class="fs-5 mb-5 text-dark"></div>
+            <div id="questionBody" class="fs-5 mb-5 text-dark fw-medium"></div>
             <div id="optionsContainer" class="mb-5"></div>
 
             <div class="d-flex justify-content-between align-items-center pt-4 border-top">
-                <button class="btn btn-link text-decoration-none text-muted" onclick="clearSelection()">Clear Selection</button>
+                <button class="btn btn-link text-decoration-none text-muted fw-semibold p-0" onclick="clearSelection()">Clear Selection</button>
                 <div class="gap-2 d-flex">
-                    <button class="btn btn-outline-secondary px-4" id="prevBtn" onclick="navigate(-1)">< Previous</button>
-                    <button class="btn btn-primary px-4" id="nextBtn" onclick="navigate(1)">Next ></button>
+                    <button class="btn btn-outline-secondary px-4 fw-semibold rounded-3" id="prevBtn" onclick="navigate(-1)"><i class="fa-solid fa-chevron-left me-1"></i> Previous</button>
+                    <button class="btn btn-qe-primary px-4 fw-semibold rounded-3" id="nextBtn" onclick="navigate(1)">Next <i class="fa-solid fa-chevron-right ms-1"></i></button>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        // Inject server model into client-side JS
-        const examState = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new
-        {
-            examId = Model.ExamId,
-            attemptId = Model.AttemptId,
-            studentId = Model.StudentId,
-            questions = Model.Questions,
-            totalQuestions = Model.Questions.Count
-        }));
-        
-        let currentIndex = 0;
-        let remainingSeconds = @Model.RemainingTimeSeconds;
-        let questionStartTime = Date.now();
+            const examState = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new
+                {
+                            examId = Model.ExamId,
+                            attemptId = Model.AttemptId,
+                            studentId = Model.StudentId,
+                            questions = Model.Questions,
+                            totalQuestions = Model.Questions.Count
+                }));
 
-        document.addEventListener("DOMContentLoaded", () => {
-            startTimer();
-            renderQuestion();
-            renderNavigator();
-        });
+            let currentIndex = 0;
+            let remainingSeconds = @Model.RemainingTimeSeconds;
+            let questionStartTime = Date.now();
 
-        function renderQuestion() {
-            const q = examState.questions[currentIndex];
-            questionStartTime = Date.now(); 
-
-            document.getElementById("questionTitle").innerText = `Question ${q.QuestionNumber} of ${examState.totalQuestions}`;
-            document.getElementById("questionBody").innerHTML = q.Text;
-            
-            const flagBtn = document.getElementById("flagBtn");
-            flagBtn.className = q.IsFlagged ? "btn btn-warning border-warning text-dark" : "btn btn-light border text-muted";
-
-            const optionsContainer = document.getElementById("optionsContainer");
-            optionsContainer.innerHTML = ""; // Clear previous content
-
-            // Check the format to decide what to render
-            if (q.QuestionFormat === "Essay") {
-                const textarea = document.createElement("textarea");
-                textarea.className = "form-control fs-5 bg-light border-0 shadow-sm p-4";
-                textarea.rows = 8;
-                textarea.placeholder = "Type your essay answer here...";
-                textarea.value = q.SelectedAnswer || "";
-                
-                // Update model as they type
-                textarea.oninput = (e) => {
-                    q.SelectedAnswer = e.target.value;
-                };
-                
-                // Save to DB when they click out of the textarea
-                textarea.onblur = () => {
-                    saveCurrentQuestion();
-                    renderNavigator(); // Update sidebar grid to show as answered
-                };
-                
-                optionsContainer.appendChild(textarea);
-            } 
-            else {
-                // Standard Radio Buttons for MSQ and TF
-                q.Options.forEach(opt => {
-                    const isSelected = q.SelectedAnswer === opt.Value;
-                    const div = document.createElement("div");
-                    div.className = `option-box d-flex align-items-center ${isSelected ? 'selected' : ''}`;
-                    div.onclick = () => selectOption(opt.Value);
-                    
-                    div.innerHTML = `
-                        <div class="me-3">
-                            <input type="radio" name="option" class="form-check-input" style="transform: scale(1.2)" ${isSelected ? 'checked' : ''}>
-                        </div>
-                        <span class="fs-5"><strong>${opt.Label}.</strong> ${opt.Text}</span>
-                    `;
-                    optionsContainer.appendChild(div);
-                });
-            }
-
-            document.getElementById("prevBtn").disabled = currentIndex === 0;
-            document.getElementById("nextBtn").disabled = currentIndex === examState.totalQuestions - 1;
-
-            if (window.MathJax) MathJax.typesetPromise();
-        }
-
-        function renderNavigator() {
-            const grid = document.getElementById("navigatorGrid");
-            grid.innerHTML = "";
-            let answeredCount = 0;
-
-            examState.questions.forEach((q, idx) => {
-                if (q.SelectedAnswer) answeredCount++;
-                
-                const btn = document.createElement("button");
-                btn.className = "nav-btn";
-                
-                if (idx === currentIndex) btn.classList.add("current");
-                else if (q.IsFlagged) btn.classList.add("flagged");
-                else if (q.SelectedAnswer) btn.classList.add("answered");
-
-                btn.innerText = q.QuestionNumber;
-                btn.onclick = async () => { 
-                    await saveCurrentQuestion();
-                    currentIndex = idx; 
-                    updateView(); 
-                };
-                grid.appendChild(btn);
+            document.addEventListener("DOMContentLoaded", () => {
+                startTimer();
+                renderQuestion();
+                renderNavigator();
             });
 
-            const percent = examState.totalQuestions === 0 ? 0 : Math.round((answeredCount / examState.totalQuestions) * 100);
-            document.getElementById("progressBar").style.width = `${percent}%`;
-            document.getElementById("progressPercent").innerText = `${percent}% Completed`;
-            document.getElementById("progressCount").innerText = `${answeredCount}/${examState.totalQuestions} Answered`;
-        }
+            function renderQuestion() {
+                const q = examState.questions[currentIndex];
+                questionStartTime = Date.now();
 
-        async function selectOption(value) {
-            const q = examState.questions[currentIndex];
-            q.SelectedAnswer = (q.SelectedAnswer === value) ? null : value;
-            await saveCurrentQuestion();
-            updateView();
-        }
+                document.getElementById("questionTitle").innerText = `Question ${q.QuestionNumber} of ${examState.totalQuestions}`;
+                document.getElementById("questionBody").innerHTML = q.Text;
 
-        async function clearSelection() {
-            const q = examState.questions[currentIndex];
-            if(q.SelectedAnswer) {
-                q.SelectedAnswer = null;
+                const flagBtn = document.getElementById("flagBtn");
+                flagBtn.className = q.IsFlagged ? "btn btn-warning border-warning text-dark fw-semibold rounded-3" : "btn btn-light border text-muted fw-semibold rounded-3";
+
+                const optionsContainer = document.getElementById("optionsContainer");
+                optionsContainer.innerHTML = "";
+
+                if (q.QuestionFormat === "Essay") {
+                    const textarea = document.createElement("textarea");
+                    textarea.className = "form-control fs-5 bg-light border-0 shadow-sm p-4 rounded-3";
+                    textarea.rows = 8;
+                    textarea.placeholder = "Type your essay answer here...";
+                    textarea.value = q.SelectedAnswer || "";
+
+                    textarea.oninput = (e) => {
+                        q.SelectedAnswer = e.target.value;
+                    };
+
+                    textarea.onblur = () => {
+                        saveCurrentQuestion();
+                        renderNavigator();
+                    };
+
+                    optionsContainer.appendChild(textarea);
+                }
+                else {
+                    q.Options.forEach(opt => {
+                        const isSelected = q.SelectedAnswer === opt.Value;
+                        const div = document.createElement("div");
+                        div.className = `option-box d-flex align-items-center ${isSelected ? 'selected' : ''}`;
+                        div.onclick = () => selectOption(opt.Value);
+
+                        div.innerHTML = `
+                                    <div class="me-3">
+                                        <input type="radio" name="option" class="form-check-input" style="transform: scale(1.2); accent-color: var(--qe-primary-purple);" ${isSelected ? 'checked' : ''}>
+                                    </div>
+                                    <span class="fs-5"><strong>${opt.Label}.</strong> ${opt.Text}</span>
+                                `;
+                        optionsContainer.appendChild(div);
+                    });
+                }
+
+                document.getElementById("prevBtn").disabled = currentIndex === 0;
+                document.getElementById("nextBtn").disabled = currentIndex === examState.totalQuestions - 1;
+
+                if (window.MathJax) MathJax.typesetPromise();
+            }
+
+            function renderNavigator() {
+                const grid = document.getElementById("navigatorGrid");
+                grid.innerHTML = "";
+                let answeredCount = 0;
+
+                examState.questions.forEach((q, idx) => {
+                    if (q.SelectedAnswer) answeredCount++;
+
+                    const btn = document.createElement("button");
+                    btn.className = "nav-btn";
+
+                    if (idx === currentIndex) btn.classList.add("current");
+                    else if (q.IsFlagged) btn.classList.add("flagged");
+                    else if (q.SelectedAnswer) btn.classList.add("answered");
+
+                    btn.innerText = q.QuestionNumber;
+                    btn.onclick = async () => {
+                        await saveCurrentQuestion();
+                        currentIndex = idx;
+                        updateView();
+                    };
+                    grid.appendChild(btn);
+                });
+
+                const percent = examState.totalQuestions === 0 ? 0 : Math.round((answeredCount / examState.totalQuestions) * 100);
+                document.getElementById("progressBar").style.width = `${percent}%`;
+                document.getElementById("progressPercent").innerText = `${percent}% Completed`;
+                document.getElementById("progressCount").innerText = `${answeredCount}/${examState.totalQuestions} Answered`;
+            }
+
+            async function selectOption(value) {
+                const q = examState.questions[currentIndex];
+                q.SelectedAnswer = (q.SelectedAnswer === value) ? null : value;
                 await saveCurrentQuestion();
                 updateView();
             }
-        }
 
-        function toggleFlag() {
-            const q = examState.questions[currentIndex];
-            q.IsFlagged = !q.IsFlagged;
-            updateView();
-        }
-
-        async function navigate(step) {
-            await saveCurrentQuestion();
-            currentIndex += step;
-            updateView();
-        }
-
-        function updateView() {
-            renderQuestion();
-            renderNavigator();
-        }
-
-        function saveTimeSpent() {
-            const q = examState.questions[currentIndex];
-            const timeSpentNow = Math.floor((Date.now() - questionStartTime) / 1000);
-            q.TimeSpentSeconds = (q.TimeSpentSeconds || 0) + timeSpentNow;
-        }
-
-        async function saveCurrentQuestion() {
-            const q = examState.questions[currentIndex];
-            saveTimeSpent();
-            questionStartTime = Date.now();
-            await persistAnswer(q);
-        }
-
-        async function persistAnswer(q) {
-            if (!q.SelectedAnswer) return;
-
-            const payload = {
-                ExamId: examState.examId,
-                AttemptId: examState.attemptId,
-                ExamQuestionId: q.ExamQuestionId,
-                Answer: q.SelectedAnswer,
-                TimeSpentSeconds: q.TimeSpentSeconds
-            };
-
-            const response = await fetch('/TakeExam/SaveAnswer', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                const message = await response.text();
-                console.error(`Answer could not be saved (${response.status}): ${message}`);
-            }
-        }
-
-        function startTimer() {
-            const display = document.getElementById("timer");
-            const timerInterval = setInterval(() => {
-                let h = Math.floor(remainingSeconds / 3600);
-                let m = Math.floor((remainingSeconds % 3600) / 60);
-                let s = remainingSeconds % 60;
-
-                display.innerText = 
-                    `⏱ ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-
-                if (remainingSeconds <= 0) {
-                    clearInterval(timerInterval);
-                    saveCurrentQuestion().finally(() => document.getElementById("submitForm").submit());
-                    return;
+            async function clearSelection() {
+                const q = examState.questions[currentIndex];
+                if (q.SelectedAnswer) {
+                    q.SelectedAnswer = null;
+                    await saveCurrentQuestion();
+                    updateView();
                 }
+            }
 
-                remainingSeconds--;
-            }, 1000);
-        }
+            function toggleFlag() {
+                const q = examState.questions[currentIndex];
+                q.IsFlagged = !q.IsFlagged;
+                updateView();
+            }
+
+            async function navigate(step) {
+                await saveCurrentQuestion();
+                currentIndex += step;
+                updateView();
+            }
+
+            function updateView() {
+                renderQuestion();
+                renderNavigator();
+            }
+
+            function saveTimeSpent() {
+                const q = examState.questions[currentIndex];
+                const timeSpentNow = Math.floor((Date.now() - questionStartTime) / 1000);
+                q.TimeSpentSeconds = (q.TimeSpentSeconds || 0) + timeSpentNow;
+            }
+
+            async function saveCurrentQuestion() {
+                const q = examState.questions[currentIndex];
+                saveTimeSpent();
+                questionStartTime = Date.now();
+                await persistAnswer(q);
+            }
+
+            async function persistAnswer(q) {
+                if (!q.SelectedAnswer) return;
+
+                const payload = {
+                    ExamId: examState.examId,
+                    AttemptId: examState.attemptId,
+                    ExamQuestionId: q.ExamQuestionId,
+                    Answer: q.SelectedAnswer,
+                    TimeSpentSeconds: q.TimeSpentSeconds
+                };
+
+                const response = await fetch('/TakeExam/SaveAnswer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const message = await response.text();
+                    console.error(`Answer could not be saved (${response.status}): ${message}`);
+                }
+            }
+
+            function startTimer() {
+                const display = document.getElementById("timer");
+                const timerInterval = setInterval(() => {
+                    let h = Math.floor(remainingSeconds / 3600);
+                    let m = Math.floor((remainingSeconds % 3600) / 60);
+                    let s = remainingSeconds % 60;
+
+                    display.innerHTML =
+                        `<i class="fa-regular fa-clock me-1"></i> ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+                    if (remainingSeconds <= 0) {
+                        clearInterval(timerInterval);
+                        saveCurrentQuestion().finally(() => document.getElementById("submitForm").submit());
+                        return;
+                    }
+
+                    remainingSeconds--;
+                }, 1000);
+            }
     </script>
 </body>
 </html>

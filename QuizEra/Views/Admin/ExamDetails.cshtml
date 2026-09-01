@@ -5,255 +5,242 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="container-fluid py-4">
+<style>
+    .qz-card {
+        background: #FFFFFF;
+        border: 1px solid var(--qz-border-color);
+        border-radius: 20px;
+        box-shadow: var(--qz-card-shadow);
+    }
 
-    <!-- Navigation -->
-    <div class="mb-4">
+    .btn-qz-outline {
+        border: 1px solid var(--qz-border-color);
+        background: #FFFFFF;
+        color: var(--qz-dark-text);
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 8px 18px;
+    }
 
-        <a asp-controller="Admin"
-           asp-action="Exams"
-           class="btn btn-outline-secondary btn-sm">
-            <i class="fa-solid fa-arrow-left me-1"></i>
-            Back to Exams
-        </a>
+        .btn-qz-outline:hover {
+            background: #F4F7FE;
+            color: var(--qz-purple);
+        }
 
+    .metric-box {
+        background-color: #F4F7FE;
+        border-radius: 14px;
+        padding: 16px;
+        border: 1px solid #E0E5F2;
+    }
+
+    .badge-status-upcoming {
+        background-color: #FFF8E7;
+        color: #FFB800;
+        font-weight: 700;
+        padding: 6px 16px;
+        border-radius: 10px;
+    }
+
+    .badge-status-active {
+        background-color: rgba(5, 205, 153, 0.1);
+        color: #05CD99;
+        font-weight: 700;
+        padding: 6px 16px;
+        border-radius: 10px;
+    }
+
+    .badge-status-closed {
+        background-color: #E0E5F2;
+        color: #A3AED0;
+        font-weight: 700;
+        padding: 6px 16px;
+        border-radius: 10px;
+    }
+
+    .question-card {
+        background-color: #FFFFFF;
+        border: 1px solid var(--qz-border-color);
+        border-radius: 16px;
+        padding: 20px;
+        transition: all 0.2s ease;
+    }
+
+        .question-card:hover {
+            box-shadow: var(--qz-card-shadow);
+        }
+
+    .question-num-badge {
+        width: 42px;
+        height: 42px;
+        background-color: #F4F7FE;
+        color: var(--qz-purple);
+        font-weight: 800;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+</style>
+
+<!-- Navigation Header -->
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h3 class="fw-bold m-0" style="color: #1B2559;">Exam Details</h3>
+        <p class="text-muted small m-0 mt-1">Detailed overview of test configuration, topic coverage, and assigned questions.</p>
     </div>
+    <a asp-controller="Admin" asp-action="Exams" class="btn btn-qz-outline text-decoration-none">
+        <i class="fa-solid fa-arrow-left me-2"></i>Back to Exams
+    </a>
+</div>
 
-    <!-- Exam Header -->
-    <div class="card border-0 shadow-sm rounded-3 mb-4">
+@{
+    var now = DateTime.Now;
+    string statusText;
+    string statusCssClass;
 
-        <div class="card-body p-4 p-md-5">
+    if (now < Model.StartDate)
+    {
+        statusText = "Upcoming";
+        statusCssClass = "badge-status-upcoming";
+    }
+    else if (now >= Model.StartDate && now <= Model.EndDate)
+    {
+        statusText = "Active";
+        statusCssClass = "badge-status-active";
+    }
+    else
+    {
+        statusText = "Closed";
+        statusCssClass = "badge-status-closed";
+    }
+}
 
-            <div class="d-flex justify-content-between align-items-start mb-4">
-
-                <div>
-
-                    <span class="badge bg-primary bg-opacity-10 text-primary mb-2">
-                        <i class="fa-solid fa-file-pen me-1"></i>
-                        Exam
-                    </span>
-
-                    <h2 class="fw-bold text-dark mb-2">
-                        @Model.Title
-                    </h2>
-
-                    <p class="text-muted mb-0">
-                        Course:
-                        <strong class="text-dark">
-                            @Model.CourseName
-                        </strong>
-                    </p>
-
-                </div>
-
-                @{
-                    var now = DateTime.Now;
-
-                    string status;
-                    string statusClass;
-
-                    if (now < Model.StartDate)
-                    {
-                        status = "Upcoming";
-                        statusClass = "bg-warning text-dark";
-                    }
-                    else if (now >= Model.StartDate && now <= Model.EndDate)
-                    {
-                        status = "Active";
-                        statusClass = "bg-success";
-                    }
-                    else
-                    {
-                        status = "Closed";
-                        statusClass = "bg-secondary";
-                    }
-                }
-
-                <span class="badge @statusClass fs-6">
-                    @status
-                </span>
-
-            </div>
-
-            <div class="row g-3">
-
-                <div class="col-md-3">
-                    <div class="bg-light rounded-3 p-3">
-                        <small class="text-muted d-block">
-                            Duration
-                        </small>
-
-                        <strong>
-                            @Model.Duration minutes
-                        </strong>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="bg-light rounded-3 p-3">
-                        <small class="text-muted d-block">
-                            Total Marks
-                        </small>
-
-                        <strong>
-                            @Model.TotalMarks
-                        </strong>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="bg-light rounded-3 p-3">
-                        <small class="text-muted d-block">
-                            Start Date
-                        </small>
-
-                        <strong>
-                            @Model.StartDate.ToString("dd MMM yyyy hh:mm tt")
-                        </strong>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="bg-light rounded-3 p-3">
-                        <small class="text-muted d-block">
-                            End Date
-                        </small>
-
-                        <strong>
-                            @Model.EndDate.ToString("dd MMM yyyy hh:mm tt")
-                        </strong>
-                    </div>
-                </div>
-
-            </div>
-
+<!-- Exam Header Card -->
+<div class="qz-card p-4 p-md-5 mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+        <div>
+            <span class="badge mb-2 px-3 py-2 rounded-pill" style="background-color: rgba(77, 33, 151, 0.1); color: var(--qz-purple); font-weight: 700;">
+                <i class="fa-solid fa-file-pen me-1"></i> Examination
+            </span>
+            <h2 class="fw-bold m-0" style="color: #1B2559;">@Model.Title</h2>
+            <p class="text-muted mt-2 mb-0">
+                Course: <strong style="color: #1B2559;">@Model.CourseName</strong>
+            </p>
         </div>
 
+        <span class="@statusCssClass">
+            <i class="fa-solid fa-circle me-1" style="font-size: 0.6rem;"></i> @statusText
+        </span>
     </div>
 
-    <!-- Topics -->
-    <div class="card border-0 shadow-sm rounded-3 mb-4">
-
-        <div class="card-body p-4">
-
-            <h5 class="fw-bold mb-3">
-                <i class="fa-solid fa-folder-tree me-2 text-primary"></i>
-                Topics
-            </h5>
-
-            @if (Model.TopicNames != null && Model.TopicNames.Any())
-            {
-                <div class="d-flex flex-wrap gap-2">
-
-                    @foreach (var topic in Model.TopicNames)
-                    {
-                        <span class="badge bg-light text-dark border px-3 py-2">
-                            @topic
-                        </span>
-                    }
-
-                </div>
-            }
-            else
-            {
-                <p class="text-muted mb-0">
-                    No topics assigned.
-                </p>
-            }
-
+    <div class="row g-3">
+        <div class="col-6 col-md-3">
+            <div class="metric-box">
+                <span class="text-uppercase small fw-bold d-block mb-1" style="color: #A3AED0; letter-spacing: 0.5px;">Duration</span>
+                <strong style="color: #1B2559; font-size: 1.1rem;"><i class="fa-regular fa-clock me-1 text-muted"></i> @Model.Duration mins</strong>
+            </div>
         </div>
 
+        <div class="col-6 col-md-3">
+            <div class="metric-box">
+                <span class="text-uppercase small fw-bold d-block mb-1" style="color: #A3AED0; letter-spacing: 0.5px;">Total Marks</span>
+                <strong style="color: #1B2559; font-size: 1.1rem;"><i class="fa-solid fa-star me-1 text-warning"></i> @Model.TotalMarks</strong>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="metric-box">
+                <span class="text-uppercase small fw-bold d-block mb-1" style="color: #A3AED0; letter-spacing: 0.5px;">Start Date</span>
+                <strong style="color: #1B2559; font-size: 0.95rem;"><i class="fa-regular fa-calendar me-1 text-muted"></i> @Model.StartDate.ToString("dd MMM yyyy, hh:mm tt")</strong>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="metric-box">
+                <span class="text-uppercase small fw-bold d-block mb-1" style="color: #A3AED0; letter-spacing: 0.5px;">End Date</span>
+                <strong style="color: #1B2559; font-size: 0.95rem;"><i class="fa-regular fa-calendar-xmark me-1 text-muted"></i> @Model.EndDate.ToString("dd MMM yyyy, hh:mm tt")</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Covered Topics Card -->
+<div class="qz-card p-4 mb-4">
+    <h5 class="fw-bold mb-3" style="color: #1B2559;">
+        <i class="fa-solid fa-folder-tree me-2" style="color: var(--qz-purple);"></i> Covered Topics
+    </h5>
+
+    @if (Model.TopicNames != null && Model.TopicNames.Any())
+    {
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var topic in Model.TopicNames)
+            {
+                <span class="badge px-3 py-2 rounded-3" style="background-color: #F4F7FE; color: #1B2559; font-weight: 600; border: 1px solid #E0E5F2;">
+                    @topic
+                </span>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-muted mb-0 small">No topics assigned to this exam.</p>
+    }
+</div>
+
+<!-- Questions Included Card -->
+<div class="qz-card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="fw-bold m-0" style="color: #1B2559;">Exam Questions</h5>
+            <p class="text-muted small m-0 mt-1">Questions structured within this test.</p>
+        </div>
+        <span class="badge px-3 py-2 rounded-pill" style="background-color: rgba(77, 33, 151, 0.1); color: var(--qz-purple); font-weight: 700;">
+            @(Model.Questions?.Count ?? 0) Questions Included
+        </span>
     </div>
 
-    <!-- Questions -->
-    <div class="card border-0 shadow-sm rounded-3">
-
-        <div class="card-body p-4">
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-
-                <div>
-                    <h5 class="fw-bold mb-1">
-                        Questions
-                    </h5>
-
-                    <p class="text-muted small mb-0">
-                        Questions included in this exam.
-                    </p>
-                </div>
-
-                <span class="badge bg-primary">
-                    @(Model.Questions?.Count ?? 0) Questions
-                </span>
-
-            </div>
-
-            @if (Model.Questions != null && Model.Questions.Any())
+    @if (Model.Questions != null && Model.Questions.Any())
+    {
+        <div class="d-flex flex-column gap-3">
+            @for (int i = 0; i < Model.Questions.Count; i++)
             {
-                <div class="d-flex flex-column gap-3">
+                var question = Model.Questions[i];
+                <div class="question-card">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="question-num-badge">
+                            @(i + 1)
+                        </div>
 
-                    @for (int i = 0; i < Model.Questions.Count; i++)
-                    {
-                        var question = Model.Questions[i];
-
-                        <div class="border rounded-3 p-3">
-
-                            <div class="d-flex align-items-start gap-3">
-
-                                <!-- Number -->
-                                <div class="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center flex-shrink-0"
-                                     style="width: 38px; height: 38px;">
-                                    @(i + 1)
-                                </div>
-
-                                <!-- Question -->
-                                <div class="flex-grow-1">
-
-                                    <div class="fw-semibold text-dark mb-3">
-                                        @question.QuestionText
-                                    </div>
-
-                                    <!-- Marks -->
-                                    <div class="d-flex flex-wrap gap-2">
-
-                                        <span class="badge bg-light text-dark border">
-                                            <i class="fa-solid fa-star me-1"></i>
-                                            Actual Mark:
-                                            @question.ActualMark
-                                        </span>
-
-                                        <span class="badge bg-success bg-opacity-10 text-success border border-success">
-                                            <i class="fa-solid fa-plus me-1"></i>
-                                            Bonus:
-                                            @question.BonusMark
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
+                        <div class="flex-grow-1">
+                            <div class="fw-bold mb-3" style="color: #1B2559; font-size: 1.05rem;">
+                                @question.QuestionText
                             </div>
 
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge px-3 py-2 rounded-3" style="background-color: #F4F7FE; color: #1B2559; font-weight: 600; border: 1px solid #E0E5F2;">
+                                    <i class="fa-solid fa-star me-1 text-warning"></i> Actual Mark: @question.ActualMark
+                                </span>
+
+                                <span class="badge px-3 py-2 rounded-3" style="background-color: rgba(5, 205, 153, 0.1); color: #05CD99; font-weight: 700; border: 1px solid rgba(5, 205, 153, 0.2);">
+                                    <i class="fa-solid fa-plus me-1"></i> Bonus: @question.BonusMark
+                                </span>
+                            </div>
                         </div>
-                    }
-
+                    </div>
                 </div>
             }
-            else
-            {
-                <div class="text-center py-4">
-
-                    <i class="fa-solid fa-circle-question text-muted fs-2 mb-2"></i>
-
-                    <p class="text-muted mb-0">
-                        No questions have been added to this exam.
-                    </p>
-
-                </div>
-            }
-
         </div>
-
-    </div>
-
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; background-color: #F4F7FE; color: #A3AED0;">
+                <i class="fa-solid fa-circle-question fs-3"></i>
+            </div>
+            <h6 class="fw-bold" style="color: #1B2559;">No Questions Added</h6>
+            <p class="text-muted small mb-0">No questions have been attached to this exam configuration yet.</p>
+        </div>
+    }
 </div>

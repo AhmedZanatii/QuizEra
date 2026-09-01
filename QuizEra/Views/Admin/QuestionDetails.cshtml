@@ -5,219 +5,186 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="container-fluid py-4">
+<style>
+    .qz-card {
+        background: #FFFFFF;
+        border: 1px solid var(--qz-border-color);
+        border-radius: 20px;
+        box-shadow: var(--qz-card-shadow);
+    }
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    .btn-qz-outline {
+        border: 1px solid var(--qz-border-color);
+        background: #FFFFFF;
+        color: var(--qz-dark-text);
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 8px 18px;
+    }
 
-        <div>
+        .btn-qz-outline:hover {
+            background: #F4F7FE;
+            color: var(--qz-purple);
+        }
 
-            <h2 class="fw-bold text-dark mb-1">
-                Question Details
-            </h2>
+    .btn-qz-primary {
+        background-color: var(--qz-purple);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 8px 20px;
+        transition: all 0.2s ease;
+    }
 
-            <p class="text-muted small mb-0">
-                Details for the selected question.
-            </p>
+        .btn-qz-primary:hover {
+            background-color: var(--qz-purple-hover);
+            color: #FFFFFF;
+            box-shadow: 0px 6px 16px rgba(77, 33, 151, 0.25);
+        }
 
+    .metric-box {
+        background-color: #F4F7FE;
+        border-radius: 14px;
+        padding: 16px;
+        border: 1px solid #E0E5F2;
+    }
+
+    .option-item {
+        background-color: #FFFFFF;
+        border: 1px solid var(--qz-border-color);
+        border-radius: 14px;
+        padding: 14px 18px;
+        transition: all 0.2s ease;
+    }
+
+        .option-item.correct {
+            border-color: rgba(5, 205, 153, 0.4);
+            background-color: rgba(5, 205, 153, 0.03);
+        }
+
+    .badge-correct {
+        background-color: rgba(5, 205, 153, 0.1);
+        color: #05CD99;
+        font-weight: 700;
+        padding: 5px 12px;
+        border-radius: 8px;
+    }
+
+    .badge-incorrect {
+        background-color: #F4F7FE;
+        color: #A3AED0;
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 8px;
+    }
+</style>
+
+<!-- Navigation Header -->
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h3 class="fw-bold m-0" style="color: #1B2559;">Question Details</h3>
+        <p class="text-muted small m-0 mt-1">Full configuration, topic tags, and choices for this question.</p>
+    </div>
+    <a asp-controller="Admin" asp-action="Questions" class="btn btn-qz-outline text-decoration-none">
+        <i class="fa-solid fa-arrow-left me-2"></i>Back to Questions
+    </a>
+</div>
+
+<div class="qz-card p-4 p-md-5">
+    <!-- Topic Tag -->
+    <div class="mb-4 pb-3 border-bottom" style="border-color: #F4F7FE !important;">
+        <span class="text-uppercase small fw-bold d-block mb-1" style="color: #A3AED0; letter-spacing: 0.5px;">Topic</span>
+        <span class="badge px-3 py-2 rounded-3" style="background-color: #F4F7FE; color: var(--qz-purple); font-weight: 700; font-size: 0.9rem;">
+            <i class="fa-solid fa-folder-tree me-1"></i>
+            @(string.IsNullOrEmpty(Model.TopicName) ? "Unassigned Topic" : Model.TopicName)
+        </span>
+    </div>
+
+    <!-- Question Text -->
+    <div class="mb-4">
+        <span class="text-uppercase small fw-bold d-block mb-2" style="color: #A3AED0; letter-spacing: 0.5px;">Question Body</span>
+        <h4 class="fw-bold m-0" style="color: #1B2559; line-height: 1.5;">@Model.QuestionText</h4>
+    </div>
+
+    <!-- Question Metadata -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-6">
+            <div class="metric-box">
+                <span class="text-uppercase small fw-bold d-block mb-1" style="color: #A3AED0; letter-spacing: 0.5px;">Question Format</span>
+                <strong style="color: #1B2559; font-size: 1rem;"><i class="fa-solid fa-layer-group me-1 text-muted"></i> @Model.QuestionFormat</strong>
+            </div>
         </div>
 
-        <a asp-controller="Admin"
-           asp-action="Questions"
-           class="btn btn-outline-secondary btn-sm">
+        <div class="col-6 col-md-6">
+            <div class="metric-box">
+                <span class="text-uppercase small fw-bold d-block mb-1" style="color: #A3AED0; letter-spacing: 0.5px;">Difficulty Level</span>
+                <strong style="color: #1B2559; font-size: 1rem;"><i class="fa-solid fa-gauge-high me-1 text-muted"></i> @Model.DifficultyLevel</strong>
+            </div>
+        </div>
+    </div>
 
-            <i class="fa-solid fa-arrow-left me-1"></i>
-            Back to Questions
+    <!-- Question Answer / Explanation (if available) -->
+    @if (!string.IsNullOrEmpty(Model.QuestionAnswer))
+    {
+        <div class="mb-4">
+            <span class="text-uppercase small fw-bold d-block mb-2" style="color: #A3AED0; letter-spacing: 0.5px;">Model Answer / Explanation</span>
+            <div class="p-3 rounded-3" style="background-color: #F4F7FE; color: #1B2559; border: 1px solid #E0E5F2;">
+                <i class="fa-solid fa-lightbulb me-2 text-warning"></i>@Model.QuestionAnswer
+            </div>
+        </div>
+    }
 
+    <!-- Photo -->
+    @if (!string.IsNullOrEmpty(Model.Photo))
+    {
+        <div class="mb-4">
+            <span class="text-uppercase small fw-bold d-block mb-2" style="color: #A3AED0; letter-spacing: 0.5px;">Attached Image</span>
+            <div class="p-2 border rounded-3 d-inline-block bg-light">
+                <img src="@Model.Photo" alt="Question Image" class="img-fluid rounded" style="max-height: 280px; object-fit: contain;" />
+            </div>
+        </div>
+    }
+
+    <!-- Options Section -->
+    @if (Model.Options != null && Model.Options.Any())
+    {
+        <div class="mb-4 pt-3 border-top" style="border-color: #F4F7FE !important;">
+            <h6 class="fw-bold mb-3" style="color: #1B2559;">Multiple Choice Options</h6>
+
+            <div class="d-flex flex-column gap-2">
+                @foreach (var option in Model.Options)
+                {
+                    <div class="option-item @(option.IsCorrect ? "correct" : "") d-flex justify-content-between align-items-center">
+                        <span style="color: #1B2559; font-weight: 500;">@option.OptionText</span>
+
+                        @if (option.IsCorrect)
+                        {
+                            <span class="badge-correct d-inline-flex align-items-center gap-1">
+                                <i class="fa-solid fa-check"></i> Correct Choice
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge-incorrect">Incorrect</span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Actions -->
+    <div class="d-flex justify-content-end gap-2 pt-3 border-top" style="border-color: #F4F7FE !important;">
+        <a asp-controller="Admin" asp-action="Questions" class="btn btn-qz-outline text-decoration-none">
+            Back
         </a>
 
+        @if (!Model.IsDeleted)
+        {
+            <a asp-controller="Admin" asp-action="EditQuestion" asp-route-id="@Model.Id" class="btn btn-qz-primary text-decoration-none">
+                <i class="fa-solid fa-pen-to-square me-2"></i>Edit Question
+            </a>
+        }
     </div>
-
-
-    <div class="card border-0 shadow-sm rounded-3">
-
-        <div class="card-body p-4">
-
-            <!-- Topic -->
-
-            <div class="mb-3">
-
-                <label class="fw-semibold text-muted">
-                    Topic
-                </label>
-
-                <div class="fs-5">
-                    @(string.IsNullOrEmpty(Model.TopicName)
-                        ? "-"
-                        : Model.TopicName)
-                </div>
-
-            </div>
-
-
-            <hr />
-
-
-            <!-- Question -->
-
-            <div class="mb-4">
-
-                <label class="fw-semibold text-muted">
-                    Question
-                </label>
-
-                <div class="fs-5 fw-semibold">
-                    @Model.QuestionText
-                </div>
-
-            </div>
-
-
-            <!-- Type / Difficulty -->
-
-            <div class="row mb-4">
-
-                <div class="col-md-6">
-
-                    <label class="fw-semibold text-muted">
-                        Question Format
-                    </label>
-
-                    <div>
-                        <span class="badge bg-primary">
-                            @Model.QuestionFormat
-                        </span>
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-6">
-
-                    <label class="fw-semibold text-muted">
-                        Difficulty
-                    </label>
-
-                    <div>
-                        <span class="badge bg-secondary">
-                            @Model.DifficultyLevel
-                        </span>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- Answer -->
-            @if (!string.IsNullOrEmpty(Model.QuestionAnswer))
-            {
-                <div class="mb-4">
-
-                    <label class="fw-semibold text-muted">
-                        Answer
-                    </label>
-
-                    <div class="alert alert-light border">
-                        @Model.QuestionAnswer
-                    </div>
-
-                </div>
-            }
-
-
-            <!-- Photo -->
-            @if (!string.IsNullOrEmpty(Model.Photo))
-            {
-                <div class="mb-4">
-
-                    <label class="fw-semibold text-muted">
-                        Question Image
-                    </label>
-
-                    <div class="mt-2">
-
-                        <img src="@Model.Photo"
-                             alt="Question Image"
-                             class="img-fluid rounded"
-                             style="max-height: 300px;" />
-
-                    </div>
-
-                </div>
-            }
-
-
-            <!-- Options -->
-            @if (Model.Options != null &&
-                             Model.Options.Any())
-            {
-                <div class="mb-4">
-
-                    <h5 class="fw-semibold mb-3">
-                        Options
-                    </h5>
-
-                    <div class="list-group">
-
-                        @foreach (var option in Model.Options)
-                        {
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-
-                                <span>
-                                    @option.OptionText
-                                </span>
-
-                                @if (option.IsCorrect)
-                                {
-                                    <span class="badge bg-success">
-                                        Correct
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">
-                                        Incorrect
-                                    </span>
-                                }
-
-                            </div>
-                        }
-
-                    </div>
-
-                </div>
-            }
-
-
-            <!-- Actions -->
-
-            <div class="d-flex justify-content-end gap-2">
-
-                <a asp-controller="Admin"
-                   asp-action="Questions"
-                   class="btn btn-light">
-
-                    Back
-
-                </a>
-
-                @if (!Model.IsDeleted)
-                {
-                    <a asp-controller="Admin"
-                       asp-action="EditQuestion"
-                       asp-route-id="@Model.Id"
-                       class="btn btn-primary">
-
-                        <i class="fa-solid fa-pen-to-square me-1"></i>
-                        Edit
-
-                    </a>
-                }
-
-            </div>
-
-        </div>
-
-    </div>
-
 </div>
