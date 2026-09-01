@@ -58,7 +58,7 @@ namespace QuizEra.Controllers
                     unavailableExamIds.Add(attempt.ExamId);
             }
 
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
             var availableExams = exams.Where(exam =>
                 exam.StartDate <= now &&
                 exam.EndDate >= now &&
