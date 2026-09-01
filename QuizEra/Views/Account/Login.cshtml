@@ -3,247 +3,362 @@
 @{
     ViewData["Title"] = "Login";
     Layout = "AuthLayout";
+}
 
-}
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["Error"]
-    </div>
-}
 <style>
-    .login-page {
-        min-height: calc(100vh - 56px);
+    /* Reset & Base Variables */
+    :root {
+        --qz-purple-btn: #4D2197;
+        --qz-dark-text: #1B2559;
+        --qz-sub-text: #707EAE;
+        --qz-bg-gradient: radial-gradient(circle at 50% 50%, #F5F7FD 0%, #E9EFFC 100%);
+        --qz-border-color: #B8C7E0;
+        --qz-error-red: #EE5D50;
+    }
+
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: var(--qz-bg-gradient) !important;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Screen Flex Wrapper */
+    .qz-screen-wrapper {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 40px 20px 20px 20px;
+        box-sizing: border-box;
+    }
+
+    /* Main Container */
+    .qz-main-container {
+        width: 100%;
+        max-width: 980px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #f8f9fa;
+        gap: 60px;
+        margin: auto;
     }
 
-    .login-container {
+    /* Left Side (Artwork + Bottom Logo) */
+    .qz-left-side {
+        flex: 1.1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .qz-hero-img {
         width: 100%;
-        max-width: 1200px;
-        padding: 30px;
-    }
-
-    .login-image {
-        max-width: 100%;
+        max-width: 480px;
         height: auto;
+        object-fit: contain;
     }
 
-    .login-title {
-        color: #212529;
+    /* Right Side Area */
+    .qz-right-side {
+        flex: 0.9;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 380px;
+    }
+
+    /* Logo OUTSIDE the Card */
+    .qz-outer-logo {
+        max-width: 220px;
+        height: auto;
+        margin-bottom: 25px;
+    }
+
+    /* White Floating Card */
+    .qz-card {
+        background: #FFFFFF;
+        border-radius: 20px;
+        padding: 35px 30px;
+        width: 100%;
+        box-sizing: border-box;
+        box-shadow: 0px 15px 45px rgba(112, 144, 176, 0.18);
+    }
+
+    /* Centered Titles */
+    .qz-title-container {
+        text-align: center;
+        margin-bottom: 22px;
+    }
+
+    .qz-title {
+        color: var(--qz-dark-text);
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0 0 6px 0;
+    }
+
+    .qz-subtitle {
+        color: var(--qz-sub-text);
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* Inputs Styling */
+    .qz-form-group {
+        margin-bottom: 16px;
+        text-align: left;
+    }
+
+    .qz-label {
+        display: block;
+        color: var(--qz-dark-text);
         font-weight: 700;
-        margin-bottom: 8px;
+        font-size: 0.85rem;
+        margin-bottom: 6px;
     }
 
-    .login-subtitle {
-        color: #6c757d;
-        margin-bottom: 30px;
+    .qz-input {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1.5px solid var(--qz-border-color);
+        background-color: #FFFFFF;
+        font-size: 0.875rem;
+        color: var(--qz-dark-text);
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    .form-control {
-        border-radius: 8px;
-        padding: 12px 15px;
-    }
-
-        .form-control:focus {
-            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+        .qz-input:focus {
+            border-color: var(--qz-purple-btn);
         }
 
-    .login-btn {
-        border-radius: 8px;
-        padding: 12px;
+        .qz-input::placeholder {
+            color: #A3AED0;
+        }
+
+        /* Input Error State */
+        .qz-input.input-validation-error {
+            border-color: var(--qz-error-red) !important;
+            background-color: #FFF8F8;
+        }
+
+    /* Error Messages Styling */
+    .qz-error-msg {
+        color: var(--qz-error-red);
+        font-size: 0.775rem;
         font-weight: 600;
-    }
-
-    .register-link {
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .login-footer {
-        margin-top: 30px;
-        padding: 20px;
-        text-align: center;
-        background: #0d6efd;
-        color: white;
-        border-radius: 10px;
-    }
-
-    .validation-error {
-        color: #dc3545;
-        font-size: 0.9rem;
         margin-top: 5px;
         display: block;
     }
 
-    .login-error {
+    .qz-alert-error {
+        color: var(--qz-error-red);
+        background-color: #FFF0F0;
+        border: 1px solid #FFD0D0;
+        padding: 10px 12px;
         border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        text-align: center;
     }
 
-    
-    .login-container {
-        padding: 20px;
+    /* Main Submit Button */
+    .qz-btn-submit {
+        width: 100%;
+        padding: 13px;
+        background: var(--qz-purple-btn);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        cursor: pointer;
+        box-shadow: 0 8px 16px rgba(77, 33, 151, 0.2);
+        transition: opacity 0.2s;
+        margin-top: 5px;
     }
 
+        .qz-btn-submit:hover {
+            opacity: 0.95;
+        }
+
+    /* Links below Submit */
+    .qz-links-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 18px;
+        font-size: 0.825rem;
+    }
+
+    .qz-link-dark {
+        color: var(--qz-dark-text);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .qz-link-purple {
+        color: var(--qz-purple-btn);
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    /* OR Divider */
+    .qz-divider {
+        position: relative;
+        text-align: center;
+        margin: 22px 0;
+    }
+
+        .qz-divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #E0E5F2;
+            z-index: 1;
+        }
+
+        .qz-divider span {
+            position: relative;
+            background: #FFFFFF;
+            padding: 0 12px;
+            color: var(--qz-sub-text);
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+    /* Google Button */
+    .qz-btn-google {
+        width: 100%;
+        padding: 11px;
+        background: #FFFFFF;
+        border: 1.5px solid var(--qz-border-color);
+        border-radius: 10px;
+        color: var(--qz-dark-text);
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-decoration: none;
+        box-sizing: border-box;
+    }
+
+        .qz-btn-google:hover {
+            background-color: #F8F9FA;
+        }
+
+    /* Footer */
+    .qz-footer {
+        color: var(--qz-sub-text);
+        font-size: 0.8rem;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    @@media (max-width: 868px) {
+        .qz-left-side {
+            display: none;
+        }
     }
 </style>
 
+<div class="qz-screen-wrapper">
+    <div class="qz-main-container">
 
+        <!-- Left Hero -->
+        <div class="qz-left-side">
+            <img src="~/images/Logo.png" class="qz-hero-img" alt="QuizEra Artwork" />
+        </div>
 
-<div class="login-page">
+        <!-- Right Side Container -->
+        <div class="qz-right-side">
 
-    <div class="container login-container">
+            <!-- Logo Header OUTSIDE Card -->
+            <img src="~/images/logo-header.png" class="qz-outer-logo" alt="QuizEra Header Logo" />
 
-        <div class="row align-items-center justify-content-center">
+            <!-- Login Card -->
+            <div class="qz-card">
 
-            <!-- Image -->
-            <div class="col-md-6 col-lg-5 login-image-container text-center">
-
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-                     class="login-image"
-                     alt="QuizEra Login">
-
-            </div>
-
-
-            <!-- Login Form -->
-            <div class="col-md-8 col-lg-5 offset-lg-1">
-
-                <div class="text-center">
-
-                    <h1 class="login-title">
-                        Welcome to QuizEra
-                    </h1>
-
-                    <p class="login-subtitle">
-                        Login to continue your learning journey
-                    </p>
-
+                <!-- Centered Titles -->
+                <div class="qz-title-container">
+                    <h1 class="qz-title">Welcome to QuizEra</h1>
+                    <p class="qz-subtitle">Login to continue your learning journey</p>
                 </div>
 
+                @if (TempData["Error"] != null)
+                {
+                    <div class="qz-alert-error">
+                        @TempData["Error"]
+                    </div>
+                }
+
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState[""] != null && ViewData.ModelState[""].Errors.Any())
+                {
+                    <div class="qz-alert-error">
+                        @foreach (var error in ViewData.ModelState[""].Errors)
+                        {
+                            <div>@error.ErrorMessage</div>
+                        }
+                    </div>
+                }
 
                 <form asp-action="Login" method="post">
 
-                    <!-- Email -->
-                    <div class="mb-4">
-
-                        <label asp-for="Email" class="form-label">
-                            Email Address
-                        </label>
-
-                        <input asp-for="Email"
-                               type="email"
-                               class="form-control form-control-lg"
-                               placeholder="Enter your email" />
-
-                        <span asp-validation-for="Email"
-                              class="validation-error">
-                        </span>
-
+                    <div class="qz-form-group">
+                        <label asp-for="Email" class="qz-label">Email Address</label>
+                        <input asp-for="Email" type="email" class="qz-input" placeholder="admin@quizera.com" />
+                        <span asp-validation-for="Email" class="qz-error-msg"></span>
                     </div>
 
-
-                    <!-- Password -->
-                    <div class="mb-3">
-
-                        <label asp-for="Password" class="form-label">
-                            Password
-                        </label>
-
-                        <input asp-for="Password"
-                               type="password"
-                               class="form-control form-control-lg"
-                               placeholder="Enter your password" />
-
-                        <span asp-validation-for="Password"
-                              class="validation-error">
-                        </span>
-
+                    <div class="qz-form-group">
+                        <label asp-for="Password" class="qz-label">Password</label>
+                        <input asp-for="Password" type="password" class="qz-input" placeholder="••••••••" />
+                        <span asp-validation-for="Password" class="qz-error-msg"></span>
                     </div>
 
+                    <button type="submit" class="qz-btn-submit">Login</button>
 
-                    <!-- General Errors -->
-                    @if (!ViewData.ModelState.IsValid)
-                    {
-                        <div class="alert alert-danger login-error">
-
-                            @foreach (var error in ViewData.ModelState.Values
-                                .SelectMany(v => v.Errors))
-                            {
-                                <div>
-                                    @error.ErrorMessage
-                                </div>
-                            }
-
-                        </div>
-                    }
-
-
-                    <!-- Login Button -->
-                    <div class="d-grid mt-4">
-
-                        <button type="submit"
-                                class="btn btn-primary btn-lg login-btn">
-                            Login
-                        </button>
-
+                    <div class="qz-links-row">
+                        <a asp-controller="Account" asp-action="ChooseRole" class="qz-link-dark">Register</a>
+                        <a asp-action="ForgotPassword" class="qz-link-purple">Forgot Password?</a>
                     </div>
 
-                    <div class="text-center mt-3">
-                        <div class="text-muted mb-3">OR</div>
-
-                        <a asp-controller="Account"
-                           asp-action="ExternalLogin"
-                           asp-route-provider="Google"
-                           class="btn btn-outline-danger w-100">
-                            <i class="fab fa-google me-2"></i>
-                            Continue with Google
-                        </a>
+                    <div class="qz-divider">
+                        <span>OR</span>
                     </div>
 
-                    <!-- Register -->
-                    <p class="text-start mt-4 mb-3">
-
-                        Don't have an account?
-
-                       <a asp-controller="Account"
-                           asp-action="ChooseRole"
-                           class="register-link">
-                            Register
-                        </a>
-                        
-
-                    </p>
-                    <p class="text-end mb-0">
-                        <a asp-action="ForgotPassword">
-                            Forgot Password?
-                        </a>
-                    </p>
+                    <a asp-controller="Account" asp-action="ExternalLogin" asp-route-provider="Google" class="qz-btn-google">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z" /><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.11 0-5.74-2.1-6.68-4.93H1.3v3.15C3.31 21.36 7.37 24 12 24z" /><path fill="#FBBC05" d="M5.32 14.27c-.24-.72-.38-1.49-.38-2.27s.14-1.55.38-2.27V6.58H1.3C.47 8.23 0 10.06 0 12s.47 3.77 1.3 5.42l4.02-3.15z" /><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.37 0 3.31 2.64 1.3 6.58l4.02 3.15c.94-2.83 3.57-4.98 6.68-4.98z" /></svg>
+                        Continue with Google
+                    </a>
 
                 </form>
 
-
-                <!-- Footer -->
-                <div class="login-footer">
-
-                    © 2026 QuizEra. All rights reserved.
-
-                </div>
-
             </div>
-
         </div>
 
     </div>
 
+    <div class="qz-footer">
+        © 2026 QuizEra. All rights reserved.
+    </div>
 </div>
 
-
 @section Scripts {
-
     <partial name="_ValidationScriptsPartial" />
-
 }
-
