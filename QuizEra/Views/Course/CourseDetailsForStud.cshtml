@@ -20,39 +20,23 @@
     <div class="col-12 col-lg-8">
         <div class="card dashboard-card border-0 h-100">
             <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="fw-bold mb-0">Course Topics</h5>
-                    <span class="text-muted small">@Model.Topics.Count() topics</span>
-                </div>
-                @if (!Model.Topics.Any())
+                <h5 class="fw-bold mb-4">Course Information</h5>
+                @if (Model.Topics.Any())
                 {
-                    <p class="text-muted small mb-0">No topics have been added yet.</p>
-                }
-                else
-                {
-                    <div class="list-group list-group-flush">
-                        @foreach (var topic in Model.Topics)
-                        {
-                            <div class="list-group-item px-0 py-3 d-flex align-items-center gap-3">
-                                <span class="icon-shape bg-primary bg-opacity-10 text-primary" style="width:40px;height:40px;font-size:1rem;">
-                                    <i class="fa-solid fa-layer-group"></i>
-                                </span>
-                                <span class="fw-semibold">@topic.Name</span>
-                            </div>
-                        }
+                    <div class="small text-muted mb-3">
+                        <i class="fa-solid fa-layer-group me-2 text-primary"></i>
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+                            @foreach (var topic in Model.Topics)
+                            {
+                                <span class="badge bg-primary">@topic.Name</span>
+                            }
+                        </div>
                     </div>
                 }
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-lg-4">
-        <div class="card dashboard-card border-0 h-100">
-            <div class="card-body p-4">
-                <h5 class="fw-bold mb-4">Course Information</h5>
                 <div class="small text-muted mb-3"><i class="fa-solid fa-signal text-primary me-2"></i>Level <strong class="text-dark float-end">@Model.CourseLevel</strong></div>
                 <div class="small text-muted mb-4"><i class="fa-solid fa-key text-primary me-2"></i>Course code <strong class="text-dark float-end">@Model.CourseCode</strong></div>
 
-                <a asp-controller="TakeExam" asp-action="Exams" class="btn btn-primary w-100 mb-2">
+                <a asp-controller="Student" asp-action="Exams" class="btn btn-primary w-100 mb-2">
                     <i class="fa-solid fa-file-pen me-2"></i>View Available Exams
                 </a>
                 <a asp-controller="Feedback" asp-action="Create" asp-route-courseId="@Model.Id" class="btn btn-outline-primary w-100">
@@ -61,7 +45,7 @@
             </div>
         </div>
     </div>
-</div>
+    <div class="col-12 col-lg-4">
 
 @{
     var reviews = Model.Reviews.ToList();

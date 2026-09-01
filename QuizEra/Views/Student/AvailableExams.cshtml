@@ -39,7 +39,12 @@ else
                         <h5 class="fw-bold mb-1">@exam.Title</h5>
                         <p class="text-muted small mb-3">@exam.CourseName</p>
                         <div class="small text-muted mb-4">
-                            <div><i class="fa-solid fa-layer-group me-2 text-primary"></i>@exam.TopicNames</div>
+                            @if (exam.TopicNames?.Any() == true)
+                            {
+                                <div><i class="fa-solid fa-layer-group me-2 text-primary"></i>
+                                    @string.Join(", ", exam.TopicNames)
+                                </div>
+                            }
                             <div class="mt-2"><i class="fa-solid fa-calendar-days me-2 text-primary"></i>Closes @exam.EndDate.ToString("dd MMM yyyy")</div>
                         </div>
                         <a asp-controller="TakeExam" asp-action="StartExam" asp-route-id="@exam.Id" class="btn btn-primary mt-auto">

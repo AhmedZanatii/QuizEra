@@ -73,7 +73,7 @@ namespace QuizEra.BLL.Services.Implementation
 
             if(attempts == null || !attempts.Any())
             {
-                throw new Exception($"No Exam Attempt found for StudentId {student.Id}");
+                return Enumerable.Empty<StudentExamAttemptVM>();
             }
 
             return attempts.Select(MapToViewModel);

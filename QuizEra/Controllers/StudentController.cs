@@ -10,13 +10,16 @@ namespace QuizEra.Controllers
     {
         private readonly IExamService _examService;
         private readonly IStudentExamAttemptService _attemptService;
+        private readonly ICourseService _courseService;
 
         public StudentController(
             IExamService examService,
-            IStudentExamAttemptService attemptService)
+            IStudentExamAttemptService attemptService,
+            ICourseService courseService)
         {
             _examService = examService;
             _attemptService = attemptService;
+            _courseService = courseService;
         }
 
         public IActionResult Index()
@@ -37,6 +40,10 @@ namespace QuizEra.Controllers
             if (string.IsNullOrWhiteSpace(userId))
                 return Unauthorized();
 
+            // Get student's enrolled courses
+            var enrolledCourses = await _courseService.GetCoursesByStudentAsync(userId);
+            var enrolledCourseIds = new HashSet<int>(enrolledCourses.Select(c => c.Id));
+
             var exams = await _examService.GetAllExamsAsync();
             var unavailableExamIds = new HashSet<int>();
             var attempts = await _attemptService.GetByStudentIdAsync(userId);
@@ -55,7 +62,8 @@ namespace QuizEra.Controllers
             var availableExams = exams.Where(exam =>
                 exam.StartDate <= now &&
                 exam.EndDate >= now &&
-                !unavailableExamIds.Contains(exam.Id));
+                !unavailableExamIds.Contains(exam.Id) &&
+                enrolledCourseIds.Contains(exam.CourseId));
 
             return View("AvailableExams", availableExams);
         }
