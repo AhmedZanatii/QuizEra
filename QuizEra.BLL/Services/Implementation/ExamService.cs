@@ -360,19 +360,25 @@ namespace QuizEra.BLL.Services.Implementation
         private readonly IGenericRepository<Question> _questionRepository;
         private readonly IGenericRepository<Topic> _topicRepository;
         private readonly IGenericRepository<ExamTopic> _examTopicRepository;
+        private readonly IGenericRepository<Course> _courseRepository;
+        private readonly INotificationService _notificationService;
 
         public ExamService(
             IGenericRepository<Exam> examRepository,
             IGenericRepository<ExamQuestions> examQuestionsRepository,
             IGenericRepository<Question> questionRepository,
             IGenericRepository<Topic> topicRepository,
-            IGenericRepository<ExamTopic> examTopicRepository)
+            IGenericRepository<ExamTopic> examTopicRepository,
+            IGenericRepository<Course> courseRepository,
+            INotificationService notificationService)
         {
             _examRepository = examRepository;
             _examQuestionsRepository = examQuestionsRepository;
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
             _examTopicRepository = examTopicRepository;
+            _courseRepository = courseRepository;
+            _notificationService = notificationService;
         }
 
         // =========================
@@ -481,7 +487,15 @@ namespace QuizEra.BLL.Services.Implementation
             }
 
             await _examQuestionsRepository.SaveAsync();
+            var course = await _courseRepository.GetBy(c => c.Id == model.CourseId);
+            string courseName = course?.CourseName ?? "Course";
 
+            await _notificationService.CreateAndBroadcastExamNotificationAsync(
+                courseId: model.CourseId,
+                courseName: courseName,
+                examTitle: exam.Title,
+                examId: exam.Id
+            );
             return true;
         }
 
@@ -501,10 +515,6 @@ namespace QuizEra.BLL.Services.Implementation
             t => t.Course
                 });
 
-            var examQuestions = await _examQuestionsRepository.Get();
-
-            var questions = await _questionRepository.Get();
-
             var result = exams.Select(exam =>
             {
                 var selectedTopics = examTopics
@@ -514,10 +524,6 @@ namespace QuizEra.BLL.Services.Implementation
                     .ToList();
 
                 var firstTopic = selectedTopics.FirstOrDefault();
-
-                var selectedExamQuestions = examQuestions
-                    .Where(eq => eq.ExamId == exam.Id)
-                    .ToList();
 
                 return new ExamVM
                 {
@@ -539,25 +545,7 @@ namespace QuizEra.BLL.Services.Implementation
                     Duration = exam.Duration,
                     TotalMarks = exam.TotalMarks,
                     StartDate = exam.StartDate,
-                    EndDate = exam.EndDate,
-
-                    Questions = selectedExamQuestions
-                        .Select(eq =>
-                        {
-                            var question = questions
-                                .FirstOrDefault(q => q.Id == eq.QuestionId);
-
-                            return new CreateExamQuestionVM
-                            {
-                                ExamQuestionId = eq.Id,
-                                QuestionId = eq.QuestionId,
-                                QuestionText = question?.QuestionText ?? string.Empty,
-                                IsSelected = true,
-                                ActualMark = eq.ActualMark,
-                                BonusMark = eq.BonusMark
-                            };
-                        })
-                        .ToList()
+                    EndDate = exam.EndDate
                 };
             });
 

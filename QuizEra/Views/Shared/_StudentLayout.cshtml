@@ -73,6 +73,16 @@
                 border-bottom: 1px solid #e9ecef;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             }
+
+            .notification-dropdown-menu {
+                width: 360px;
+                max-height: 420px;
+                overflow-y: auto;
+            }
+
+            .extra-small {
+                font-size: 0.75rem;
+            }
     </style>
 </head>
 <body>
@@ -112,10 +122,32 @@
             <!-- Top Navbar -->
             <div class="top-navbar d-flex justify-content-between align-items-center">
                 <div>
-                    <span class="text-muted small fw-medium">Student Workspace</span>
+                    <span class="text-muted small fw-medium">Student Dashboard</span>
                 </div>
 
                 <div class="d-flex align-items-center gap-3">
+                    <!-- Notifications Dropdown -->
+                    <div class="nav-item dropdown me-2 position-relative">
+                        <a class="nav-link position-relative text-secondary p-2" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-bell fs-5"></i>
+                            <span id="notificationBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+                                0
+                            </span>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-0 notification-dropdown-menu" aria-labelledby="notificationDropdown">
+                            <li class="dropdown-header border-bottom p-3 fw-bold d-flex justify-content-between align-items-center bg-light">
+                                <span><i class="fa-solid fa-bell me-2 text-primary"></i> Notifications</span>
+                                <a asp-controller="Notifications" asp-action="Index" class="text-primary text-decoration-none small">View All</a>
+                            </li>
+                            <div id="notificationList">
+                                <li id="emptyNotificationMsg" class="dropdown-item text-center text-muted py-4 small">
+                                    No new notifications
+                                </li>
+                            </div>
+                        </ul>
+                    </div>
+
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         @await Component.InvokeAsync("UserProfile")
@@ -129,7 +161,101 @@
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+
+    <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                loadSavedNotifications();
+
+                // 1. Configure and establish SignalR connection
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/notificationHub")
+                    .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+                    .build();
+
+                connection.start()
+                    .then(function() {
+                        console.log("SignalR Notification Hub connected successfully.");
+                    })
+                    .catch(err => console.error("SignalR Connection Error: ", err.toString()));
+
+                connection.on("ReceiveExamNotification", function(data) {
+                    prependNotificationUI(data, true);
+                });
+
+                document.getElementById("notificationDropdown")?.addEventListener("click", function() {
+                    const badge = document.getElementById("notificationBadge");
+                    if (!badge.classList.contains("d-none")) {
+                        badge.classList.add("d-none");
+                        badge.innerText = "0";
+                        fetch('/api/notifications/mark-as-read', { method: 'POST' });
+                    }
+                });
+            });
+
+            function loadSavedNotifications() {
+                fetch('/api/notifications')
+                    .then(res => {
+                        if (!res.ok) throw new Error("Failed to load notifications");
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (!data || data.length === 0) return;
+                        let unreadCount = 0;
+                        data.reverse().forEach(item => {
+                            if (!item.isRead) unreadCount++;
+                            prependNotificationUI(item, false);
+                        });
+                        if (unreadCount > 0) {
+                            const badge = document.getElementById("notificationBadge");
+                            badge.innerText = unreadCount;
+                            badge.classList.remove("d-none");
+                        }
+                    })
+                    .catch(err => console.error(err));
+            }
+
+            function prependNotificationUI(data, isRealtime) {
+                const list = document.getElementById("notificationList");
+                const emptyMsg = document.getElementById("emptyNotificationMsg");
+                if (emptyMsg) emptyMsg.remove();
+
+                if (isRealtime) {
+                    const badge = document.getElementById("notificationBadge");
+                    let count = parseInt(badge.innerText || "0") + 1;
+                    badge.innerText = count;
+                    badge.classList.remove("d-none");
+                }
+
+                const targetUrl = data.examId ? '/Student/ExamDetails/' + data.examId : '#';
+
+                const li = document.createElement("li");
+                li.className = "dropdown-item p-3 border-bottom text-wrap";
+                li.innerHTML = `
+                            <a href="${targetUrl}" class="text-decoration-none text-dark d-block">
+                                <div class="fw-bold text-primary small mb-1">${escapeHtml(data.title)}</div>
+                                <div class="small text-secondary mb-1">${escapeHtml(data.message)}</div>
+                                <small class="text-muted extra-small">
+                                    <i class="fa-regular fa-clock me-1"></i>${data.timeAgo || data.createdAt || 'Just now'}
+                                </small>
+                            </a>
+                        `;
+                list.prepend(li);
+            }
+
+            function escapeHtml(text) {
+                if (!text) return '';
+                return text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

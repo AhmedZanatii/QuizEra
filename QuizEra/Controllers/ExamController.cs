@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using QuizEra.BLL.ModelVM.Course;
 using QuizEra.BLL.ModelVM.Exam;
 using QuizEra.BLL.Services.Abstraction;
 using QuizEra.DAL.Entities;
@@ -89,6 +90,7 @@ namespace QuizEra.Controllers
                 await LoadCreateDataAsync(model);
                 return View(model);
             }
+            
 
             return RedirectToAction(nameof(Index));
         }

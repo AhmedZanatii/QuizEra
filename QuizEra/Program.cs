@@ -9,6 +9,8 @@ using QuizEra.DAL.Entities;
 using QuizEra.DAL.Repositories.Abstraction;
 using QuizEra.DAL.Repositories.Implementation;
 using QuizEra.Data;
+using QuizEra.Hubs;
+using QuizEra.RealtimeNotificationService;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +20,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddOptions();
 
 var connectionString =
-    builder.Configuration.GetConnectionString("Zanatii");
+    builder.Configuration.GetConnectionString("Mostafa");
 
 builder.Services.AddDbContext<QuizEraDBContext>(options =>
     options
@@ -72,6 +74,7 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
     {
         options.TokenLifespan = TimeSpan.FromHours(1);
     });
+builder.Services.AddSignalR();
 
 //questions
 builder.Services.AddScoped<IQuestionService, QuestionService>();
@@ -94,6 +97,8 @@ builder.Services.AddScoped<IExamService, ExamService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IExamAttemptResultService, ExamAttemptResultService>();
 builder.Services.AddHttpClient<IAIEvaluationService, GeminiEvaluationService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IRealTimeNotificationService, RealTimeNotificationService>();
 var app = builder.Build();
 // Role and Admin seeding
 using (var scope = app.Services.CreateScope())
@@ -126,6 +131,7 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
+app.MapHub<NotificationHub>("/notificationHub");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}")
