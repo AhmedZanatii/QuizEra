@@ -32,6 +32,15 @@ namespace QuizEra.Web.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> ExamRules(int id)
+        {
+            var exam = await _examService.GetExamByIdAsync(id);
+            if (exam == null) return NotFound("Exam not found.");
+
+            return View(exam);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> StartExam(int id)
         {
             var exam = await _examService.GetExamByIdAsync(id);

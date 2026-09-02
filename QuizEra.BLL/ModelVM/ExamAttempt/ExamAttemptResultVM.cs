@@ -20,8 +20,16 @@ namespace QuizEra.BLL.ModelVM.ExamAttempt
         public string QuestionFormat { get; set; } = string.Empty;
         public string CorrectAnswer { get; set; } = string.Empty;
         public string StudentAnswer { get; set; } = string.Empty;
+        public int QuestionMark { get; set; }
         public string? AIJustification { get; set; }
         public bool IsCorrect { get; set; }
         public TimeSpan TimeSpent { get; set; }
+        public List<OptionResultVM> Options { get; set; } = new();
+    }
+
+    public class OptionResultVM
+    {
+        public string OptionText { get; set; } = string.Empty;
+        public bool IsCorrect { get; set; }
     }
 }

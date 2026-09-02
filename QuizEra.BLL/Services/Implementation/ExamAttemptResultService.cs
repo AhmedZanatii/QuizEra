@@ -66,7 +66,7 @@ namespace QuizEra.BLL.Services.Implementation
             {
                 var examQuestion = await _examQuestionRepository.GetBy(
                     eq => eq.Id == answer.ExamQuestionsId,
-                    [eq => eq.Question],
+                    [eq => eq.Question.Options],
                     noTrack: true);
 
                 if (examQuestion == null || examQuestion.Question == null)
@@ -80,17 +80,25 @@ namespace QuizEra.BLL.Services.Implementation
                 else
                     result.IncorrectAnswersCount++;
 
-                result.QuestionBreakdown.Add(new QuestionResultDetailVM
+                var questionDetail = new QuestionResultDetailVM
                 {
                     QuestionNumber = questionNumber,
                     QuestionText = question.QuestionText,
                     QuestionFormat = question.QuestionFormat.ToString(),
                     CorrectAnswer = question.QuestionAnswer ?? string.Empty,
                     StudentAnswer = answer.QuestionAnswer ?? string.Empty,
+                    QuestionMark = answer.StudQMarks,
                     AIJustification = answer.AIJustification,
                     IsCorrect = isCorrect,
-                    TimeSpent = answer.TimeSpent
-                });
+                    TimeSpent = answer.TimeSpent,
+                    Options = question.Options?.Select(o => new OptionResultVM
+                    {
+                        OptionText = o.OptionText,
+                        IsCorrect = o.IsCorrect
+                    }).ToList() ?? new()
+                };
+
+                result.QuestionBreakdown.Add(questionDetail);
 
                 questionNumber++;
             }

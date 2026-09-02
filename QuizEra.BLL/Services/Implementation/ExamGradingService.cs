@@ -78,9 +78,11 @@ namespace QuizEra.BLL.Services.Implementation
                         question.QuestionAnswer ?? "", 
                         answer.QuestionAnswer, 
                         maxMarks);
-                        
-                    answer.Update(aiResult.Grade, answer.QuestionAnswer, modifierUser, aiResult.IsCorrect, answer.TimeSpent, aiResult.Justification);
-                    totalScore += aiResult.Grade;
+                    
+                    // Ensure grade is within valid range (0 to maxMarks)
+                    var clampedGrade = Math.Min(Math.Max(aiResult.Grade, 0), maxMarks);
+                    answer.Update(clampedGrade, answer.QuestionAnswer, modifierUser, aiResult.IsCorrect, answer.TimeSpent, aiResult.Justification);
+                    totalScore += clampedGrade;
                 }
             }
 

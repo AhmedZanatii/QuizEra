@@ -1,0 +1,274 @@
+@model QuizEra.BLL.ModelVM.Exam.ExamVM
+
+@{
+    ViewData["Title"] = $"Prepare for {Model.Title}";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+<div class="container-fluid px-4 py-5">
+    <!-- Header Section -->
+    <div class="d-flex flex-column gap-2 mb-5">
+        <div class="d-flex align-items-center gap-3">
+            <div class="icon-shape bg-primary bg-opacity-10 text-primary p-3 rounded-3" style="width: fit-content;">
+                <i class="fa-solid fa-book-open-reader fs-4"></i>
+            </div>
+            <div>
+                <h2 class="fw-bold text-dark mb-1">Review Exam Details</h2>
+                <p class="text-muted mb-0">Please review the exam information before starting</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Column: Exam Details -->
+        <div class="col-12 col-lg-8">
+            <!-- Exam Title Card -->
+            <div class="card dashboard-card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold px-3 py-2 rounded-2 mb-3">
+                            <i class="fa-solid fa-file-pen me-2"></i>Exam Information
+                        </span>
+                        <h3 class="fw-bold text-dark mt-3">@Model.Title</h3>
+                        <p class="text-muted mb-0">
+                            <i class="fa-solid fa-book-bookmark me-2 text-secondary"></i>
+                            <strong>Course:</strong> @Model.CourseName
+                        </p>
+                    </div>
+
+                    <!-- Quick Stats Grid -->
+                    <div class="row g-3 mt-4">
+                        <div class="col-6 col-md-4">
+                            <div class="bg-light rounded-3 p-3 text-center">
+                                <div class="text-muted small fw-medium mb-2">
+                                    <i class="fa-regular fa-clock text-primary"></i> Duration
+                                </div>
+                                <div class="h5 fw-bold text-dark mb-0">@Model.Duration <span class="fs-6">min</span></div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="bg-light rounded-3 p-3 text-center">
+                                <div class="text-muted small fw-medium mb-2">
+                                    <i class="fa-solid fa-star text-warning"></i> Total Marks
+                                </div>
+                                <div class="h5 fw-bold text-dark mb-0">@Model.TotalMarks</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="bg-light rounded-3 p-3 text-center">
+                                <div class="text-muted small fw-medium mb-2">
+                                    <i class="fa-solid fa-list text-info"></i> Questions
+                                </div>
+                                <div class="h5 fw-bold text-dark mb-0">@Model.QuestionsCount</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topics Card -->
+            @if (Model.TopicNames?.Any() == true)
+            {
+                <div class="card dashboard-card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <span class="badge bg-success bg-opacity-10 text-success fw-semibold px-3 py-2 rounded-2 mb-3">
+                            <i class="fa-solid fa-layer-group me-2"></i>Topics Covered
+                        </span>
+                        <div class="mt-4 d-flex flex-wrap gap-2">
+                            @foreach (var topic in Model.TopicNames)
+                            {
+                                <span class="badge bg-primary rounded-pill px-4 py-2 fw-medium">
+                                    <i class="fa-solid fa-tag me-2"></i>@topic
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Exam Availability Card -->
+            <div class="card dashboard-card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <span class="badge bg-warning bg-opacity-10 text-warning fw-semibold px-3 py-2 rounded-2 mb-3">
+                        <i class="fa-solid fa-calendar-days me-2"></i>Availability Period
+                    </span>
+                    <div class="mt-4">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="icon-shape bg-light text-primary rounded-2 p-2" style="width: fit-content;">
+                                        <i class="fa-solid fa-play-circle fs-5"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-muted small fw-medium">Starts</div>
+                                        <div class="fw-bold text-dark">@Model.StartDate.ToString("dd MMM yyyy, hh:mm tt")</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="icon-shape bg-light text-danger rounded-2 p-2" style="width: fit-content;">
+                                        <i class="fa-solid fa-stop-circle fs-5"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-muted small fw-medium">Closes</div>
+                                        <div class="fw-bold text-dark">@Model.EndDate.ToString("dd MMM yyyy, hh:mm tt")</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Rules & Instructions -->
+        <div class="col-12 col-lg-4">
+            <!-- Exam Rules Card -->
+            <div class="card dashboard-card border-0 shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-body p-4">
+                    <span class="badge bg-danger bg-opacity-10 text-danger fw-semibold px-3 py-2 rounded-2 mb-3">
+                        <i class="fa-solid fa-exclamation-circle me-2"></i>Important Rules
+                    </span>
+
+                    <div class="mt-4 d-flex flex-column gap-3">
+                        <!-- Rule 1 -->
+                        <div class="d-flex gap-3">
+                            <div class="text-primary fw-bold" style="min-width: 24px;">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1">Timer Starts Immediately</h6>
+                                <p class="text-muted small mb-0">Once you start, the exam timer will begin. You have @Model.Duration minutes to complete it.</p>
+                            </div>
+                        </div>
+
+                        <hr class="my-2">
+
+                        <!-- Rule 2 -->
+                        <div class="d-flex gap-3">
+                            <div class="text-primary fw-bold" style="min-width: 24px;">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1">No Tab Switching</h6>
+                                <p class="text-muted small mb-0">Switching away from the exam window may be recorded as a violation of academic integrity.</p>
+                            </div>
+                        </div>
+
+                        <hr class="my-2">
+
+                        <!-- Rule 3 -->
+                        <div class="d-flex gap-3">
+                            <div class="text-primary fw-bold" style="min-width: 24px;">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1">Fullscreen Mode Required</h6>
+                                <p class="text-muted small mb-0">The exam must be taken in fullscreen mode for proctoring purposes. Exiting fullscreen may be flagged.</p>
+                            </div>
+                        </div>
+
+                        <hr class="my-2">
+
+                        <!-- Rule 4 -->
+                        <div class="d-flex gap-3">
+                            <div class="text-primary fw-bold" style="min-width: 24px;">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1">No Copy/Paste</h6>
+                                <p class="text-muted small mb-0">Copy, paste, and right-click operations are disabled during the exam.</p>
+                            </div>
+                        </div>
+
+                        <hr class="my-2">
+
+                        <!-- Rule 5 -->
+                        <div class="d-flex gap-3">
+                            <div class="text-primary fw-bold" style="min-width: 24px;">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1">No Developer Tools</h6>
+                                <p class="text-muted small mb-0">Developer tools and console access are blocked during the exam.</p>
+                            </div>
+                        </div>
+
+                        <hr class="my-2">
+
+                        <!-- Rule 6 -->
+                        <div class="d-flex gap-3">
+                            <div class="text-primary fw-bold" style="min-width: 24px;">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1">Save Your Answers</h6>
+                                <p class="text-muted small mb-0">Your answers are automatically saved. Submit your exam before time runs out.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acknowledgement -->
+                    <div class="form-check mt-4 pt-3 border-top">
+                        <input class="form-check-input" type="checkbox" id="rulesAck" style="width: 1.25em; height: 1.25em;">
+                        <label class="form-check-label text-muted small" for="rulesAck">
+                            I have read and understand the exam rules and academic integrity policies.
+                        </label>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="button" class="btn btn-outline-secondary fw-bold py-2.5 rounded-3" id="backBtn">
+                            <i class="fa-solid fa-arrow-left me-2"></i>Back
+                        </button>
+                        <button type="button" class="btn btn-primary fw-bold py-2.5 rounded-3 style-btn" id="startExamBtn" disabled>
+                            <i class="fa-solid fa-play me-2"></i>Start Exam
+                        </button>
+                    </div>
+
+                    <!-- Warning Alert -->
+                    <div class="alert alert-warning alert-dismissible fade show mt-3 mb-0" role="alert" style="font-size: 0.875rem;">
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                        <strong>Warning:</strong> Academic integrity violations may result in penalties.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const rulesCheckbox = document.getElementById('rulesAck');
+        const startExamBtn = document.getElementById('startExamBtn');
+        const backBtn = document.getElementById('backBtn');
+        const examId = @Model.Id;
+
+        // Back button handler
+        backBtn.addEventListener('click', function() {
+            history.back();
+        });
+
+        // Enable/disable start button based on checkbox
+        rulesCheckbox.addEventListener('change', function() {
+            startExamBtn.disabled = !this.checked;
+        });
+
+        // Start exam button handler
+        startExamBtn.addEventListener('click', function() {
+            if (!startExamBtn.disabled) {
+                window.location.href = `/TakeExam/StartExam?id=${examId}`;
+            }
+        });
+
+        // Warn if user tries to leave without acknowledging
+        window.addEventListener('beforeunload', function(e) {
+            if (!rulesCheckbox.checked) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    </script>
+}

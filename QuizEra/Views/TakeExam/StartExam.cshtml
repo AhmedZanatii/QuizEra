@@ -155,6 +155,13 @@
     </style>
 </head>
 <body>
+    <div id="startOverlay" class="position-fixed top-0 start-0 w-100 h-100 bg-white d-flex justify-content-center align-items-center" style="z-index: 9999;">
+        <div class="text-center">
+            <h3 class="fw-bold mb-3">Ready to begin?</h3>
+            <p class="text-muted mb-4">This exam requires fullscreen mode.</p>
+            <button id="enterExamBtn" class="btn btn-primary btn-lg fw-bold px-5">Enter Fullscreen & Start</button>
+        </div>
+    </div>
 
     <header class="exam-header d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-3">
@@ -227,12 +234,6 @@
             let currentIndex = 0;
             let remainingSeconds = @Model.RemainingTimeSeconds;
             let questionStartTime = Date.now();
-
-            document.addEventListener("DOMContentLoaded", () => {
-                startTimer();
-                renderQuestion();
-                renderNavigator();
-            });
 
             function renderQuestion() {
                 const q = examState.questions[currentIndex];
@@ -406,6 +407,172 @@
                     remainingSeconds--;
                 }, 1000);
             }
+
+            // ============================================
+            // ACADEMIC INTEGRITY FEATURES
+            // ============================================
+
+            let integrityViolations = {
+                tabSwitches: 0,
+                blurDurations: [],
+                fullscreenExits: 0,
+                copyAttempts: 0,
+                pasteAttempts: 0,
+                contextMenuAttempts: 0,
+                developerToolsAttempts: 0
+            };
+
+            let blurStartTime = null;
+            let isFullscreenEnabled = false;
+
+            // ============ TAB SWITCHING & BLUR TRACKING ============
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    blurStartTime = Date.now();
+                    integrityViolations.tabSwitches++;
+                    console.warn(`Tab switched away (${integrityViolations.tabSwitches} times)`);
+                } else {
+                    if (blurStartTime) {
+                        const duration = Date.now() - blurStartTime;
+                        integrityViolations.blurDurations.push({
+                            timestamp: new Date().toISOString(),
+                            durationMs: duration
+                        });
+                        console.warn(`Tab returned after ${(duration / 1000).toFixed(1)}s away`);
+                        blurStartTime = null;
+                    }
+                }
+            });
+
+            window.addEventListener('blur', () => {
+                if (!document.hidden) {
+                    blurStartTime = Date.now();
+                    integrityViolations.tabSwitches++;
+                    console.warn(`Window blur event (${integrityViolations.tabSwitches} times)`);
+                }
+            });
+
+            window.addEventListener('focus', () => {
+                if (blurStartTime) {
+                    const duration = Date.now() - blurStartTime;
+                    integrityViolations.blurDurations.push({
+                        timestamp: new Date().toISOString(),
+                        durationMs: duration
+                    });
+                    console.warn(`Window focused after ${(duration / 1000).toFixed(1)}s`);
+                    blurStartTime = null;
+                }
+            });
+
+            // ============ FULLSCREEN MODE ENFORCEMENT ============
+            function requestFullscreen() {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().then(() => {
+                        isFullscreenEnabled = true;
+                        console.log('✓ Fullscreen mode activated');
+                    }).catch((err) => {
+                        console.error('Fullscreen request failed:', err);
+                    });
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                    isFullscreenEnabled = true;
+                }
+            }
+
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement && isFullscreenEnabled) {
+                    integrityViolations.fullscreenExits++;
+                    console.warn(`Exited fullscreen (${integrityViolations.fullscreenExits} times)`);
+                    requestFullscreen();
+                }
+            });
+
+            // ============ PREVENT COPY, PASTE, CONTEXT MENU ============
+            document.addEventListener('copy', (e) => {
+                e.preventDefault();
+                integrityViolations.copyAttempts++;
+                console.warn(`Copy attempt blocked (${integrityViolations.copyAttempts} times)`);
+            });
+
+            document.addEventListener('paste', (e) => {
+                e.preventDefault();
+                integrityViolations.pasteAttempts++;
+                console.warn(`Paste attempt blocked (${integrityViolations.pasteAttempts} times)`);
+            });
+
+            document.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                integrityViolations.contextMenuAttempts++;
+                console.warn(`Right-click blocked (${integrityViolations.contextMenuAttempts} times)`);
+                return false;
+            });
+
+            // ============ PREVENT KEYBOARD SHORTCUTS ============
+            document.addEventListener('keydown', (e) => {
+                // Ctrl+C, Ctrl+X, Ctrl+V
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'v')) {
+                    e.preventDefault();
+                    if (e.key === 'c') integrityViolations.copyAttempts++;
+                    if (e.key === 'v') integrityViolations.pasteAttempts++;
+                    console.warn(`Keyboard shortcut Ctrl+${e.key.toUpperCase()} blocked`);
+                }
+
+                // F12, F11
+                if (e.key === 'F12' || e.key === 'F11') {
+                    e.preventDefault();
+                    integrityViolations.developerToolsAttempts++;
+                    console.warn(`${e.key} blocked (${integrityViolations.developerToolsAttempts} times)`);
+                }
+
+                // Ctrl+Shift+I (Developer Tools)
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'I') {
+                    e.preventDefault();
+                    integrityViolations.developerToolsAttempts++;
+                    console.warn(`Developer Tools shortcut blocked`);
+                }
+
+                // Ctrl+Shift+J (Developer Console)
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'J') {
+                    e.preventDefault();
+                    integrityViolations.developerToolsAttempts++;
+                    console.warn(`Developer Console shortcut blocked`);
+                }
+            });
+
+            // ============ CSS DISABLE TEXT SELECTION ============
+            document.documentElement.style.userSelect = 'none';
+            document.documentElement.style.WebkitUserSelect = 'none';
+            document.documentElement.style.MozUserSelect = 'none';
+            document.documentElement.style.msUserSelect = 'none';
+
+            // ============ INITIALIZATION ============
+            document.getElementById('enterExamBtn').addEventListener('click', () => {
+                requestFullscreen(); // Triggered by a real click!
+                
+                // Grab the overlay element
+                const overlay = document.getElementById('startOverlay');
+                
+                overlay.classList.remove('d-flex');
+                overlay.classList.add('d-none');
+
+                startTimer();
+                renderQuestion();
+                renderNavigator();
+            });
+
+            // Track violations before leaving page
+            window.addEventListener('beforeunload', () => {
+                if (integrityViolations.tabSwitches > 0 || 
+                    integrityViolations.fullscreenExits > 0 || 
+                    integrityViolations.copyAttempts > 0 || 
+                    integrityViolations.pasteAttempts > 0 || 
+                    integrityViolations.contextMenuAttempts > 0 || 
+                    integrityViolations.developerToolsAttempts > 0) {
+                    
+                    console.log('Integrity Violations Summary:', integrityViolations);
+                }
+            });
     </script>
 </body>
 </html>
