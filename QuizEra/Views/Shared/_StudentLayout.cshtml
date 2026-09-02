@@ -61,9 +61,9 @@
                 overflow-y: auto;
             }
 
-                #sidebar.collapsed {
-                    margin-left: calc(-1 * var(--qe-sidebar-width));
-                }
+            #sidebar.collapsed {
+                margin-left: calc(-1 * var(--qe-sidebar-width));
+            }
 
             /* Brand Logo Area */
             .sidebar-brand {
@@ -105,36 +105,36 @@
                 gap: 8px;
             }
 
-                .sidebar-menu .nav-link {
-                    padding: 0.85rem 1.25rem;
-                    color: #94a3b8;
-                    font-size: 0.925rem;
-                    font-weight: 600;
-                    border-radius: 14px;
-                    display: flex;
-                    align-items: center;
-                    gap: 14px;
-                    transition: all 0.25s ease;
-                    text-decoration: none;
-                }
+            .sidebar-menu .nav-link {
+                padding: 0.85rem 1.25rem;
+                color: #94a3b8;
+                font-size: 0.925rem;
+                font-weight: 600;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                transition: all 0.25s ease;
+                text-decoration: none;
+            }
 
-                    .sidebar-menu .nav-link i {
-                        font-size: 1.15rem;
-                        width: 22px;
-                        text-align: center;
-                    }
+            .sidebar-menu .nav-link i {
+                font-size: 1.15rem;
+                width: 22px;
+                text-align: center;
+            }
 
-                    .sidebar-menu .nav-link:hover {
-                        color: #ffffff;
-                        background-color: rgba(255, 255, 255, 0.06);
-                    }
+            .sidebar-menu .nav-link:hover {
+                color: #ffffff;
+                background-color: rgba(255, 255, 255, 0.06);
+            }
 
-                    .sidebar-menu .nav-link.active {
-                        color: #ffffff;
-                        background-color: var(--qe-active-bg);
-                        box-shadow: 0 4px 20px rgba(80, 49, 184, 0.4);
-                        font-weight: 700;
-                    }
+            .sidebar-menu .nav-link.active {
+                color: #ffffff;
+                background-color: var(--qe-active-bg);
+                box-shadow: 0 4px 20px rgba(80, 49, 184, 0.4);
+                font-weight: 700;
+            }
 
             /* Content Area */
             #content {
@@ -169,10 +169,10 @@
                 transition: background 0.2s;
             }
 
-                .btn-toggle-sidebar:hover {
-                    background-color: var(--qe-body-bg);
-                    color: var(--qe-text-dark);
-                }
+            .btn-toggle-sidebar:hover {
+                background-color: var(--qe-body-bg);
+                color: var(--qe-text-dark);
+            }
 
             .breadcrumb-sub {
                 font-size: 0.8rem;
@@ -201,31 +201,49 @@
                 transition: all 0.2s ease;
             }
 
-                .btn-icon:hover {
-                    color: var(--qe-primary-purple);
-                    background: var(--qe-primary-soft);
-                    border-color: transparent;
-                }
-
-            /* Enhanced Notification Dropdown Styling */
+            .btn-icon:hover {
+                color: var(--qe-primary-purple);
+                background: var(--qe-primary-soft);
+                border-color: transparent;
+            }
             .notification-dropdown-menu {
                 width: 360px;
-                border-radius: 16px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-                max-height: 440px;
+                max-width: 90vw;
+                border-radius: 16px !important;
+                box-shadow: 0 12px 32px rgba(17, 13, 50, 0.12) !important;
+                max-height: 420px;
+                overflow: hidden;
+                border: 1px solid var(--qe-border) !important;
+            }
+
+            #notificationList {
+                max-height: 340px;
                 overflow-y: auto;
-                border: 1px solid var(--qe-border);
+            }
+
+            #notificationList::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            #notificationList::-webkit-scrollbar-thumb {
+                background-color: #cbd5e1;
+                border-radius: 4px;
             }
 
             .notification-item-link {
-                transition: background-color 0.2s ease;
+                transition: all 0.2s ease;
                 border-left: 3px solid transparent;
+                white-space: normal;
             }
 
-                .notification-item-link:hover {
-                    background-color: var(--qe-primary-soft) !important;
-                    border-left-color: var(--qe-primary-purple);
-                }
+            .notification-item-link:hover {
+                background-color: var(--qe-primary-soft) !important;
+                border-left-color: var(--qe-primary-purple);
+            }
+
+            .notification-item-link:hover .text-secondary {
+                color: var(--qe-text-dark) !important;
+            }
 
             /* Reusable Card Styles Matching Admin */
             .dashboard-card {
@@ -284,7 +302,7 @@
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="Student" asp-action="Courses" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Courses" ? "active" : "")">
+                    <a asp-controller="Student" asp-action="Courses" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "EnrolledCourses" ? "active" : "")">
                         <i class="fa-solid fa-book-open"></i>
                         <span>My Courses</span>
                     </a>

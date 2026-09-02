@@ -238,7 +238,7 @@
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="Instructor" asp-action="Courses" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Courses" ? "active" : "")">
+                    <a asp-controller="Instructor" asp-action="Courses" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Course" ? "active" : "")">
                         <i class="fa-solid fa-book-bookmark"></i>
                         <span>My Courses</span>
                     </a>
