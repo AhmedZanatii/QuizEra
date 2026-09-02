@@ -7,172 +7,213 @@
 
 <style>
     .btn-qe-primary {
-        background-color: var(--qe-primary-purple);
-        border-color: var(--qe-primary-purple);
+        background-color: var(--qe-primary-purple, #6f42c1);
+        border-color: var(--qe-primary-purple, #6f42c1);
         color: #ffffff;
+        transition: all 0.2s;
     }
 
         .btn-qe-primary:hover {
-            background-color: var(--qe-active-bg);
-            border-color: var(--qe-active-bg);
+            background-color: var(--qe-active-bg, #59319d);
+            border-color: var(--qe-active-bg, #59319d);
             color: #ffffff;
         }
 
     .btn-qe-outline {
-        color: var(--qe-primary-purple);
-        border-color: var(--qe-primary-purple);
+        color: var(--qe-primary-purple, #6f42c1);
+        border-color: var(--qe-primary-purple, #6f42c1);
         background-color: transparent;
+        transition: all 0.2s;
     }
 
         .btn-qe-outline:hover {
-            background-color: var(--qe-primary-soft);
-            color: var(--qe-active-bg);
-            border-color: var(--qe-primary-purple);
+            background-color: var(--qe-primary-soft, #f3ebf9);
+            color: var(--qe-active-bg, #59319d);
+            border-color: var(--qe-primary-purple, #6f42c1);
         }
 
     .badge-qe-purple {
-        background-color: var(--qe-primary-soft);
-        color: var(--qe-primary-purple);
+        background-color: var(--qe-primary-soft, #f3ebf9);
+        color: var(--qe-primary-purple, #6f42c1);
     }
 
     .text-qe-purple {
-        color: var(--qe-primary-purple) !important;
+        color: var(--qe-primary-purple, #6f42c1) !important;
     }
+
+    .stat-card {
+        transition: transform 0.2s;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
 </style>
 
-<div class="d-flex justify-content-between align-items-start mb-4">
-    <div>
-        <span class="text-muted small text-uppercase fw-bold">Exam Result</span>
-        <h3 class="fw-bold text-dark mb-1">@Model.ExamTitle</h3>
-        <p class="text-muted small mb-0">Your attempt has been submitted successfully.</p>
-    </div>
-    @if (Model.IsPassed)
-    {
-        <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-semibold"><i class="fa-solid fa-check me-1"></i>Passed</span>
-    }
-    else
-    {
-        <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill fw-semibold"><i class="fa-solid fa-xmark me-1"></i>Failed</span>
-    }
-</div>
-
-<div class="row g-4 mb-4">
-    <div class="col-6 col-lg-3">
-        <div class="card dashboard-card border-0 p-4 h-100 shadow-sm">
-            <span class="text-muted small fw-semibold">Score</span>
-            <h3 class="fw-bold text-qe-purple mb-0 mt-1">@Model.TotalScore</h3>
-        </div>
-    </div>
-    <div class="col-6 col-lg-3">
-        <div class="card dashboard-card border-0 p-4 h-100 shadow-sm">
-            <span class="text-muted small fw-semibold">Percentage</span>
-            <h3 class="fw-bold text-dark mb-0 mt-1">@Model.Percentage.ToString("0.0")%</h3>
-        </div>
-    </div>
-    <div class="col-6 col-lg-3">
-        <div class="card dashboard-card border-0 p-4 h-100 shadow-sm">
-            <span class="text-muted small fw-semibold">Correct Answers</span>
-            <h3 class="fw-bold text-success mb-0 mt-1">@Model.CorrectAnswersCount</h3>
-        </div>
-    </div>
-    <div class="col-6 col-lg-3">
-        <div class="card dashboard-card border-0 p-4 h-100 shadow-sm">
-            <span class="text-muted small fw-semibold">Time Spent</span>
-            <h3 class="fw-bold text-dark mb-0 mt-1">@(Model.CompletionTime?.ToString(@"hh\:mm\:ss") ?? "N/A")</h3>
-        </div>
-    </div>
-</div>
-
-<div class="card dashboard-card border-0 mb-4 shadow-sm">
-    <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+<div class="container-fluid px-3 px-lg-4 py-4">
+    <!-- Result Header -->
+    <div class="card dashboard-card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
-                <h5 class="fw-bold mb-1 text-dark">Question Summary</h5>
-                <p class="text-muted small mb-0">You answered @Model.CorrectAnswersCount of @Model.QuestionBreakdown.Count questions correctly.</p>
+                <span class="badge badge-qe-purple fw-bold text-uppercase mb-2 px-3 py-1.5 rounded-2">Exam Result</span>
+                <h3 class="fw-bold text-dark mb-1">@Model.ExamTitle</h3>
+                <p class="text-muted small mb-0">Your attempt submission details and performance breakdown.</p>
             </div>
-            <span class="badge badge-qe-purple rounded-pill px-3 py-2 fw-semibold">@Model.QuestionBreakdown.Count total questions</span>
+            <div>
+                @if (Model.IsPassed)
+                {
+                    <div class="badge bg-success bg-opacity-10 text-success fs-6 px-4 py-2.5 rounded-pill border border-success-subtle fw-semibold">
+                        <i class="fa-solid fa-circle-check me-2"></i>Passed
+                    </div>
+                }
+                else
+                {
+                    <div class="badge bg-danger bg-opacity-10 text-danger fs-6 px-4 py-2.5 rounded-pill border border-danger-subtle fw-semibold">
+                        <i class="fa-solid fa-circle-xmark me-2"></i>Failed
+                    </div>
+                }
+            </div>
         </div>
     </div>
-</div>
 
-<div class="card dashboard-card border-0 shadow-sm">
-    <div class="card-body p-4">
-        <h5 class="fw-bold mb-3 text-dark">Question Breakdown</h5>
-        @if (!Model.QuestionBreakdown.Any())
-        {
-            <p class="text-muted small mb-0">No question-level answers were recorded.</p>
-        }
-        else
-        {
-            <div class="table-responsive">
-                <table class="table align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Question</th>
-                            <th>Time</th>
-                            <th class="text-center">Mark</th>
-                            <th class="text-center">Result</th>
-                            <th class="text-end">Details</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var question in Model.QuestionBreakdown)
-                        {
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-start gap-2">
-                                        <span class="badge rounded-pill bg-light text-dark border">@($"Q{question.QuestionNumber}")</span>
-                                        <div>
-                                            <div class="fw-semibold text-dark">@question.QuestionText</div>
-                                            <small class="text-muted">@question.QuestionFormat</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-muted small fw-semibold">@question.TimeSpent.ToString(@"mm\:ss")</td>
-                                <td class="text-center">
-                                    <span class="badge bg-primary bg-opacity-10 text-primary px-2.5 py-1.5 rounded-pill">@question.QuestionMark</span>
-                                </td>
-                                <td class="text-center">
-                                    @if (question.IsCorrect)
-                                    {
-                                        <span class="badge bg-success bg-opacity-10 text-success px-2.5 py-1.5 rounded-pill">Correct</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger bg-opacity-10 text-danger px-2.5 py-1.5 rounded-pill">Incorrect</span>
-                                    }
-                                </td>
-                                <td class="text-end">
-                                    <button type="button"
-                                            class="btn btn-sm btn-qe-outline question-detail-btn fw-semibold"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#questionDetailModal"
-                                            data-question-number=@($"Q{question.QuestionNumber}")
-                                            data-question-text="@question.QuestionText"
-                                            data-question-format="@question.QuestionFormat"
-                                            data-correct-answer="@(string.IsNullOrWhiteSpace(question.CorrectAnswer) ? "No correct answer recorded." : question.CorrectAnswer)"
-                                            data-student-answer="@(string.IsNullOrWhiteSpace(question.StudentAnswer) ? "No answer recorded." : question.StudentAnswer)"
-                                            data-ai-justification="@(string.IsNullOrWhiteSpace(question.AIJustification) ? "No AI justification available." : question.AIJustification)"
-                                            data-is-correct="@question.IsCorrect.ToString().ToLowerInvariant()"
-                                            data-options='@System.Text.Json.JsonSerializer.Serialize(question.Options)'>
-                                        <i class="fa-solid fa-eye me-1"></i>Details
-                                    </button>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+    <!-- Quick Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card stat-card border-0 p-3 p-lg-4 h-100 shadow-sm rounded-4 bg-white">
+                <span class="text-muted small fw-semibold text-uppercase">Score</span>
+                <h2 class="fw-bold text-qe-purple mb-0 mt-2">@Model.TotalScore</h2>
             </div>
-        }
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card stat-card border-0 p-3 p-lg-4 h-100 shadow-sm rounded-4 bg-white">
+                <span class="text-muted small fw-semibold text-uppercase">Percentage</span>
+                <h2 class="fw-bold text-dark mb-0 mt-2">@Model.Percentage.ToString("0.0")<span class="fs-5">%</span></h2>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card stat-card border-0 p-3 p-lg-4 h-100 shadow-sm rounded-4 bg-white">
+                <span class="text-muted small fw-semibold text-uppercase">Correct Answers</span>
+                <h2 class="fw-bold text-success mb-0 mt-2">@Model.CorrectAnswersCount</h2>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card stat-card border-0 p-3 p-lg-4 h-100 shadow-sm rounded-4 bg-white">
+                <span class="text-muted small fw-semibold text-uppercase">Time Spent</span>
+                <h2 class="fw-bold text-dark mb-0 mt-2">@(Model.CompletionTime?.ToString(@"hh\:mm\:ss") ?? "N/A")</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Summary Banner -->
+    <div class="card dashboard-card border-0 mb-4 shadow-sm rounded-4">
+        <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="icon-shape bg-primary bg-opacity-10 text-primary rounded-3 p-3">
+                    <i class="fa-solid fa-chart-pie fs-4"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-1 text-dark">Performance Summary</h5>
+                    <p class="text-muted small mb-0">You answered <strong>@Model.CorrectAnswersCount</strong> out of <strong>@Model.QuestionBreakdown.Count</strong> questions correctly.</p>
+                </div>
+            </div>
+            <span class="badge badge-qe-purple rounded-pill px-3 py-2 fw-semibold border">@Model.QuestionBreakdown.Count Total Questions</span>
+        </div>
+    </div>
+
+    <!-- Question Breakdown Table -->
+    <div class="card dashboard-card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+            <h5 class="fw-bold mb-3 text-dark"><i class="fa-solid fa-list-ol text-primary me-2"></i>Question Breakdown</h5>
+            @if (!Model.QuestionBreakdown.Any())
+            {
+                <div class="text-center py-4 text-muted small">
+                    <i class="fa-regular fa-folder-open fs-3 d-block mb-2"></i>
+                    No question-level details available for this attempt.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light rounded-3">
+                            <tr>
+                                <th class="border-0 py-3">Question</th>
+                                <th class="border-0 py-3">Time</th>
+                                <th class="border-0 py-3 text-center">Mark</th>
+                                <th class="border-0 py-3 text-center">Result</th>
+                                <th class="border-0 py-3 text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var question in Model.QuestionBreakdown)
+                            {
+                                <tr>
+                                    <td class="py-3" style="max-width: 400px;">
+                                        <div class="d-flex align-items-start gap-2">
+                                            <span class="badge rounded-pill bg-light text-dark border px-2.5 py-1.5 fw-semibold">@($"Q{question.QuestionNumber}")</span>
+                                            <div>
+                                                <div class="fw-semibold text-dark text-truncate" style="max-width: 350px;">@question.QuestionText</div>
+                                                <small class="text-muted text-uppercase fs-7">@question.QuestionFormat</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted small fw-semibold py-3">@question.TimeSpent.ToString(@"mm\:ss")</td>
+                                    <td class="text-center py-3">
+                                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-1.5 rounded-pill fw-semibold">@question.QuestionMark</span>
+                                    </td>
+                                    <td class="text-center py-3">
+                                        @if (question.IsCorrect)
+                                        {
+                                            <span class="badge bg-success bg-opacity-10 text-success px-3 py-1.5 rounded-pill"><i class="fa-solid fa-check me-1"></i>Correct</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-1.5 rounded-pill"><i class="fa-solid fa-xmark me-1"></i>Incorrect</span>
+                                        }
+                                    </td>
+                                    <td class="text-end py-3">
+                                        <button type="button"
+                                                class="btn btn-sm btn-qe-outline question-detail-btn fw-semibold rounded-2 px-3"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#questionDetailModal"
+                                                data-question-number=@($"Q{question.QuestionNumber}")
+                                                data-question-text="@question.QuestionText"
+                                                data-question-format="@question.QuestionFormat"
+                                                data-correct-answer="@(string.IsNullOrWhiteSpace(question.CorrectAnswer) ? "No correct answer recorded." : question.CorrectAnswer)"
+                                                data-student-answer="@(string.IsNullOrWhiteSpace(question.StudentAnswer) ? "No answer recorded." : question.StudentAnswer)"
+                                                data-ai-justification="@(string.IsNullOrWhiteSpace(question.AIJustification) ? "No AI justification available." : question.AIJustification)"
+                                                data-is-correct="@question.IsCorrect.ToString().ToLowerInvariant()"
+                                                data-options='@System.Text.Json.JsonSerializer.Serialize(question.Options)'>
+                                            <i class="fa-solid fa-eye me-1"></i>Details
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Navigation Footer -->
+    <div class="d-flex justify-content-between align-items-center gap-2 mt-4">
+        <a asp-controller="Student" asp-action="Results" class="btn btn-qe-outline fw-semibold px-4 py-2 rounded-3">
+            <i class="fa-solid fa-arrow-left me-2"></i>My Results
+        </a>
+        <a asp-controller="Student" asp-action="Exams" class="btn btn-qe-primary fw-semibold px-4 py-2 rounded-3">
+            <i class="fa-solid fa-file-pen me-2"></i>Available Exams
+        </a>
     </div>
 </div>
 
+<!-- Question Detail Modal -->
 <div class="modal fade" id="questionDetailModal" tabindex="-1" aria-labelledby="questionDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header border-bottom">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-bottom p-4">
                 <div>
-                    <span class="text-muted small">Question details</span>
+                    <span class="text-muted small text-uppercase fw-semibold">Question Overview</span>
                     <h5 class="modal-title fw-bold mt-1 text-dark" id="questionDetailModalLabel">Question</h5>
                 </div>
                 <div class="d-flex align-items-center gap-2">
@@ -187,20 +228,20 @@
                 </div>
 
                 <div id="optionsContainer" style="display:none;" class="mb-4">
-                    <div class="text-muted small fw-semibold mb-3">Options:</div>
+                    <div class="text-muted small fw-semibold mb-2">Options:</div>
                     <div class="d-flex flex-column gap-2" id="optionsList"></div>
                 </div>
 
                 <div class="row g-3">
                     <div class="col-12" id="correctAnswerBlock">
-                        <div class="border rounded-3 p-3 bg-light">
-                            <div class="text-muted small fw-semibold mb-1">Correct Answer</div>
-                            <div class="fw-semibold text-success" id="modalCorrectAnswer">-</div>
+                        <div class="border border-success-subtle rounded-3 p-3 bg-success bg-opacity-10">
+                            <div class="text-success small fw-semibold mb-1"><i class="fa-solid fa-check me-1"></i>Correct Answer</div>
+                            <div class="fw-semibold text-dark" id="modalCorrectAnswer">-</div>
                         </div>
                     </div>
                     <div class="col-12" id="studentAnswerBlock">
                         <div class="border rounded-3 p-3 bg-light">
-                            <div class="text-muted small fw-semibold mb-1">Your Answer</div>
+                            <div class="text-muted small fw-semibold mb-1"><i class="fa-solid fa-user me-1"></i>Your Answer</div>
                             <div class="fw-semibold text-dark" id="modalStudentAnswer">-</div>
                         </div>
                     </div>
@@ -212,16 +253,11 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer border-top">
-                <button type="button" class="btn btn-secondary px-4 fw-semibold" data-bs-dismiss="modal">Close</button>
+            <div class="modal-footer border-top p-3 px-4">
+                <button type="button" class="btn btn-secondary px-4 fw-semibold rounded-3" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
-</div>
-
-<div class="d-flex gap-2 mt-4">
-    <a asp-controller="Student" asp-action="Results" class="btn btn-qe-outline fw-semibold px-4"><i class="fa-solid fa-list me-2"></i>My Results</a>
-    <a asp-controller="Student" asp-action="Exams" class="btn btn-qe-primary fw-semibold px-4"><i class="fa-solid fa-file-pen me-2"></i>Available Exams</a>
 </div>
 
 @section Scripts {
@@ -251,7 +287,7 @@
                     const isCorrect = button.getAttribute('data-is-correct') === 'true';
                     const optionsJson = button.getAttribute('data-options');
                     let options = [];
-                    
+
                     try {
                         options = JSON.parse(optionsJson) || [];
                     } catch (e) {
@@ -264,21 +300,19 @@
                     correct.textContent = correctAnswer;
                     studentDisplay.textContent = studentAnswer;
 
-                    // Handle options display for MCQ and T/F
                     const isMCQOrTF = questionFormat && (
-                        questionFormat.toLowerCase() === 'mcq' || 
-                        questionFormat.toLowerCase() === 'truefalse' || 
+                        questionFormat.toLowerCase() === 'mcq' ||
+                        questionFormat.toLowerCase() === 'truefalse' ||
                         questionFormat.toLowerCase() === 'tf'
                     );
 
                     if (isMCQOrTF && options.length > 0) {
                         optionsList.innerHTML = '';
-                        options.forEach(function (option) {
+                        options.forEach(function(option) {
                             const optionDiv = document.createElement('div');
-                            
                             let badgeHtml = '';
-                            let containerBorder = 'border-light bg-light';
-                            
+                            let containerBorder = 'border-light-subtle bg-light';
+
                             const isSelectedByStudent = option.OptionText.trim().toLowerCase() === studentAnswer.trim().toLowerCase();
 
                             if (option.IsCorrect) {
@@ -292,12 +326,12 @@
                             if (isSelectedByStudent && option.IsCorrect) {
                                 badgeHtml = '<span class="badge bg-success"><i class="fa-solid fa-check me-1"></i>Your Answer (Correct)</span>';
                             }
-                            
-                            optionDiv.className = `border rounded-3 p-3 d-flex align-items-center justify-content-between mb-2 ${containerBorder}`;
+
+                            optionDiv.className = `border rounded-3 p-3 d-flex align-items-center justify-content-between mb-1 ${containerBorder}`;
                             optionDiv.innerHTML = `
-                                <span class="text-dark fw-semibold">${option.OptionText}</span>
-                                <div>${badgeHtml}</div>
-                            `;
+                                        <span class="text-dark fw-semibold small">${option.OptionText}</span>
+                                        <div>${badgeHtml}</div>
+                                    `;
                             optionsList.appendChild(optionDiv);
                         });
 
@@ -310,7 +344,6 @@
                         studentAnswerBlock.style.display = 'block';
                     }
 
-                    // Handle essay justification
                     if (questionFormat && questionFormat.toLowerCase() === 'essay') {
                         justificationBlock.style.display = 'block';
                         justification.textContent = aiJustification;

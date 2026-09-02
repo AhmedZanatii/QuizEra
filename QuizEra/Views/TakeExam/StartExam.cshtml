@@ -15,150 +15,173 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-            :root {
-                --qe-primary-purple: #6c5ce7;
-                --qe-active-bg: #5031b8;
-                --qe-primary-soft: #f0edff;
-                --qe-dark: #0d0a27;
-            }
+        :root {
+            --qe-primary-purple: #6c5ce7;
+            --qe-active-bg: #5031b8;
+            --qe-primary-soft: #f0edff;
+            --qe-dark: #0d0a27;
+        }
 
-            body {
-                background-color: #f8fafc;
-                font-family: system-ui, -apple-system, sans-serif;
-                overflow: hidden;
-            }
+        body {
+            background-color: #f8fafc;
+            font-family: system-ui, -apple-system, sans-serif;
+            overflow: hidden;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
 
-            .exam-header {
-                background: #fff;
-                border-bottom: 1px solid #e2e8f0;
-                padding: 12px 24px;
-                height: 65px;
-            }
+        .exam-header {
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 24px;
+            height: 65px;
+        }
 
-            .sidebar {
-                background: #fff;
-                border-right: 1px solid #e2e8f0;
-                width: 300px;
-                height: calc(100vh - 65px);
-                padding: 20px;
-                float: left;
-                overflow-y: auto;
-            }
+        .sidebar {
+            background: #fff;
+            border-right: 1px solid #e2e8f0;
+            width: 300px;
+            height: calc(100vh - 65px);
+            padding: 20px;
+            float: left;
+            overflow-y: auto;
+        }
 
-            .main-content {
-                margin-left: 300px;
-                padding: 40px;
-                height: calc(100vh - 65px);
-                overflow-y: auto;
-            }
+        .main-content {
+            margin-left: 300px;
+            padding: 40px;
+            height: calc(100vh - 65px);
+            overflow-y: auto;
+        }
 
-            /* Navigator Grid */
-            .nav-grid {
-                display: grid;
-                grid-template-columns: repeat(5, 1fr);
-                gap: 10px;
-                margin-top: 15px;
-            }
+        /* Navigator Grid */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
 
-            .nav-btn {
-                height: 40px;
-                border-radius: 8px;
-                border: 1px solid #e2e8f0;
-                background: #fff;
-                font-weight: 600;
-                color: #475569;
-                transition: all 0.2s;
-            }
+        .nav-btn {
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.2s;
+        }
 
-                .nav-btn.answered {
-                    background-color: var(--qe-primary-soft);
-                    border-color: var(--qe-primary-purple);
-                    color: var(--qe-primary-purple);
-                }
+        .nav-btn.answered {
+            background-color: var(--qe-primary-soft);
+            border-color: var(--qe-primary-purple);
+            color: var(--qe-primary-purple);
+        }
 
-                .nav-btn.current {
-                    background-color: var(--qe-primary-purple);
-                    color: #fff;
-                    border-color: var(--qe-primary-purple);
-                    box-shadow: 0 4px 10px rgba(108, 92, 231, 0.25);
-                }
+        .nav-btn.current {
+            background-color: var(--qe-primary-purple) !important;
+            color: #fff !important;
+            border-color: var(--qe-primary-purple) !important;
+            box-shadow: 0 4px 10px rgba(108, 92, 231, 0.25);
+        }
 
-                .nav-btn.flagged {
-                    background-color: #fed7aa;
-                    border-color: #fdba74;
-                    position: relative;
-                }
+        .nav-btn.flagged {
+            background-color: #fed7aa;
+            border-color: #fdba74;
+            position: relative;
+        }
 
-                    .nav-btn.flagged::after {
-                        content: '';
-                        position: absolute;
-                        top: 4px;
-                        right: 4px;
-                        width: 6px;
-                        height: 6px;
-                        background: #c2410c;
-                        border-radius: 50%;
-                    }
+        .nav-btn.flagged::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background: #c2410c;
+            border-radius: 50%;
+        }
 
-            /* Question Elements */
-            .question-card {
-                background: #fff;
-                border-radius: 12px;
-                border: 1px solid #e2e8f0;
-                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            }
+        /* Legend box fix */
+        .legend-indicator {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+            flex-shrink: 0;
+        }
 
-            .option-box {
-                border: 1.5px solid #e2e8f0;
-                border-radius: 10px;
-                padding: 16px;
-                margin-bottom: 12px;
-                cursor: pointer;
-                transition: all 0.2s;
-            }
+        /* Question Elements */
+        .question-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
 
-                .option-box:hover {
-                    border-color: var(--qe-primary-purple);
-                }
+        .option-box {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
 
-                .option-box.selected {
-                    border-color: var(--qe-primary-purple);
-                    background-color: var(--qe-primary-soft);
-                    border-width: 2px;
-                }
+        .option-box:hover {
+            border-color: var(--qe-primary-purple);
+        }
 
-            .timer-box {
-                background-color: var(--qe-primary-soft);
-                color: var(--qe-primary-purple);
-                border-radius: 8px;
-                padding: 6px 16px;
-                font-weight: 700;
-                font-family: monospace;
-                font-size: 1.1rem;
-            }
+        .option-box.selected {
+            border-color: var(--qe-primary-purple);
+            background-color: var(--qe-primary-soft);
+            border-width: 2px;
+        }
 
-            .btn-qe-primary {
-                background-color: var(--qe-primary-purple);
-                border-color: var(--qe-primary-purple);
-                color: #ffffff;
-            }
+        .timer-box {
+            background-color: var(--qe-primary-soft);
+            color: var(--qe-primary-purple);
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-weight: 700;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
 
-                .btn-qe-primary:hover {
-                    background-color: var(--qe-active-bg);
-                    border-color: var(--qe-active-bg);
-                    color: #ffffff;
-                }
+        .btn-qe-primary {
+            background-color: var(--qe-primary-purple);
+            border-color: var(--qe-primary-purple);
+            color: #ffffff;
+        }
 
-            .progress-bar-qe {
-                background-color: var(--qe-primary-purple);
-            }
+        .btn-qe-primary:hover {
+            background-color: var(--qe-active-bg);
+            border-color: var(--qe-active-bg);
+            color: #ffffff;
+        }
+
+        .progress-bar-qe {
+            background-color: var(--qe-primary-purple);
+        }
+
+        textarea.form-control {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
     </style>
 </head>
 <body>
+    @Html.AntiForgeryToken()
+
     <div id="startOverlay" class="position-fixed top-0 start-0 w-100 h-100 bg-white d-flex justify-content-center align-items-center" style="z-index: 9999;">
         <div class="text-center">
             <h3 class="fw-bold mb-3">Ready to begin?</h3>
-            <p class="text-muted mb-4">This exam requires fullscreen mode.</p>
+            <p class="text-muted mb-4">This exam requires fullscreen mode and active proctoring.</p>
             <button id="enterExamBtn" class="btn btn-primary btn-lg fw-bold px-5">Enter Fullscreen & Start</button>
         </div>
     </div>
@@ -174,6 +197,7 @@
             @using (Html.BeginForm("SubmitExam", "TakeExam", FormMethod.Post, new { id = "submitForm" }))
             {
                 <input type="hidden" name="examId" value="@Model.ExamId" />
+                <input type="hidden" name="attemptId" value="@Model.AttemptId" />
                 <button type="submit" class="btn btn-danger fw-bold px-4 rounded-3"><i class="fa-solid fa-paper-plane me-1"></i> Submit Exam</button>
             }
         </div>
@@ -189,11 +213,20 @@
             <span id="progressCount">0/0 Answered</span>
         </div>
 
+        <!-- Corrected Legend Indicators -->
         <div class="d-flex flex-wrap gap-2 mb-4 small">
-            <div class="d-flex align-items-center gap-1"><span class="border rounded p-1.5 bg-white"></span> Unvisited</div>
-            <div class="d-flex align-items-center gap-1"><span class="border rounded p-1.5" style="background: var(--qe-primary-purple)"></span> Current</div>
-            <div class="d-flex align-items-center gap-1"><span class="border rounded p-1.5" style="background: var(--qe-primary-soft)"></span> Answered</div>
-            <div class="d-flex align-items-center gap-1"><span class="border rounded p-1.5" style="background: #fed7aa"></span> Flagged</div>
+            <div class="d-flex align-items-center gap-1">
+                <span class="legend-indicator bg-white"></span> Unvisited
+            </div>
+            <div class="d-flex align-items-center gap-1">
+                <span class="legend-indicator" style="background: var(--qe-primary-purple)"></span> Current
+            </div>
+            <div class="d-flex align-items-center gap-1">
+                <span class="legend-indicator" style="background: var(--qe-primary-soft)"></span> Answered
+            </div>
+            <div class="d-flex align-items-center gap-1">
+                <span class="legend-indicator" style="background: #fed7aa"></span> Flagged
+            </div>
         </div>
 
         <div class="nav-grid" id="navigatorGrid"></div>
@@ -222,357 +255,316 @@
     </main>
 
     <script>
-            const examState = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new
-                {
-                            examId = Model.ExamId,
-                            attemptId = Model.AttemptId,
-                            studentId = Model.StudentId,
-                            questions = Model.Questions,
-                            totalQuestions = Model.Questions.Count
-                }));
+        const examState = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new
+        {
+            examId = Model.ExamId,
+            attemptId = Model.AttemptId,
+            studentId = Model.StudentId,
+            questions = Model.Questions,
+            totalQuestions = Model.Questions.Count
+        }));
 
-            let currentIndex = 0;
-            let remainingSeconds = @Model.RemainingTimeSeconds;
-            let questionStartTime = Date.now();
+        let currentIndex = 0;
+        let remainingSeconds = @Model.RemainingTimeSeconds;
+        let questionStartTime = Date.now();
 
-            function renderQuestion() {
-                const q = examState.questions[currentIndex];
-                questionStartTime = Date.now();
+        function renderQuestion() {
+            const q = examState.questions[currentIndex];
+            questionStartTime = Date.now();
 
-                document.getElementById("questionTitle").innerText = `Question ${q.QuestionNumber} of ${examState.totalQuestions}`;
-                document.getElementById("questionBody").innerHTML = q.Text;
+            document.getElementById("questionTitle").innerText = `Question ${q.QuestionNumber || (currentIndex + 1)} of ${examState.totalQuestions}`;
+            document.getElementById("questionBody").innerHTML = q.Text;
 
-                const flagBtn = document.getElementById("flagBtn");
-                flagBtn.className = q.IsFlagged ? "btn btn-warning border-warning text-dark fw-semibold rounded-3" : "btn btn-light border text-muted fw-semibold rounded-3";
-
-                const optionsContainer = document.getElementById("optionsContainer");
-                optionsContainer.innerHTML = "";
-
-                if (q.QuestionFormat === "Essay") {
-                    const textarea = document.createElement("textarea");
-                    textarea.className = "form-control fs-5 bg-light border-0 shadow-sm p-4 rounded-3";
-                    textarea.rows = 8;
-                    textarea.placeholder = "Type your essay answer here...";
-                    textarea.value = q.SelectedAnswer || "";
-
-                    textarea.oninput = (e) => {
-                        q.SelectedAnswer = e.target.value;
-                    };
-
-                    textarea.onblur = () => {
-                        saveCurrentQuestion();
-                        renderNavigator();
-                    };
-
-                    optionsContainer.appendChild(textarea);
-                }
-                else {
-                    q.Options.forEach(opt => {
-                        const isSelected = q.SelectedAnswer === opt.Value;
-                        const div = document.createElement("div");
-                        div.className = `option-box d-flex align-items-center ${isSelected ? 'selected' : ''}`;
-                        div.onclick = () => selectOption(opt.Value);
-
-                        div.innerHTML = `
-                                    <div class="me-3">
-                                        <input type="radio" name="option" class="form-check-input" style="transform: scale(1.2); accent-color: var(--qe-primary-purple);" ${isSelected ? 'checked' : ''}>
-                                    </div>
-                                    <span class="fs-5"><strong>${opt.Label}.</strong> ${opt.Text}</span>
-                                `;
-                        optionsContainer.appendChild(div);
-                    });
-                }
-
-                document.getElementById("prevBtn").disabled = currentIndex === 0;
-                document.getElementById("nextBtn").disabled = currentIndex === examState.totalQuestions - 1;
-
-                if (window.MathJax) MathJax.typesetPromise();
+            const flagBtn = document.getElementById("flagBtn");
+            if (q.IsFlagged) {
+                flagBtn.className = "btn btn-warning border-warning text-dark fw-semibold rounded-3";
+                flagBtn.innerHTML = `<i class="fa-solid fa-flag me-1 text-danger"></i> Flagged`;
+            } else {
+                flagBtn.className = "btn btn-light border text-muted fw-semibold rounded-3";
+                flagBtn.innerHTML = `<i class="fa-regular fa-flag me-1"></i> Flag`;
             }
 
-            function renderNavigator() {
-                const grid = document.getElementById("navigatorGrid");
-                grid.innerHTML = "";
-                let answeredCount = 0;
+            const optionsContainer = document.getElementById("optionsContainer");
+            optionsContainer.innerHTML = "";
 
-                examState.questions.forEach((q, idx) => {
-                    if (q.SelectedAnswer) answeredCount++;
+            if (q.QuestionFormat === "Essay") {
+                const textarea = document.createElement("textarea");
+                textarea.className = "form-control fs-5 bg-light border-0 shadow-sm p-4 rounded-3";
+                textarea.rows = 8;
+                textarea.placeholder = "Type your essay answer here...";
+                textarea.value = q.SelectedAnswer || "";
 
-                    const btn = document.createElement("button");
-                    btn.className = "nav-btn";
-
-                    if (idx === currentIndex) btn.classList.add("current");
-                    else if (q.IsFlagged) btn.classList.add("flagged");
-                    else if (q.SelectedAnswer) btn.classList.add("answered");
-
-                    btn.innerText = q.QuestionNumber;
-                    btn.onclick = async () => {
-                        await saveCurrentQuestion();
-                        currentIndex = idx;
-                        updateView();
-                    };
-                    grid.appendChild(btn);
-                });
-
-                const percent = examState.totalQuestions === 0 ? 0 : Math.round((answeredCount / examState.totalQuestions) * 100);
-                document.getElementById("progressBar").style.width = `${percent}%`;
-                document.getElementById("progressPercent").innerText = `${percent}% Completed`;
-                document.getElementById("progressCount").innerText = `${answeredCount}/${examState.totalQuestions} Answered`;
-            }
-
-            async function selectOption(value) {
-                const q = examState.questions[currentIndex];
-                q.SelectedAnswer = (q.SelectedAnswer === value) ? null : value;
-                await saveCurrentQuestion();
-                updateView();
-            }
-
-            async function clearSelection() {
-                const q = examState.questions[currentIndex];
-                if (q.SelectedAnswer) {
-                    q.SelectedAnswer = null;
-                    await saveCurrentQuestion();
-                    updateView();
-                }
-            }
-
-            function toggleFlag() {
-                const q = examState.questions[currentIndex];
-                q.IsFlagged = !q.IsFlagged;
-                updateView();
-            }
-
-            async function navigate(step) {
-                await saveCurrentQuestion();
-                currentIndex += step;
-                updateView();
-            }
-
-            function updateView() {
-                renderQuestion();
-                renderNavigator();
-            }
-
-            function saveTimeSpent() {
-                const q = examState.questions[currentIndex];
-                const timeSpentNow = Math.floor((Date.now() - questionStartTime) / 1000);
-                q.TimeSpentSeconds = (q.TimeSpentSeconds || 0) + timeSpentNow;
-            }
-
-            async function saveCurrentQuestion() {
-                const q = examState.questions[currentIndex];
-                saveTimeSpent();
-                questionStartTime = Date.now();
-                await persistAnswer(q);
-            }
-
-            async function persistAnswer(q) {
-                if (!q.SelectedAnswer) return;
-
-                const payload = {
-                    ExamId: examState.examId,
-                    AttemptId: examState.attemptId,
-                    ExamQuestionId: q.ExamQuestionId,
-                    Answer: q.SelectedAnswer,
-                    TimeSpentSeconds: q.TimeSpentSeconds
+                textarea.oninput = (e) => {
+                    q.SelectedAnswer = e.target.value;
                 };
 
+                textarea.onblur = () => {
+                    saveCurrentQuestion();
+                    renderNavigator();
+                };
+
+                optionsContainer.appendChild(textarea);
+            }
+            else if (q.Options && q.Options.length > 0) {
+                q.Options.forEach(opt => {
+                    const isSelected = q.SelectedAnswer === opt.Value;
+                    const div = document.createElement("div");
+                    div.className = `option-box d-flex align-items-center ${isSelected ? 'selected' : ''}`;
+                    div.onclick = () => selectOption(opt.Value);
+
+                    div.innerHTML = `
+                        <div class="me-3">
+                            <input type="radio" name="option" class="form-check-input" style="transform: scale(1.2); accent-color: var(--qe-primary-purple);" ${isSelected ? 'checked' : ''}>
+                        </div>
+                        <span class="fs-5"><strong>${opt.Label}.</strong> ${opt.Text}</span>
+                    `;
+                    optionsContainer.appendChild(div);
+                });
+            }
+
+            document.getElementById("prevBtn").disabled = currentIndex === 0;
+            document.getElementById("nextBtn").disabled = currentIndex === examState.totalQuestions - 1;
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function renderNavigator() {
+            const grid = document.getElementById("navigatorGrid");
+            grid.innerHTML = "";
+            let answeredCount = 0;
+
+            examState.questions.forEach((q, idx) => {
+                if (q.SelectedAnswer && q.SelectedAnswer.trim() !== "") answeredCount++;
+
+                const btn = document.createElement("button");
+                btn.className = "nav-btn";
+
+                if (q.IsFlagged) btn.classList.add("flagged");
+                else if (q.SelectedAnswer && q.SelectedAnswer.trim() !== "") btn.classList.add("answered");
+
+                if (idx === currentIndex) btn.classList.add("current");
+
+                btn.innerText = q.QuestionNumber || (idx + 1);
+                btn.onclick = async () => {
+                    await saveCurrentQuestion();
+                    currentIndex = idx;
+                    updateView();
+                };
+                grid.appendChild(btn);
+            });
+
+            const percent = examState.totalQuestions === 0 ? 0 : Math.round((answeredCount / examState.totalQuestions) * 100);
+            document.getElementById("progressBar").style.width = `${percent}%`;
+            document.getElementById("progressPercent").innerText = `${percent}% Completed`;
+            document.getElementById("progressCount").innerText = `${answeredCount}/${examState.totalQuestions} Answered`;
+        }
+
+        async function selectOption(value) {
+            const q = examState.questions[currentIndex];
+            q.SelectedAnswer = (q.SelectedAnswer === value) ? null : value;
+            await saveCurrentQuestion();
+            updateView();
+        }
+
+        async function clearSelection() {
+            const q = examState.questions[currentIndex];
+            if (q.SelectedAnswer) {
+                q.SelectedAnswer = null;
+                await saveCurrentQuestion();
+                updateView();
+            }
+        }
+
+        function toggleFlag() {
+            const q = examState.questions[currentIndex];
+            q.IsFlagged = !q.IsFlagged;
+            updateView();
+        }
+
+        async function navigate(step) {
+            const targetIndex = currentIndex + step;
+            if (targetIndex >= 0 && targetIndex < examState.totalQuestions) {
+                await saveCurrentQuestion();
+                currentIndex = targetIndex;
+                updateView();
+            }
+        }
+
+        function updateView() {
+            renderQuestion();
+            renderNavigator();
+        }
+
+        function saveTimeSpent() {
+            const q = examState.questions[currentIndex];
+            const timeSpentNow = Math.floor((Date.now() - questionStartTime) / 1000);
+            q.TimeSpentSeconds = (q.TimeSpentSeconds || 0) + timeSpentNow;
+        }
+
+        async function saveCurrentQuestion() {
+            const q = examState.questions[currentIndex];
+            saveTimeSpent();
+            questionStartTime = Date.now();
+            await persistAnswer(q);
+        }
+
+        async function persistAnswer(q) {
+            const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+            const token = tokenInput ? tokenInput.value : '';
+
+            const payload = {
+                ExamId: examState.examId,
+                AttemptId: examState.attemptId,
+                ExamQuestionId: q.ExamQuestionId,
+                Answer: q.SelectedAnswer || "",
+                TimeSpentSeconds: q.TimeSpentSeconds || 0
+            };
+
+            try {
                 const response = await fetch('/TakeExam/SaveAnswer', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token
+                    },
                     body: JSON.stringify(payload)
                 });
 
                 if (!response.ok) {
                     const message = await response.text();
-                    console.error(`Answer could not be saved (${response.status}): ${message}`);
+                    console.error(`Answer save error (${response.status}): ${message}`);
                 }
+            } catch (err) {
+                console.error("Network error saving answer:", err);
             }
+        }
 
-            function startTimer() {
-                const display = document.getElementById("timer");
-                const timerInterval = setInterval(() => {
-                    let h = Math.floor(remainingSeconds / 3600);
-                    let m = Math.floor((remainingSeconds % 3600) / 60);
-                    let s = remainingSeconds % 60;
+        function startTimer() {
+            const display = document.getElementById("timer");
+            const timerInterval = setInterval(() => {
+                let h = Math.floor(remainingSeconds / 3600);
+                let m = Math.floor((remainingSeconds % 3600) / 60);
+                let s = remainingSeconds % 60;
 
-                    display.innerHTML =
-                        `<i class="fa-regular fa-clock me-1"></i> ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                display.innerHTML =
+                    `<i class="fa-regular fa-clock me-1"></i> ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 
-                    if (remainingSeconds <= 0) {
-                        clearInterval(timerInterval);
-                        saveCurrentQuestion().finally(() => document.getElementById("submitForm").submit());
-                        return;
-                    }
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    saveCurrentQuestion().finally(() => {
+                        sendIntegrityLogs();
+                        document.getElementById("submitForm").submit();
+                    });
+                    return;
+                }
 
-                    remainingSeconds--;
-                }, 1000);
+                remainingSeconds--;
+            }, 1000);
+        }
+
+        // Integrity feature variables
+        let integrityViolations = {
+            tabSwitches: 0,
+            blurDurations: [],
+            fullscreenExits: 0,
+            copyAttempts: 0,
+            pasteAttempts: 0,
+            contextMenuAttempts: 0,
+            developerToolsAttempts: 0
+        };
+
+        let blurStartTime = null;
+        let isFullscreenEnabled = false;
+
+        function sendIntegrityLogs() {
+            if (Object.values(integrityViolations).some(v => Array.isArray(v) ? v.length > 0 : v > 0)) {
+                const payload = {
+                    AttemptId: examState.attemptId,
+                    Violations: integrityViolations
+                };
+
+                navigator.sendBeacon('/TakeExam/LogIntegrityViolations', JSON.stringify(payload));
             }
+        }
 
-            // ============================================
-            // ACADEMIC INTEGRITY FEATURES
-            // ============================================
-
-            let integrityViolations = {
-                tabSwitches: 0,
-                blurDurations: [],
-                fullscreenExits: 0,
-                copyAttempts: 0,
-                pasteAttempts: 0,
-                contextMenuAttempts: 0,
-                developerToolsAttempts: 0
-            };
-
-            let blurStartTime = null;
-            let isFullscreenEnabled = false;
-
-            // ============ TAB SWITCHING & BLUR TRACKING ============
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    blurStartTime = Date.now();
-                    integrityViolations.tabSwitches++;
-                    console.warn(`Tab switched away (${integrityViolations.tabSwitches} times)`);
-                } else {
-                    if (blurStartTime) {
-                        const duration = Date.now() - blurStartTime;
-                        integrityViolations.blurDurations.push({
-                            timestamp: new Date().toISOString(),
-                            durationMs: duration
-                        });
-                        console.warn(`Tab returned after ${(duration / 1000).toFixed(1)}s away`);
-                        blurStartTime = null;
-                    }
-                }
-            });
-
-            window.addEventListener('blur', () => {
-                if (!document.hidden) {
-                    blurStartTime = Date.now();
-                    integrityViolations.tabSwitches++;
-                    console.warn(`Window blur event (${integrityViolations.tabSwitches} times)`);
-                }
-            });
-
-            window.addEventListener('focus', () => {
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                blurStartTime = Date.now();
+                integrityViolations.tabSwitches++;
+            } else {
                 if (blurStartTime) {
                     const duration = Date.now() - blurStartTime;
                     integrityViolations.blurDurations.push({
                         timestamp: new Date().toISOString(),
                         durationMs: duration
                     });
-                    console.warn(`Window focused after ${(duration / 1000).toFixed(1)}s`);
                     blurStartTime = null;
                 }
-            });
-
-            // ============ FULLSCREEN MODE ENFORCEMENT ============
-            function requestFullscreen() {
-                const elem = document.documentElement;
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen().then(() => {
-                        isFullscreenEnabled = true;
-                        console.log('✓ Fullscreen mode activated');
-                    }).catch((err) => {
-                        console.error('Fullscreen request failed:', err);
-                    });
-                } else if (elem.webkitRequestFullscreen) {
-                    elem.webkitRequestFullscreen();
-                    isFullscreenEnabled = true;
-                }
             }
+        });
 
-            document.addEventListener('fullscreenchange', () => {
-                if (!document.fullscreenElement && isFullscreenEnabled) {
-                    integrityViolations.fullscreenExits++;
-                    console.warn(`Exited fullscreen (${integrityViolations.fullscreenExits} times)`);
-                    requestFullscreen();
-                }
-            });
+        function requestFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().then(() => {
+                    isFullscreenEnabled = true;
+                }).catch((err) => {
+                    console.error('Fullscreen request failed:', err);
+                });
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+                isFullscreenEnabled = true;
+            }
+        }
 
-            // ============ PREVENT COPY, PASTE, CONTEXT MENU ============
-            document.addEventListener('copy', (e) => {
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement && isFullscreenEnabled) {
+                integrityViolations.fullscreenExits++;
+                requestFullscreen();
+            }
+        });
+
+        document.addEventListener('copy', (e) => { e.preventDefault(); integrityViolations.copyAttempts++; });
+        document.addEventListener('paste', (e) => { e.preventDefault(); integrityViolations.pasteAttempts++; });
+        document.addEventListener('contextmenu', (e) => { e.preventDefault(); integrityViolations.contextMenuAttempts++; return false; });
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'v')) {
                 e.preventDefault();
-                integrityViolations.copyAttempts++;
-                console.warn(`Copy attempt blocked (${integrityViolations.copyAttempts} times)`);
-            });
-
-            document.addEventListener('paste', (e) => {
+            }
+            if (e.key === 'F12' || e.key === 'F11') {
                 e.preventDefault();
-                integrityViolations.pasteAttempts++;
-                console.warn(`Paste attempt blocked (${integrityViolations.pasteAttempts} times)`);
-            });
-
-            document.addEventListener('contextmenu', (e) => {
+                integrityViolations.developerToolsAttempts++;
+            }
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) {
                 e.preventDefault();
-                integrityViolations.contextMenuAttempts++;
-                console.warn(`Right-click blocked (${integrityViolations.contextMenuAttempts} times)`);
-                return false;
-            });
+                integrityViolations.developerToolsAttempts++;
+            }
+        });
 
-            // ============ PREVENT KEYBOARD SHORTCUTS ============
-            document.addEventListener('keydown', (e) => {
-                // Ctrl+C, Ctrl+X, Ctrl+V
-                if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'v')) {
-                    e.preventDefault();
-                    if (e.key === 'c') integrityViolations.copyAttempts++;
-                    if (e.key === 'v') integrityViolations.pasteAttempts++;
-                    console.warn(`Keyboard shortcut Ctrl+${e.key.toUpperCase()} blocked`);
-                }
+        document.getElementById('enterExamBtn').addEventListener('click', () => {
+            requestFullscreen();
+            const overlay = document.getElementById('startOverlay');
+            overlay.classList.remove('d-flex');
+            overlay.classList.add('d-none');
 
-                // F12, F11
-                if (e.key === 'F12' || e.key === 'F11') {
-                    e.preventDefault();
-                    integrityViolations.developerToolsAttempts++;
-                    console.warn(`${e.key} blocked (${integrityViolations.developerToolsAttempts} times)`);
-                }
+            startTimer();
+            renderQuestion();
+            renderNavigator();
+        });
 
-                // Ctrl+Shift+I (Developer Tools)
-                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'I') {
-                    e.preventDefault();
-                    integrityViolations.developerToolsAttempts++;
-                    console.warn(`Developer Tools shortcut blocked`);
-                }
+        document.getElementById('submitForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            await saveCurrentQuestion();
+            sendIntegrityLogs();
+            this.submit();
+        });
 
-                // Ctrl+Shift+J (Developer Console)
-                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'J') {
-                    e.preventDefault();
-                    integrityViolations.developerToolsAttempts++;
-                    console.warn(`Developer Console shortcut blocked`);
-                }
-            });
-
-            // ============ CSS DISABLE TEXT SELECTION ============
-            document.documentElement.style.userSelect = 'none';
-            document.documentElement.style.WebkitUserSelect = 'none';
-            document.documentElement.style.MozUserSelect = 'none';
-            document.documentElement.style.msUserSelect = 'none';
-
-            // ============ INITIALIZATION ============
-            document.getElementById('enterExamBtn').addEventListener('click', () => {
-                requestFullscreen(); // Triggered by a real click!
-                
-                // Grab the overlay element
-                const overlay = document.getElementById('startOverlay');
-                
-                overlay.classList.remove('d-flex');
-                overlay.classList.add('d-none');
-
-                startTimer();
-                renderQuestion();
-                renderNavigator();
-            });
-
-            // Track violations before leaving page
-            window.addEventListener('beforeunload', () => {
-                if (integrityViolations.tabSwitches > 0 || 
-                    integrityViolations.fullscreenExits > 0 || 
-                    integrityViolations.copyAttempts > 0 || 
-                    integrityViolations.pasteAttempts > 0 || 
-                    integrityViolations.contextMenuAttempts > 0 || 
-                    integrityViolations.developerToolsAttempts > 0) {
-                    
-                    console.log('Integrity Violations Summary:', integrityViolations);
-                }
-            });
+        window.addEventListener('beforeunload', () => {
+            sendIntegrityLogs();
+        });
     </script>
 </body>
 </html>

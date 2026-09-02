@@ -16,236 +16,249 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        :root {
-            /* Theme Colors based on Admin Portal Design */
-            --qe-admin-bg: #110d32;
-            --qe-admin-sidebar: #0d0a27;
-            --qe-active-bg: #5031b8;
-            --qe-primary-purple: #6c5ce7;
-            --qe-primary-soft: #f0edff;
-            --qe-body-bg: #f4f6fa;
-            --qe-text-dark: #1e293b;
-            --qe-text-muted: #8c98a9;
-            --qe-border: #e2e8f0;
-            --qe-sidebar-width: 260px;
-        }
+            :root {
+                /* Theme Colors based on Admin Portal Design */
+                --qe-admin-bg: #110d32;
+                --qe-admin-sidebar: #0d0a27;
+                --qe-active-bg: #5031b8;
+                --qe-primary-purple: #6c5ce7;
+                --qe-primary-soft: #f0edff;
+                --qe-body-bg: #f4f6fa;
+                --qe-text-dark: #1e293b;
+                --qe-text-muted: #8c98a9;
+                --qe-border: #e2e8f0;
+                --qe-sidebar-width: 260px;
+            }
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--qe-body-bg);
-            color: var(--qe-text-dark);
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-        }
+            body {
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                background-color: var(--qe-body-bg);
+                color: var(--qe-text-dark);
+                overflow-x: hidden;
+                margin: 0;
+                padding: 0;
+            }
 
-        .wrapper {
-            display: flex;
-            width: 100%;
-            min-height: 100vh;
-        }
+            .wrapper {
+                display: flex;
+                width: 100%;
+                min-height: 100vh;
+            }
 
-        /* Dark Admin-Style Sidebar */
-        #sidebar {
-            width: var(--qe-sidebar-width);
-            min-width: var(--qe-sidebar-width);
-            background-color: var(--qe-admin-sidebar);
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease-in-out;
-            z-index: 1040;
-            padding: 2rem 1.25rem 1.5rem; /* Matched Admin padding */
-        }
-
-        #sidebar.collapsed {
-            margin-left: calc(-1 * var(--qe-sidebar-width));
-        }
-
-        /* Brand Logo Area - Centered & Scaled to match Admin */
-        .sidebar-brand {
-            padding: 0 0 2rem 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .brand-logo {
-            max-width: 170px; /* Reduced width to match Admin proportions */
-            width: 100%;
-            height: auto;
-            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.2));
-            margin-bottom: 0.75rem;
-        }
-
-        .brand-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.08);
-            color: #7090b0;
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 5px 14px;
-            border-radius: 20px;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-        }
-
-        /* Sidebar Navigation Items */
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .sidebar-menu .nav-link {
-            padding: 0.85rem 1.25rem;
-            color: #94a3b8;
-            font-size: 0.925rem;
-            font-weight: 600;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            transition: all 0.25s ease;
-            text-decoration: none;
-        }
-
-        .sidebar-menu .nav-link i {
-            font-size: 1.15rem;
-            width: 22px;
-            text-align: center;
-        }
-
-        .sidebar-menu .nav-link:hover {
-            color: #ffffff;
-            background-color: rgba(255, 255, 255, 0.06);
-        }
-
-        .sidebar-menu .nav-link.active {
-            color: #ffffff;
-            background-color: var(--qe-active-bg);
-            box-shadow: 0 4px 20px rgba(80, 49, 184, 0.4);
-            font-weight: 700;
-        }
-
-        /* Content Area */
-        #content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-
-        /* Header Navbar */
-        .top-navbar {
-            height: 80px;
-            background: #ffffff;
-            border-bottom: 1px solid var(--qe-border);
-            padding: 0 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 1020;
-        }
-
-        .btn-toggle-sidebar {
-            background: transparent;
-            border: none;
-            color: var(--qe-text-muted);
-            font-size: 1.25rem;
-            cursor: pointer;
-            padding: 6px 10px;
-            border-radius: 8px;
-            transition: background 0.2s;
-        }
-
-        .btn-toggle-sidebar:hover {
-            background-color: var(--qe-body-bg);
-            color: var(--qe-text-dark);
-        }
-
-        .breadcrumb-sub {
-            font-size: 0.8rem;
-            color: var(--qe-text-muted);
-            margin-bottom: 2px;
-        }
-
-        .page-title-header {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--qe-text-dark);
-            margin: 0;
-        }
-
-        /* Icon Buttons */
-        .btn-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--qe-text-muted);
-            background: #ffffff;
-            border: 1px solid var(--qe-border);
-            transition: all 0.2s ease;
-        }
-
-        .btn-icon:hover {
-            color: var(--qe-primary-purple);
-            background: var(--qe-primary-soft);
-            border-color: transparent;
-        }
-
-        .notification-dropdown-menu {
-            width: 360px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            max-height: 440px;
-            overflow-y: auto;
-        }
-
-        /* Reusable Card Styles Matching Admin */
-        .dashboard-card {
-            border: none !important;
-            border-radius: 20px !important;
-            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03) !important;
-            background: #ffffff;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06) !important;
-        }
-
-        .icon-shape {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 14px;
-        }
-
-        .extra-small {
-            font-size: 0.75rem;
-        }
-
-        @@media (max-width: 991.98px) {
+            /* Dark Admin-Style Sidebar */
             #sidebar {
-                position: fixed;
-                height: 100vh;
-                margin-left: calc(-1 * var(--qe-sidebar-width));
+                width: var(--qe-sidebar-width);
+                min-width: var(--qe-sidebar-width);
+                background-color: var(--qe-admin-sidebar);
+                display: flex;
+                flex-direction: column;
+                transition: all 0.3s ease-in-out;
+                z-index: 1040;
+                padding: 2rem 1.25rem 1.5rem;
             }
-            #sidebar.show {
-                margin-left: 0;
+
+                #sidebar.collapsed {
+                    margin-left: calc(-1 * var(--qe-sidebar-width));
+                }
+
+            /* Brand Logo Area */
+            .sidebar-brand {
+                padding: 0 0 2rem 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
             }
-        }
+
+            .brand-logo {
+                max-width: 170px;
+                width: 100%;
+                height: auto;
+                filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.2));
+                margin-bottom: 0.75rem;
+            }
+
+            .brand-badge {
+                display: inline-block;
+                background: rgba(255, 255, 255, 0.08);
+                color: #7090b0;
+                font-size: 0.65rem;
+                font-weight: 700;
+                padding: 5px 14px;
+                border-radius: 20px;
+                letter-spacing: 1.2px;
+                text-transform: uppercase;
+            }
+
+            /* Sidebar Navigation Items */
+            .sidebar-menu {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+                .sidebar-menu .nav-link {
+                    padding: 0.85rem 1.25rem;
+                    color: #94a3b8;
+                    font-size: 0.925rem;
+                    font-weight: 600;
+                    border-radius: 14px;
+                    display: flex;
+                    align-items: center;
+                    gap: 14px;
+                    transition: all 0.25s ease;
+                    text-decoration: none;
+                }
+
+                    .sidebar-menu .nav-link i {
+                        font-size: 1.15rem;
+                        width: 22px;
+                        text-align: center;
+                    }
+
+                    .sidebar-menu .nav-link:hover {
+                        color: #ffffff;
+                        background-color: rgba(255, 255, 255, 0.06);
+                    }
+
+                    .sidebar-menu .nav-link.active {
+                        color: #ffffff;
+                        background-color: var(--qe-active-bg);
+                        box-shadow: 0 4px 20px rgba(80, 49, 184, 0.4);
+                        font-weight: 700;
+                    }
+
+            /* Content Area */
+            #content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+            }
+
+            /* Header Navbar */
+            .top-navbar {
+                height: 80px;
+                background: #ffffff;
+                border-bottom: 1px solid var(--qe-border);
+                padding: 0 2rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                position: sticky;
+                top: 0;
+                z-index: 1020;
+            }
+
+            .btn-toggle-sidebar {
+                background: transparent;
+                border: none;
+                color: var(--qe-text-muted);
+                font-size: 1.25rem;
+                cursor: pointer;
+                padding: 6px 10px;
+                border-radius: 8px;
+                transition: background 0.2s;
+            }
+
+                .btn-toggle-sidebar:hover {
+                    background-color: var(--qe-body-bg);
+                    color: var(--qe-text-dark);
+                }
+
+            .breadcrumb-sub {
+                font-size: 0.8rem;
+                color: var(--qe-text-muted);
+                margin-bottom: 2px;
+            }
+
+            .page-title-header {
+                font-size: 1.15rem;
+                font-weight: 700;
+                color: var(--qe-text-dark);
+                margin: 0;
+            }
+
+            /* Icon Buttons */
+            .btn-icon {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--qe-text-muted);
+                background: #ffffff;
+                border: 1px solid var(--qe-border);
+                transition: all 0.2s ease;
+            }
+
+                .btn-icon:hover {
+                    color: var(--qe-primary-purple);
+                    background: var(--qe-primary-soft);
+                    border-color: transparent;
+                }
+
+            /* Enhanced Notification Dropdown Styling */
+            .notification-dropdown-menu {
+                width: 360px;
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+                max-height: 440px;
+                overflow-y: auto;
+                border: 1px solid var(--qe-border);
+            }
+
+            .notification-item-link {
+                transition: background-color 0.2s ease;
+                border-left: 3px solid transparent;
+            }
+
+                .notification-item-link:hover {
+                    background-color: var(--qe-primary-soft) !important;
+                    border-left-color: var(--qe-primary-purple);
+                }
+
+            /* Reusable Card Styles Matching Admin */
+            .dashboard-card {
+                border: none !important;
+                border-radius: 20px !important;
+                box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03) !important;
+                background: #ffffff;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+                .dashboard-card:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06) !important;
+                }
+
+            .icon-shape {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 14px;
+            }
+
+            .extra-small {
+                font-size: 0.75rem;
+            }
+
+            @@media (max-width: 991.98px) {
+                #sidebar {
+                    position: fixed;
+                    height: 100vh;
+                    margin-left: calc(-1 * var(--qe-sidebar-width));
+                }
+
+                    #sidebar.show {
+                        margin-left: 0;
+                    }
+            }
     </style>
 </head>
 <body>
@@ -313,8 +326,8 @@
 
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-0 notification-dropdown-menu" aria-labelledby="notificationDropdown">
                             <li class="dropdown-header border-bottom p-3 fw-bold d-flex justify-content-between align-items-center bg-light rounded-top-3">
-                                <span class="text-dark"><i class="fa-solid fa-bell me-2 text-primary"></i> Notifications</span>
-                                <a asp-controller="Notifications" asp-action="Index" class="text-primary text-decoration-none extra-small fw-semibold">View All</a>
+                                <span class="text-dark"><i class="fa-solid fa-bell me-2" style="color: var(--qe-primary-purple);"></i> Notifications</span>
+                                <a asp-controller="Notifications" asp-action="Index" class="text-decoration-none extra-small fw-semibold" style="color: var(--qe-primary-purple);">View All</a>
                             </li>
                             <div id="notificationList">
                                 <li id="emptyNotificationMsg" class="dropdown-item text-center text-muted py-4 small">
@@ -344,93 +357,99 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Sidebar Toggle Behavior
-            const sidebar = document.getElementById("sidebar");
-            const sidebarToggle = document.getElementById("sidebarToggle");
+            document.addEventListener("DOMContentLoaded", function() {
+                // Sidebar Toggle Behavior
+                const sidebar = document.getElementById("sidebar");
+                const sidebarToggle = document.getElementById("sidebarToggle");
 
-            sidebarToggle?.addEventListener("click", function() {
-                if (window.innerWidth < 992) {
-                    sidebar.classList.toggle("show");
-                } else {
-                    sidebar.classList.toggle("collapsed");
-                }
-            });
-
-            // SignalR & Notifications Logic
-            loadSavedNotifications();
-
-            const connection = new signalR.HubConnectionBuilder()
-                .withUrl("/notificationHub")
-                .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
-                .build();
-
-            connection.start().catch(err => console.error("SignalR Error: ", err));
-
-            connection.on("ReceiveExamNotification", function(data) {
-                prependNotificationUI(data, true);
-            });
-
-            document.getElementById("notificationDropdown")?.addEventListener("click", function() {
-                const badge = document.getElementById("notificationBadge");
-                if (!badge.classList.contains("d-none")) {
-                    badge.classList.add("d-none");
-                    badge.innerText = "0";
-                    fetch('/api/notifications/mark-as-read', { method: 'POST' });
-                }
-            });
-        });
-
-        function loadSavedNotifications() {
-            fetch('/api/notifications')
-                .then(res => res.ok ? res.json() : [])
-                .then(data => {
-                    if (!data || data.length === 0) return;
-                    let unreadCount = 0;
-                    data.reverse().forEach(item => {
-                        if (!item.isRead) unreadCount++;
-                        prependNotificationUI(item, false);
-                    });
-                    if (unreadCount > 0) {
-                        const badge = document.getElementById("notificationBadge");
-                        badge.innerText = unreadCount;
-                        badge.classList.remove("d-none");
+                sidebarToggle?.addEventListener("click", function() {
+                    if (window.innerWidth < 992) {
+                        sidebar.classList.toggle("show");
+                    } else {
+                        sidebar.classList.toggle("collapsed");
                     }
-                }).catch(err => console.error(err));
-        }
+                });
 
-        function prependNotificationUI(data, isRealtime) {
-            const list = document.getElementById("notificationList");
-            const emptyMsg = document.getElementById("emptyNotificationMsg");
-            if (emptyMsg) emptyMsg.remove();
+                // SignalR & Notifications Logic
+                loadSavedNotifications();
 
-            if (isRealtime) {
-                const badge = document.getElementById("notificationBadge");
-                let count = parseInt(badge.innerText || "0") + 1;
-                badge.innerText = count;
-                badge.classList.remove("d-none");
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/notificationHub")
+                    .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+                    .build();
+
+                connection.start().catch(err => console.error("SignalR Error: ", err));
+
+                connection.on("ReceiveExamNotification", function(data) {
+                    prependNotificationUI(data, true);
+                });
+
+                document.getElementById("notificationDropdown")?.addEventListener("click", function() {
+                    const badge = document.getElementById("notificationBadge");
+                    if (!badge.classList.contains("d-none")) {
+                        badge.classList.add("d-none");
+                        badge.innerText = "0";
+                        fetch('/api/notifications/mark-as-read', { method: 'POST' });
+                    }
+                });
+            });
+
+            function loadSavedNotifications() {
+                fetch('/api/notifications')
+                    .then(res => res.ok ? res.json() : [])
+                    .then(data => {
+                        if (!data || data.length === 0) return;
+                        let unreadCount = 0;
+                        data.reverse().forEach(item => {
+                            if (!item.isRead) unreadCount++;
+                            prependNotificationUI(item, false);
+                        });
+                        if (unreadCount > 0) {
+                            const badge = document.getElementById("notificationBadge");
+                            badge.innerText = unreadCount;
+                            badge.classList.remove("d-none");
+                        }
+                    }).catch(err => console.error(err));
             }
 
-            const targetUrl = data.examId ? '/Student/ExamDetails/' + data.examId : '#';
+            function prependNotificationUI(data, isRealtime) {
+                const list = document.getElementById("notificationList");
+                const emptyMsg = document.getElementById("emptyNotificationMsg");
+                if (emptyMsg) emptyMsg.remove();
 
-            const li = document.createElement("li");
-            li.className = "dropdown-item p-3 border-bottom text-wrap";
-            li.innerHTML = `
-                <a href="${targetUrl}" class="text-decoration-none text-dark d-block">
-                    <div class="fw-bold text-primary small mb-1">${escapeHtml(data.title)}</div>
-                    <div class="small text-secondary mb-1">${escapeHtml(data.message)}</div>
-                    <small class="text-muted extra-small">
-                        <i class="fa-regular fa-clock me-1"></i>${data.timeAgo || data.createdAt || 'Just now'}
-                    </small>
-                </a>
-            `;
-            list.prepend(li);
-        }
+                if (isRealtime) {
+                    const badge = document.getElementById("notificationBadge");
+                    let count = parseInt(badge.innerText || "0") + 1;
+                    badge.innerText = count;
+                    badge.classList.remove("d-none");
+                }
 
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
+                // Redirect strictly to Student Available Exams
+                        const targetUrl = '/Student/Exams';
+
+                const li = document.createElement("li");
+                li.className = "border-bottom";
+                        li.innerHTML = `
+                            <a href="${targetUrl}" class="dropdown-item p-3 notification-item-link text-decoration-none text-dark d-block">
+                                <div class="d-flex align-items-start gap-2">
+                                    <i class="fa-solid fa-envelope-open-text mt-1" style="color: var(--qe-primary-purple);"></i>
+                                    <div>
+                                        <div class="fw-bold small mb-1" style="color: var(--qe-primary-purple);">${escapeHtml(data.title)}</div>
+                                        <div class="small text-secondary mb-1">${escapeHtml(data.message)}</div>
+                                        <small class="text-muted extra-small">
+                                    <i class="fa-regular fa-clock me-1"></i>${data.timeAgo || data.createdAt || 'Just now'}
+                                </small>
+                                    </div>
+                        </div>
+                    </a>
+                `;
+                list.prepend(li);
+                }
+
+                    function escapeHtml(text) {
+                        if (!text) return '';
+                        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+                    }
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

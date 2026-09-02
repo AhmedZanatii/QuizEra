@@ -6,37 +6,100 @@
     var exams = Model ?? Enumerable.Empty<QuizEra.BLL.ModelVM.Exam.ExamVM>();
 }
 
+<style>
+    :root {
+        --qe-purple: #6c5ce7;
+        --qe-purple-hover: #5031b8;
+        --qe-purple-soft: #f0edff;
+        --qe-purple-light: #e0d9ff;
+        --qe-dark: #0d0a27;
+    }
+
+    /* Primary Purple Badges & Icons */
+    .bg-qe-purple-soft {
+        background-color: var(--qe-purple-soft) !important;
+    }
+
+    .text-qe-purple {
+        color: var(--qe-purple) !important;
+    }
+
+    /* QuizEra Custom Button */
+    .btn-qe-purple {
+        background-color: var(--qe-purple);
+        border-color: var(--qe-purple);
+        color: #ffffff;
+        transition: all 0.25s ease-in-out;
+    }
+
+        .btn-qe-purple:hover {
+            background-color: var(--qe-purple-hover);
+            border-color: var(--qe-purple-hover);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+        }
+
+    /* Exam Card Enhancements */
+    .exam-card {
+        transition: all 0.25s ease-in-out;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+        .exam-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.1) !important;
+            border-color: var(--qe-purple-light) !important;
+        }
+
+    /* Search Input Focus */
+    .qe-search-input:focus {
+        border-color: var(--qe-purple) !important;
+        box-shadow: 0 0 0 0.25rem rgba(108, 92, 231, 0.15) !important;
+    }
+
+    .qe-search-icon {
+        border-color: #dee2e6;
+    }
+
+    .qe-search-input:focus + .qe-search-icon,
+    .input-group:focus-within .qe-search-icon {
+        border-color: var(--qe-purple) !important;
+        color: var(--qe-purple) !important;
+    }
+</style>
+
 <!-- Header Section -->
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
     <div>
         <h3 class="fw-bold text-dark m-0">Available Exams</h3>
         <p class="text-muted small mb-0">Exams currently open and ready for your attempt.</p>
     </div>
-    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 fw-semibold fs-6">
+    <span class="badge bg-qe-purple-soft text-qe-purple rounded-pill px-3 py-2 fw-semibold fs-6">
         <i class="fa-solid fa-file-pen me-1"></i> @exams.Count() Available
     </span>
 </div>
 
-<!-- Search & Quick Filter -->
+<!-- Search & Filter Bar -->
 @if (exams.Any())
 {
     <div class="row mb-4">
         <div class="col-12 col-md-6 col-lg-4">
             <div class="input-group shadow-sm rounded-3 overflow-hidden">
-                <span class="input-group-text bg-white border-end-0 text-muted pe-1">
+                <span class="input-group-text bg-white border-end-0 text-muted pe-1 qe-search-icon">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </span>
-                <input type="text" id="examSearchInput" class="form-control border-start-0 ps-2 py-2" placeholder="Search exam title or course...">
+                <input type="text" id="examSearchInput" class="form-control border-start-0 ps-2 py-2 shadow-none qe-search-input" placeholder="Search exam title or course...">
             </div>
         </div>
     </div>
 }
 
-<!-- Exams Grid -->
+<!-- Exams Grid / Empty State -->
 @if (!exams.Any())
 {
-    <div class="card dashboard-card border-0 p-5 text-center shadow-sm">
-        <div class="icon-shape bg-light text-secondary rounded-circle mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+    <div class="card dashboard-card border-0 p-5 text-center shadow-sm rounded-4">
+        <div class="icon-shape bg-qe-purple-soft text-qe-purple rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; font-size: 2rem;">
             <i class="fa-solid fa-file-circle-check"></i>
         </div>
         <h5 class="fw-bold text-dark mb-1">No Available Exams</h5>
@@ -51,24 +114,24 @@ else
             var isEndingSoon = (exam.EndDate - DateTime.Now).TotalHours <= 24 && (exam.EndDate - DateTime.Now).TotalHours > 0;
 
             <div class="col-12 col-md-6 col-xl-4 exam-card-item" data-title="@exam.Title?.ToLower()" data-course="@exam.CourseName?.ToLower()">
-                <div class="card dashboard-card h-100 border-0 shadow-sm position-relative">
+                <div class="card exam-card h-100 border-0 shadow-sm position-relative rounded-4">
                     <div class="card-body p-4 d-flex flex-column">
 
                         <!-- Top Badge & Duration -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div class="icon-shape bg-primary bg-opacity-10 text-primary p-2.5 rounded-3">
+                            <div class="icon-shape bg-qe-purple-soft text-qe-purple p-2.5 rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
                                 <i class="fa-solid fa-file-pen fs-5"></i>
                             </div>
 
                             <div class="d-flex gap-2 align-items-center">
                                 @if (isEndingSoon)
                                 {
-                                    <span class="badge bg-danger-subtle text-danger fw-semibold extra-small px-2 py-1 rounded-2">
+                                    <span class="badge bg-danger-subtle text-danger fw-semibold extra-small px-2.5 py-1.5 rounded-2">
                                         <i class="fa-solid fa-hourglass-half me-1"></i>Ending Soon
                                     </span>
                                 }
-                                <span class="badge bg-light text-dark border extra-small fw-semibold px-2 py-1 rounded-2">
-                                    <i class="fa-regular fa-clock me-1 text-primary"></i>@exam.Duration min
+                                <span class="badge bg-light text-dark border extra-small fw-semibold px-2.5 py-1.5 rounded-2">
+                                    <i class="fa-regular fa-clock me-1 text-qe-purple"></i>@exam.Duration min
                                 </span>
                             </div>
                         </div>
@@ -76,7 +139,7 @@ else
                         <!-- Title & Course -->
                         <h5 class="fw-bold text-dark mb-1">@exam.Title</h5>
                         <p class="text-muted small fw-medium mb-3">
-                            <i class="fa-solid fa-book-bookmark me-1 text-secondary opacity-75"></i>@exam.CourseName
+                            <i class="fa-solid fa-book-bookmark me-1 text-qe-purple opacity-75"></i>@exam.CourseName
                         </p>
 
                         <!-- Topics & Date Details -->
@@ -84,19 +147,19 @@ else
                             @if (exam.TopicNames?.Any() == true)
                             {
                                 <div class="mb-2 text-truncate" title="@string.Join(", ", exam.TopicNames)">
-                                    <i class="fa-solid fa-layer-group me-2 text-primary"></i>
+                                    <i class="fa-solid fa-layer-group me-2 text-qe-purple"></i>
                                     <span class="fw-medium text-dark">Topics:</span> @string.Join(", ", exam.TopicNames)
                                 </div>
                             }
                             <div>
-                                <i class="fa-solid fa-calendar-days me-2 text-primary"></i>
+                                <i class="fa-solid fa-calendar-days me-2 text-qe-purple"></i>
                                 <span>Closes: </span>
                                 <strong class="text-dark">@exam.EndDate.ToString("dd MMM yyyy, hh:mm tt")</strong>
                             </div>
                         </div>
 
                         <!-- Action Button -->
-                        <a asp-controller="TakeExam" asp-action="ExamRules" asp-route-id="@exam.Id" class="btn btn-primary w-100 fw-bold py-2.5 rounded-3 style-btn">
+                        <a asp-controller="TakeExam" asp-action="ExamRules" asp-route-id="@exam.Id" class="btn btn-qe-purple w-100 fw-bold py-2.5 rounded-3">
                             <i class="fa-solid fa-play me-2"></i>Start Exam
                         </a>
                     </div>
@@ -104,14 +167,20 @@ else
             </div>
         }
     </div>
+
+    <!-- Empty Search Results Message -->
+    <div id="noResultsMsg" class="card dashboard-card border-0 p-5 text-center shadow-sm d-none mt-3 rounded-4">
+        <h6 class="fw-bold text-muted mb-0">No exams match your search.</h6>
+    </div>
 }
 
 @section Scripts {
     <script>
-        // Live Search Filtering
-        document.getElementById("examSearchInput")?.addEventListener("keyup", function() {
+        // Live Search Filtering with "No Results" dynamic check
+        document.getElementById("examSearchInput")?.addEventListener("input", function() {
             const query = this.value.toLowerCase().trim();
             const cards = document.querySelectorAll(".exam-card-item");
+            let visibleCount = 0;
 
             cards.forEach(card => {
                 const title = card.getAttribute("data-title") || "";
@@ -119,10 +188,20 @@ else
 
                 if (title.includes(query) || course.includes(query)) {
                     card.style.display = "";
+                    visibleCount++;
                 } else {
                     card.style.display = "none";
                 }
             });
+
+            const noResultsMsg = document.getElementById("noResultsMsg");
+            if (noResultsMsg) {
+                if (visibleCount === 0) {
+                    noResultsMsg.classList.remove("d-none");
+                } else {
+                    noResultsMsg.classList.add("d-none");
+                }
+            }
         });
     </script>
 }
