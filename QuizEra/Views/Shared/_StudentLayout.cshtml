@@ -45,7 +45,7 @@
                 min-height: 100vh;
             }
 
-            /* Dark Admin-Style Sidebar */
+            /* Dark  Sidebar */
             #sidebar {
                 width: var(--qe-sidebar-width);
                 min-width: var(--qe-sidebar-width);
@@ -55,6 +55,10 @@
                 transition: all 0.3s ease-in-out;
                 z-index: 1040;
                 padding: 2rem 1.25rem 1.5rem;
+                position: sticky;
+                top: 0;
+                height: 100vh;
+                overflow-y: auto;
             }
 
                 #sidebar.collapsed {
