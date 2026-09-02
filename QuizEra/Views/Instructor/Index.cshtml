@@ -1,4 +1,6 @@
-﻿@{
+﻿@model QuizEra.BLL.ModelVM.Administration.InstructorDashboardVM
+
+@{
     ViewData["Title"] = "Instructor Home";
     Layout = "~/Views/Shared/_InstructorLayout.cshtml";
 }
@@ -19,7 +21,7 @@
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
                         <span class="text-muted text-uppercase fw-bold fs-7 tracking-wider d-block mb-2">Assigned Courses</span>
-                        <h2 class="display-6 fw-extrabold text-dark mb-0">--</h2>
+                        <h2 class="display-6 fw-extrabold text-dark mb-0">@(Model?.AssignedCoursesCount ?? 0)</h2>
                     </div>
                     <div class="rounded-4 p-3 d-flex align-items-center justify-content-center bg-purple-subtle text-purple icon-shape">
                         <i class="fa-solid fa-book-open fs-4"></i>
@@ -34,7 +36,7 @@
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
                         <span class="text-muted text-uppercase fw-bold fs-7 tracking-wider d-block mb-2">Total Exams</span>
-                        <h2 class="display-6 fw-extrabold text-dark mb-0">--</h2>
+                        <h2 class="display-6 fw-extrabold text-dark mb-0">@(Model?.TotalExamsCount ?? 0)</h2>
                     </div>
                     <div class="rounded-4 p-3 d-flex align-items-center justify-content-center bg-purple-subtle text-purple icon-shape">
                         <i class="fa-solid fa-file-pen fs-4"></i>
@@ -49,7 +51,7 @@
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
                         <span class="text-muted text-uppercase fw-bold fs-7 tracking-wider d-block mb-2">Enrolled Students</span>
-                        <h2 class="display-6 fw-extrabold text-dark mb-0">--</h2>
+                        <h2 class="display-6 fw-extrabold text-dark mb-0">@(Model?.EnrolledStudentsCount ?? 0)</h2>
                     </div>
                     <div class="rounded-4 p-3 d-flex align-items-center justify-content-center bg-purple-subtle text-purple icon-shape">
                         <i class="fa-solid fa-graduation-cap fs-4"></i>

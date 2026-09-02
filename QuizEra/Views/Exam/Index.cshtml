@@ -139,6 +139,9 @@
                                             <a asp-controller="Exam" asp-action="Edit" asp-route-id="@exam.Id" class="btn btn-sm btn-purple-soft rounded-3" title="Edit Exam">
                                                 <i class="fa-solid fa-pen"></i>
                                             </a>
+                                            <a asp-controller="Analytics" asp-action="ClassAnalytics" asp-route-examId="@exam.Id" class="btn btn-sm btn-purple-soft rounded-3" title="View Analytics">
+                                                <i class="fa-solid fa-chart-bar"></i>
+                                            </a>
                                             <form asp-controller="Exam" asp-action="Delete" asp-route-id="@exam.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this exam?');">
                                                 @Html.AntiForgeryToken()
                                                 <button type="submit" class="btn btn-sm btn-outline-danger rounded-3" title="Delete Exam">

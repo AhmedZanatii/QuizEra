@@ -3,19 +3,29 @@ using QuizEra.BLL.ModelVM.Administration;
 using QuizEra.BLL.Services.Abstraction;
 using QuizEra.DAL.Entities;
 using QuizEra.DAL.Repositories.Abstraction;
+using System.Linq.Expressions;
 
 namespace QuizEra.BLL.Services.Implementation
 {
     public class InstructorService : IInstructorService
     {
         private readonly IGenericRepository<Instructor> _instructorRepository;
+        private readonly IGenericRepository<Course> _courseRepository;
+        private readonly IGenericRepository<Topic> _topicRepository;
+        private readonly IGenericRepository<StudentCourse> _studentCourseRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public InstructorService(
             IGenericRepository<Instructor> instructorRepository,
+            IGenericRepository<Course> courseRepository,
+            IGenericRepository<Topic> topicRepository,
+            IGenericRepository<StudentCourse> studentCourseRepository,
             UserManager<ApplicationUser> userManager)
         {
             _instructorRepository = instructorRepository;
+            _courseRepository = courseRepository;
+            _topicRepository = topicRepository;
+            _studentCourseRepository = studentCourseRepository;
             _userManager = userManager;
         }
 
@@ -216,6 +226,81 @@ namespace QuizEra.BLL.Services.Implementation
                     instructor.AppUser);
 
             return result.Succeeded;
+        }
+
+        // =========================
+        // Get Instructor Dashboard Stats
+        // =========================
+
+        public async Task<InstructorDashboardVM> GetInstructorDashboardStatsAsync(string userId)
+        {
+            // Get the instructor record by AppUserId
+            var instructor = await _instructorRepository.GetBy(
+                i => i.AppUserId == userId,
+                new List<Expression<Func<Instructor, object>>>
+                {
+                    i => i.Courses
+                });
+
+            var dashboard = new InstructorDashboardVM();
+
+            if (instructor == null)
+                return dashboard;
+
+            // Get all courses assigned to this instructor
+            var courses = await _courseRepository.Get(
+                filter: c => c.InstructorID == instructor.Id && !c.IsDeleted,
+                includeProperties: new List<Expression<Func<Course, object>>>
+                {
+                    c => c.Topics
+                }
+            );
+
+            dashboard.AssignedCoursesCount = courses.Count();
+
+            if (courses.Any())
+            {
+                var courseIds = courses.Select(c => c.Id).ToList();
+
+                // Get all topics in the instructor's courses
+                var topics = courses.SelectMany(c => c.Topics).ToList();
+                var topicIds = topics.Select(t => t.Id).ToList();
+
+                if (topicIds.Any())
+                {
+                    // Get all exam-topic relationships for these topics
+                    var allTopics = await _topicRepository.Get(
+                        filter: t => topicIds.Contains(t.Id),
+                        includeProperties: new List<Expression<Func<Topic, object>>>
+                        {
+                            t => t.ExamTopics
+                        }
+                    );
+
+                    // Count unique exams from all ExamTopic relationships
+                    dashboard.TotalExamsCount = allTopics
+                        .SelectMany(t => t.ExamTopics)
+                        .Select(et => et.ExamId)
+                        .Distinct()
+                        .Count();
+                }
+                else
+                {
+                    dashboard.TotalExamsCount = 0;
+                }
+
+                // Get all enrolled students in the instructor's courses
+                var enrolledStudents = await _studentCourseRepository.Get(
+                    filter: sc => courseIds.Contains(sc.CourseId)
+                );
+
+                dashboard.EnrolledStudentsCount = enrolledStudents
+                    .Select(sc => sc.StudentId)
+                    .Distinct()
+                    .Count();
+            }
+
+            return dashboard;
         }
     }
 }

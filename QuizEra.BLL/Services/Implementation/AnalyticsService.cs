@@ -66,8 +66,8 @@ namespace QuizEra.BLL.Services.Implementation
             {
                 foreach (var ans in attempt.StudentExamQuestionAnswers)
                 {
-                    // Basic exact string matching for correct answer
-                    bool correct = ans.QuestionAnswer == ans.ExamQuestions?.Question?.QuestionAnswer;
+                    // Use the IsCorrect field that's already calculated and stored in the database
+                    bool correct = ans.IsCorrect;
 
                     if (correct)
                         vm.CorrectAnswersCount++;
@@ -121,7 +121,7 @@ namespace QuizEra.BLL.Services.Implementation
             {
                 classAnalytics.StudentRankings.Add(new StudentRankingVM
                 {
-                    StudentName = att.Student?.AppUser?.UserName ?? "Student",
+                    StudentName = $"{att.Student?.AppUser?.FirstName} {att.Student?.AppUser?.LastName}".Trim() ?? "Student",
                     Score = att.StudResult,
                     Rank = rank++
                 });

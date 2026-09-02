@@ -15,5 +15,7 @@ namespace QuizEra.BLL.Services.Abstraction
         Task<bool> DeactivateAsync(int id);
 
         Task<bool> RestoreAsync(int id);
+
+        Task<InstructorDashboardVM> GetInstructorDashboardStatsAsync(string userId);
     }
 }
