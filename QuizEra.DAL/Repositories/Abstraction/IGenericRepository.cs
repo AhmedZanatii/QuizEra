@@ -15,6 +15,7 @@ namespace QuizEra.DAL.Repositories.Abstraction
         public Task<TEntity> GetBy(Expression<Func<TEntity, bool>> filter,
             List<Expression<Func<TEntity, object>>>? includeProperties = null, bool noTrack = false);
         public Task Create(TEntity entity);
+        public Task AddRangeAsync(IEnumerable<TEntity> entities);
         public void Update(TEntity entity);
         public void Delete(TEntity entity);
         void HardDelete(TEntity entity);

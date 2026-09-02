@@ -76,6 +76,10 @@ namespace QuizEra.DAL.Repositories.Implementation
         {
             await _db.Set<TEntity>().AddAsync(entity);
         }
+        public async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await _db.Set<TEntity>().AddRangeAsync(entities);
+        }
 
         public void Delete(TEntity entity)
         {

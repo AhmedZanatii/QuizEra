@@ -1,7 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Logging;
 using QuizEra.BLL.ModelVM.Notification;
 using QuizEra.BLL.Services.Abstraction;
-using QuizEra.DAL.DataBase;
 using QuizEra.DAL.Entities;
 using QuizEra.DAL.Repositories.Abstraction;
 using System;
@@ -15,67 +14,59 @@ namespace QuizEra.BLL.Services.Implementation
     public class NotificationService : INotificationService
     {
         private readonly IGenericRepository<Notification> _notificationRepo;
+        private readonly IGenericRepository<StudentCourse> _studentCourseRepo;
         private readonly IRealTimeNotificationService _realTimeService;
-        private readonly IServiceProvider _serviceProvider;
-
         public NotificationService(
             IGenericRepository<Notification> notificationRepo,
-            IRealTimeNotificationService realTimeService,
-            IServiceProvider serviceProvider)
+            IGenericRepository<StudentCourse> studentCourseRepo,
+            IRealTimeNotificationService realTimeService)
         {
             _notificationRepo = notificationRepo;
+            _studentCourseRepo = studentCourseRepo;
             _realTimeService = realTimeService;
-            _serviceProvider = serviceProvider;
         }
 
         public async Task CreateAndBroadcastExamNotificationAsync(int courseId, string courseName, string examTitle, int examId)
         {
-            await _realTimeService.SendExamNotificationToGroupAsync(courseId, courseName, examTitle, examId);
-
-            _ = Task.Run(async () =>
+            try
             {
-                try
+                var includeStudent = new List<Expression<Func<StudentCourse, object>>>
                 {
-                    using var scope = _serviceProvider.CreateScope();
-                    var studentCourseRepo = scope.ServiceProvider.GetRequiredService<IGenericRepository<StudentCourse>>();
-                    var dbContext = scope.ServiceProvider.GetRequiredService<QuizEraDBContext>();
+                    sc => sc.Student
+                };
 
-                    var includeStudent = new List<Expression<Func<StudentCourse, object>>>
+                var studentCourses = await _studentCourseRepo.Get(
+                    filter: sc => sc.CourseId == courseId,
+                    includeProperties: includeStudent,
+                    noTrack: true
+                );
+
+                var notifications = studentCourses
+                    .Where(sc => sc.Student != null && !string.IsNullOrEmpty(sc.Student.AppUserId))
+                    .Select(sc => new Notification
                     {
-                        sc => sc.Student
-                    };
+                        TargetUserId = sc.Student.AppUserId,
+                        CourseId = courseId,
+                        ExamId = examId,
+                        Title = "New Exam Posted",
+                        Message = $"A new exam '{examTitle}' has been added to {courseName}.",
+                        CreatedAt = DateTime.Now,
+                        IsRead = false
+                    })
+                    .ToList();
 
-                    var studentCourses = await studentCourseRepo.Get(
-                        filter: sc => sc.CourseId == courseId,
-                        includeProperties: includeStudent,
-                        noTrack: true
-                    );
-
-                    var notifications = studentCourses
-                        .Where(sc => sc.Student != null && !string.IsNullOrEmpty(sc.Student.AppUserId))
-                        .Select(sc => new Notification
-                        {
-                            TargetUserId = sc.Student.AppUserId,
-                            CourseId = courseId,
-                            ExamId = examId,
-                            Title = "New Exam Posted",
-                            Message = $"A new exam '{examTitle}' has been added to {courseName}.",
-                            CreatedAt = DateTime.Now,
-                            IsRead = false
-                        })
-                        .ToList();
-
-                    if (notifications.Any())
-                    {
-                        await dbContext.Notifications.AddRangeAsync(notifications);
-                        await dbContext.SaveChangesAsync();
-                    }
-                }
-                catch (Exception ex)
+                if (notifications.Any())
                 {
-                    Console.WriteLine($"Error creating notifications: {ex.Message}");
+                    await _notificationRepo.AddRangeAsync(notifications);
+                    await _notificationRepo.SaveAsync();
                 }
-            });
+
+                await _realTimeService.SendExamNotificationToGroupAsync(courseId, courseName, examTitle, examId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in CreateAndBroadcastExamNotificationAsync: {ex.Message}");
+            }
         }
 
         public async Task<List<NotificationVM>> GetUserNotificationsAsync(string appUserId)
@@ -103,7 +94,8 @@ namespace QuizEra.BLL.Services.Implementation
                 filter: n => n.TargetUserId == appUserId && !n.IsRead
             );
 
-            if (!unread.Any()) return true;
+            if (!unread.Any()) 
+                return true;
 
             foreach (var item in unread)
             {
@@ -114,6 +106,5 @@ namespace QuizEra.BLL.Services.Implementation
             await _notificationRepo.SaveAsync();
             return true;
         }
-
     }
 }
