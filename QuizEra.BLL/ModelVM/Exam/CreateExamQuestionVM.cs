@@ -15,6 +15,7 @@ namespace QuizEra.BLL.ModelVM.Exam
         public string QuestionText { get; set; } = string.Empty;
 
         public bool IsSelected { get; set; }
+        public bool IsBonus { get; set; }
 
         [Range(0, double.MaxValue, ErrorMessage = "Actual mark cannot be negative")]
         public double ActualMark { get; set; }

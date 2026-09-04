@@ -14,9 +14,11 @@
         .ToDictionary(q => q.QuestionId);
 }
 
+
 <div class="d-flex justify-content-between align-items-center mb-4">
 
     <div>
+
         <h2 class="fw-bold text-dark mb-1">
             Edit Exam
         </h2>
@@ -24,13 +26,16 @@
         <p class="text-muted mb-0">
             Update the exam details, topics, questions, and marks.
         </p>
+
     </div>
+
 
     <a asp-controller="Exam"
        asp-action="Index"
        class="btn btn-outline-secondary">
 
         <i class="fa-solid fa-arrow-left me-2"></i>
+
         Back to Exams
 
     </a>
@@ -42,24 +47,34 @@
 
     <div class="card-body p-4">
 
+
         <form asp-controller="Exam"
               asp-action="Edit"
               method="post">
 
             @Html.AntiForgeryToken()
 
+
+            <!-- ========================================= -->
+            <!-- EXAM ID -->
+            <!-- ========================================= -->
+
             <input asp-for="Id"
                    type="hidden" />
 
+
+            <!-- ========================================= -->
+            <!-- VALIDATION -->
+            <!-- ========================================= -->
 
             <div asp-validation-summary="ModelOnly"
                  class="text-danger mb-3">
             </div>
 
 
-            <!-- ========================= -->
+            <!-- ========================================= -->
             <!-- COURSE -->
-            <!-- ========================= -->
+            <!-- ========================================= -->
 
             <div class="mb-4">
 
@@ -70,6 +85,7 @@
 
                 </label>
 
+
                 <select asp-for="CourseId"
                         class="form-select"
                         id="courseSelect">
@@ -77,6 +93,7 @@
                     <option value="">
                         -- Select Course --
                     </option>
+
 
                     @foreach (var course in courses)
                     {
@@ -87,6 +104,7 @@
 
                 </select>
 
+
                 <span asp-validation-for="CourseId"
                       class="text-danger">
                 </span>
@@ -94,26 +112,34 @@
             </div>
 
 
-            <!-- ========================= -->
+            <!-- ========================================= -->
             <!-- TOPICS -->
-            <!-- ========================= -->
+            <!-- ========================================= -->
 
             <div class="mb-4">
 
                 <label class="form-label fw-semibold">
+
                     Topics
+
                 </label>
 
+
                 <p class="text-muted small">
+
                     Select one or more topics from this course.
+
                 </p>
+
 
                 <div id="topicContainer">
 
                     @if (!topics.Any())
                     {
                         <div class="alert alert-warning">
+
                             No topics found for this course.
+
                         </div>
                     }
                     else
@@ -124,6 +150,7 @@
                                 Model.TopicIds != null &&
                                 Model.TopicIds.Contains(topic.Id);
 
+
                             <div class="form-check mb-2">
 
                                 <input class="form-check-input topic-checkbox"
@@ -131,7 +158,8 @@
                                        name="TopicIds"
                                        value="@topic.Id"
                                        id="topic_@topic.Id"
-                                @(selected ? "checked" : "") />
+                                       @(selected ? "checked" : "") />
+
 
                                 <label class="form-check-label"
                                        for="topic_@topic.Id">
@@ -146,6 +174,7 @@
 
                 </div>
 
+
                 <span asp-validation-for="TopicIds"
                       class="text-danger">
                 </span>
@@ -153,9 +182,9 @@
             </div>
 
 
-            <!-- ========================= -->
+            <!-- ========================================= -->
             <!-- TITLE -->
-            <!-- ========================= -->
+            <!-- ========================================= -->
 
             <div class="mb-4">
 
@@ -166,9 +195,11 @@
 
                 </label>
 
+
                 <input asp-for="Title"
                        class="form-control"
                        placeholder="Enter exam title" />
+
 
                 <span asp-validation-for="Title"
                       class="text-danger">
@@ -177,9 +208,9 @@
             </div>
 
 
-            <!-- ========================= -->
+            <!-- ========================================= -->
             <!-- DURATION -->
-            <!-- ========================= -->
+            <!-- ========================================= -->
 
             <div class="mb-4">
 
@@ -190,11 +221,13 @@
 
                 </label>
 
+
                 <input asp-for="Duration"
                        type="number"
                        min="1"
                        max="200"
                        class="form-control" />
+
 
                 <span asp-validation-for="Duration"
                       class="text-danger">
@@ -203,11 +236,12 @@
             </div>
 
 
-            <!-- ========================= -->
+            <!-- ========================================= -->
             <!-- DATES -->
-            <!-- ========================= -->
+            <!-- ========================================= -->
 
             <div class="row">
+
 
                 <div class="col-md-6 mb-4">
 
@@ -218,9 +252,14 @@
 
                     </label>
 
+
                     <input asp-for="StartDate"
-                           type="datetime-local"
-                           class="form-control" />
+       type="datetime-local"
+       class="form-control"
+       value="@(Model.StartDate == default
+           ? ""
+           : Model.StartDate.ToString("yyyy-MM-ddTHH:mm"))" />
+
 
                     <span asp-validation-for="StartDate"
                           class="text-danger">
@@ -238,9 +277,14 @@
 
                     </label>
 
-                    <input asp-for="EndDate"
-                           type="datetime-local"
-                           class="form-control" />
+
+                   <input asp-for="EndDate"
+       type="datetime-local"
+       class="form-control"
+       value="@(Model.EndDate == default
+           ? ""
+           : Model.EndDate.ToString("yyyy-MM-ddTHH:mm"))" />
+
 
                     <span asp-validation-for="EndDate"
                           class="text-danger">
@@ -251,65 +295,118 @@
             </div>
 
 
-            <!-- ========================= -->
+            <!-- ========================================= -->
             <!-- QUESTION BANK -->
-            <!-- ========================= -->
+            <!-- ========================================= -->
 
             <hr class="my-4" />
 
+
             <h4 class="fw-bold">
+
                 Question Bank
+
             </h4>
 
+
             <p class="text-muted">
+
                 Select or remove questions and update their marks.
+
             </p>
 
 
             <div id="questionContainer">
 
+
                 @if (!questions.Any())
                 {
+
                     <div class="alert alert-warning">
+
                         No questions found for the selected topics.
+
                     </div>
+
                 }
                 else
                 {
+
                     @for (int i = 0; i < questions.Count; i++)
                     {
+
                         var question = questions[i];
+
 
                         var selected =
                             selectedQuestions.TryGetValue(
                                 question.Id,
                                 out var selectedQuestion);
 
+
+                        /*
+                         * A question is considered BONUS when:
+                         *
+                         * BonusMark > 0
+                         * AND
+                         * ActualMark == 0
+                         */
+
+                        var isBonus =
+                            selected &&
+                            selectedQuestion!.IsBonus;
+
+
+                        var actualMark =
+                            selected
+                                ? selectedQuestion!.ActualMark
+                                : 0;
+
+
+                        var bonusMark =
+                            selected
+                                ? selectedQuestion!.BonusMark
+                                : 0;
+
+
                         <div class="card mb-3 question-card">
 
                             <div class="card-body">
 
-                                <div class="form-check mb-2">
+
+                                <!-- ================================= -->
+                                <!-- QUESTION -->
+                                <!-- ================================= -->
+
+                                <div class="form-check mb-3">
+
 
                                     <!-- Question ID -->
+
                                     <input type="hidden"
                                            name="Questions[@i].QuestionId"
                                            value="@question.Id" />
 
+
                                     <!--
-                                        IMPORTANT:
-                                        This is the ONLY value submitted
-                                        for IsSelected.
+                                        Hidden IsSelected input.
+
+                                        This is the value that will be
+                                        submitted to the controller.
                                     -->
+
                                     <input type="hidden"
                                            class="is-selected"
                                            name="Questions[@i].IsSelected"
                                            value="@(selected ? "true" : "false")" />
 
-                                    <!-- Checkbox -->
+
+                                    <!-- Question checkbox -->
+
                                     <input class="form-check-input question-checkbox"
                                            type="checkbox"
-                                    @(selected ? "checked" : "") />
+                                           @(selected ? "checked" : "") />
+
 
                                     <label class="form-check-label fw-bold">
 
@@ -320,48 +417,140 @@
                                 </div>
 
 
-                                <div class="mb-2">
+                                <!-- ================================= -->
+                                <!-- QUESTION TYPE -->
+                                <!-- ================================= -->
+
+                                <div class="mb-3">
 
                                     <span class="badge bg-secondary">
+
                                         @question.QuestionFormat
+
                                     </span>
 
                                 </div>
 
 
-                                <div class="row question-details"
-                                     style="display:@(selected ? "flex" : "none");">
+                                <!-- ================================= -->
+                                <!-- QUESTION DETAILS -->
+                                <!-- ================================= -->
 
-                                    <div class="col-md-6">
+                                <div class="question-details"
+                                     style="display:@(selected ? "block" : "none");">
 
-                                        <label class="form-label">
-                                            Actual Mark
+
+                                    <!-- ================================= -->
+                                    <!-- BONUS CHECKBOX -->
+                                    <!-- ================================= -->
+
+                                    <div class="form-check mb-3">
+
+
+                                        <!--
+                                            Hidden false value.
+
+                                            This ensures IsBonus is always
+                                            submitted even when unchecked.
+                                        -->
+
+                                       <input class="form-check-input bonus-checkbox"
+       type="checkbox"
+       name="Questions[@i].IsBonus"
+       value="true"
+       id="bonus_@question.Id"
+       @(isBonus ? "checked" : "")
+       @(selected ? "" : "disabled") />
+
+<input type="hidden"
+       name="Questions[@i].IsBonus"
+       value="false" />
+
+
+                                        <label class="form-check-label fw-semibold"
+                                               for="bonus_@question.Id">
+
+                                            Bonus Question
+
                                         </label>
-
-                                        <input type="number"
-                                               step="0.5"
-                                               min="0"
-                                               class="form-control actual-mark"
-                                               name="Questions[@i].ActualMark"
-                                               value="@(selected ? selectedQuestion!.ActualMark : 0)"
-                                        @(selected ? "" : "disabled") />
 
                                     </div>
 
 
-                                    <div class="col-md-6">
+                                    <!-- ================================= -->
+                                    <!-- MARKS -->
+                                    <!-- ================================= -->
 
-                                        <label class="form-label">
-                                            Bonus Mark
-                                        </label>
+                                    <div class="row">
 
-                                        <input type="number"
-                                               step="0.5"
-                                               min="0"
-                                               class="form-control bonus-mark"
-                                               name="Questions[@i].BonusMark"
-                                               value="@(selected ? selectedQuestion!.BonusMark : 0)"
-                                        @(selected ? "" : "disabled") />
+
+                                        <!-- ================================= -->
+                                        <!-- ACTUAL MARK -->
+                                        <!-- ================================= -->
+
+                                        <div class="col-md-6 actual-mark-container"
+                                             style="display:@(isBonus ? "none" : "block");">
+
+
+                                            <label class="form-label fw-semibold">
+
+                                                Actual Mark
+
+                                            </label>
+
+
+                                            <input type="number"
+                                                   step="0.5"
+                                                   min="0.5"
+                                                   class="form-control actual-mark"
+                                                   name="Questions[@i].ActualMark"
+                                                   value="@actualMark"
+                                                   @(selected && !isBonus ? "" : "disabled") />
+
+
+                                            <small class="text-muted">
+
+                                                Mark awarded normally.
+                                                Wrong answer loses this mark.
+
+                                            </small>
+
+                                        </div>
+
+
+                                        <!-- ================================= -->
+                                        <!-- BONUS MARK -->
+                                        <!-- ================================= -->
+
+                                        <div class="col-md-6 bonus-mark-container"
+                                             style="display:@(isBonus ? "block" : "none");">
+
+
+                                            <label class="form-label fw-semibold">
+
+                                                Bonus Mark
+
+                                            </label>
+
+
+                                            <input type="number"
+                                                   step="0.5"
+                                                   min="0.5"
+                                                   class="form-control bonus-mark"
+                                                   name="Questions[@i].BonusMark"
+                                                   value="@bonusMark"
+                                                   @(selected && isBonus ? "" : "disabled") />
+
+
+                                            <small class="text-muted">
+
+                                                Correct answer adds this bonus.
+                                                Wrong answer gives 0.
+
+                                            </small>
+
+                                        </div>
+
 
                                     </div>
 
@@ -370,42 +559,60 @@
                             </div>
 
                         </div>
+
                     }
+
                 }
 
             </div>
 
 
-            <!-- ========================= -->
+            <!-- ========================================= -->
             <!-- TOTAL MARKS -->
-            <!-- ========================= -->
+            <!-- ========================================= -->
 
             <div class="mt-4 p-3 bg-light rounded">
 
+
                 <strong>
+
                     Total Marks:
+
                 </strong>
 
+
                 <span id="totalMarks">
-                    0
+
+                    0.00
+
                 </span>
+
+
+                <small class="text-muted ms-2">
+
+                    (Bonus marks are not included)
+
+                </small>
 
             </div>
 
 
-            <!-- ========================= -->
+            <!-- ========================================= -->
             <!-- BUTTONS -->
-            <!-- ========================= -->
+            <!-- ========================================= -->
 
             <div class="mt-4">
+
 
                 <button type="submit"
                         class="btn btn-success">
 
                     <i class="fa-solid fa-check me-2"></i>
+
                     Save Changes
 
                 </button>
+
 
                 <a asp-controller="Exam"
                    asp-action="Index"
@@ -416,6 +623,7 @@
                 </a>
 
             </div>
+
 
         </form>
 
@@ -428,7 +636,9 @@
 
     <partial name="_ValidationScriptsPartial" />
 
+
     <script>
+
 
         // =========================================================
         // ELEMENTS
@@ -437,11 +647,14 @@
         const courseSelect =
             document.getElementById("courseSelect");
 
+
         const topicContainer =
             document.getElementById("topicContainer");
 
+
         const questionContainer =
             document.getElementById("questionContainer");
+
 
         const totalMarksElement =
             document.getElementById("totalMarks");
@@ -451,20 +664,22 @@
         // EXISTING QUESTIONS FROM DATABASE
         // =========================================================
 
-        const existingQuestions = @Html.Raw(
-                                    System.Text.Json.JsonSerializer.Serialize(
-                                            Model.Questions
-                                                    .Where(q => q.IsSelected)
-                    .ToDictionary(
-                    q => q.QuestionId,
-                    q => new
-                    {
-                                                actualMark = q.ActualMark,
-                                                bonusMark = q.BonusMark
-                    }
-                    )
-                    )
-                    );
+        const existingQuestions =
+            @Html.Raw(
+                System.Text.Json.JsonSerializer.Serialize(
+                    Model.Questions
+                        .Where(q => q.IsSelected)
+                        .ToDictionary(
+                            q => q.QuestionId,
+                            q => new
+                            {
+                                actualMark = q.ActualMark,
+                                bonusMark = q.BonusMark,
+                                isBonus = q.IsBonus
+                            }
+                        )
+                )
+            );
 
 
         // =========================================================
@@ -472,25 +687,60 @@
         // =========================================================
 
         function calculateTotalMarks() {
+
             let total = 0;
+
 
             document
                 .querySelectorAll(".question-checkbox:checked")
-                .forEach(function(checkbox) {
+                .forEach(function (checkbox) {
+
+
                     const card =
-                        checkbox.closest(".question-card");
+                        checkbox.closest(
+                            ".question-card"
+                        );
+
+
+                    if (!card)
+                        return;
+
+
+                    const bonusCheckbox =
+                        card.querySelector(
+                            ".bonus-checkbox"
+                        );
+
 
                     const actualMark =
-                        card.querySelector(".actual-mark");
+                        card.querySelector(
+                            ".actual-mark"
+                        );
 
-                    if (actualMark) {
+
+                    // =============================================
+                    // ONLY NORMAL QUESTIONS COUNT
+                    // =============================================
+
+                    if (
+                        bonusCheckbox &&
+                        !bonusCheckbox.checked &&
+                        actualMark
+                    ) {
+
                         total +=
-                            parseFloat(actualMark.value) || 0;
+                            parseFloat(
+                                actualMark.value
+                            ) || 0;
+
                     }
+
                 });
+
 
             totalMarksElement.textContent =
                 total.toFixed(2);
+
         }
 
 
@@ -499,60 +749,334 @@
         // =========================================================
 
         function setupQuestionCheckbox(checkbox) {
-            checkbox.addEventListener("change", function() {
-                const card =
-                    this.closest(".question-card");
 
-                const details =
-                    card.querySelector(".question-details");
-
-                const actualMark =
-                    card.querySelector(".actual-mark");
-
-                const bonusMark =
-                    card.querySelector(".bonus-mark");
-
-                const hiddenIsSelected =
-                    card.querySelector(".is-selected");
+            checkbox.addEventListener(
+                "change",
+                function () {
 
 
-                // ---------------------------------------------
-                // Update hidden IsSelected value
-                // ---------------------------------------------
+                    const card =
+                        this.closest(
+                            ".question-card"
+                        );
 
-                if (hiddenIsSelected) {
-                    hiddenIsSelected.value =
-                        this.checked ? "true" : "false";
+
+                    const details =
+                        card.querySelector(
+                            ".question-details"
+                        );
+
+
+                    const actualMark =
+                        card.querySelector(
+                            ".actual-mark"
+                        );
+
+
+                    const bonusMark =
+                        card.querySelector(
+                            ".bonus-mark"
+                        );
+
+
+                    const bonusCheckbox =
+                        card.querySelector(
+                            ".bonus-checkbox"
+                        );
+
+
+                    const actualMarkContainer =
+                        card.querySelector(
+                            ".actual-mark-container"
+                        );
+
+
+                    const bonusMarkContainer =
+                        card.querySelector(
+                            ".bonus-mark-container"
+                        );
+
+
+                    const hiddenIsSelected =
+                        card.querySelector(
+                            ".is-selected"
+                        );
+
+
+                    // =============================================
+                    // UPDATE IsSelected
+                    // =============================================
+
+                    if (hiddenIsSelected) {
+
+                        hiddenIsSelected.value =
+                            this.checked
+                                ? "true"
+                                : "false";
+
+                    }
+
+
+                    // =============================================
+                    // SHOW / HIDE DETAILS
+                    // =============================================
+
+                    if (details) {
+
+                        details.style.display =
+                            this.checked
+                                ? "block"
+                                : "none";
+
+                    }
+
+
+                    // =============================================
+                    // QUESTION UNSELECTED
+                    // =============================================
+
+                    if (!this.checked) {
+
+
+                        // Uncheck bonus
+                        if (bonusCheckbox) {
+
+                            bonusCheckbox.checked =
+                                false;
+
+                            bonusCheckbox.disabled =
+                                true;
+
+                        }
+
+
+                        // Reset Actual Mark
+                        if (actualMark) {
+
+                            actualMark.value =
+                                "0";
+
+                            actualMark.disabled =
+                                true;
+
+                        }
+
+
+                        // Reset Bonus Mark
+                        if (bonusMark) {
+
+                            bonusMark.value =
+                                "0";
+
+                            bonusMark.disabled =
+                                true;
+
+                        }
+
+
+                        // Show Actual Mark
+                        if (actualMarkContainer) {
+
+                            actualMarkContainer.style.display =
+                                "block";
+
+                        }
+
+
+                        // Hide Bonus Mark
+                        if (bonusMarkContainer) {
+
+                            bonusMarkContainer.style.display =
+                                "none";
+
+                        }
+
+                    }
+
+
+                    // =============================================
+                    // QUESTION SELECTED
+                    // =============================================
+
+                    else {
+
+
+                        // Enable Bonus checkbox
+                        if (bonusCheckbox) {
+
+                            bonusCheckbox.disabled =
+                                false;
+
+                        }
+
+
+                        // Normal question by default
+                        if (
+                            bonusCheckbox &&
+                            !bonusCheckbox.checked
+                        ) {
+
+                            if (actualMark) {
+
+                                actualMark.disabled =
+                                    false;
+
+                            }
+
+
+                            if (bonusMark) {
+
+                                bonusMark.disabled =
+                                    true;
+
+                            }
+
+
+                            if (actualMarkContainer) {
+
+                                actualMarkContainer.style.display =
+                                    "block";
+
+                            }
+
+
+                            if (bonusMarkContainer) {
+
+                                bonusMarkContainer.style.display =
+                                    "none";
+
+                            }
+
+                        }
+
+                    }
+
+
+                    calculateTotalMarks();
+
                 }
 
+            );
 
-                // ---------------------------------------------
-                // Show / hide mark inputs
-                // ---------------------------------------------
+        }
 
-                if (details) {
-                    details.style.display =
-                        this.checked ? "flex" : "none";
+
+        // =========================================================
+        // SETUP BONUS CHECKBOX
+        // =========================================================
+
+        function setupBonusCheckbox(bonusCheckbox) {
+
+            bonusCheckbox.addEventListener(
+                "change",
+                function () {
+
+
+                    const card =
+                        this.closest(
+                            ".question-card"
+                        );
+
+
+                    const actualMark =
+                        card.querySelector(
+                            ".actual-mark"
+                        );
+
+
+                    const bonusMark =
+                        card.querySelector(
+                            ".bonus-mark"
+                        );
+
+
+                    const actualMarkContainer =
+                        card.querySelector(
+                            ".actual-mark-container"
+                        );
+
+
+                    const bonusMarkContainer =
+                        card.querySelector(
+                            ".bonus-mark-container"
+                        );
+
+
+                    // =============================================
+                    // BONUS QUESTION
+                    // =============================================
+
+                    if (this.checked) {
+
+
+                        // Actual Mark MUST be zero
+                        actualMark.value =
+                            "0";
+
+
+                        // Disable Actual Mark
+                        actualMark.disabled =
+                            true;
+
+
+                        // Hide Actual Mark
+                        actualMarkContainer.style.display =
+                            "none";
+
+
+                        // Show Bonus Mark
+                        bonusMarkContainer.style.display =
+                            "block";
+
+
+                        // Enable Bonus Mark
+                        bonusMark.disabled =
+                            false;
+
+
+                    }
+
+
+                    // =============================================
+                    // NORMAL QUESTION
+                    // =============================================
+
+                    else {
+
+
+                        // Bonus Mark MUST be zero
+                        bonusMark.value =
+                            "0";
+
+
+                        // Disable Bonus Mark
+                        bonusMark.disabled =
+                            true;
+
+
+                        // Hide Bonus Mark
+                        bonusMarkContainer.style.display =
+                            "none";
+
+
+                        // Show Actual Mark
+                        actualMarkContainer.style.display =
+                            "block";
+
+
+                        // Enable Actual Mark
+                        actualMark.disabled =
+                            false;
+
+                    }
+
+
+                    calculateTotalMarks();
+
                 }
 
+            );
 
-                // ---------------------------------------------
-                // Enable / disable mark inputs
-                // ---------------------------------------------
-
-                if (actualMark) {
-                    actualMark.disabled =
-                        !this.checked;
-                }
-
-                if (bonusMark) {
-                    bonusMark.disabled =
-                        !this.checked;
-                }
-
-
-                calculateTotalMarks();
-            });
         }
 
 
@@ -561,8 +1085,33 @@
         // =========================================================
 
         document
-            .querySelectorAll(".question-checkbox")
-            .forEach(setupQuestionCheckbox);
+            .querySelectorAll(
+                ".question-checkbox"
+            )
+            .forEach(function (checkbox) {
+
+                setupQuestionCheckbox(
+                    checkbox
+                );
+
+            });
+
+
+        // =========================================================
+        // INITIAL BONUS CHECKBOXES
+        // =========================================================
+
+        document
+            .querySelectorAll(
+                ".bonus-checkbox"
+            )
+            .forEach(function (checkbox) {
+
+                setupBonusCheckbox(
+                    checkbox
+                );
+
+            });
 
 
         // =========================================================
@@ -570,12 +1119,30 @@
         // =========================================================
 
         document
-            .querySelectorAll(".actual-mark")
-            .forEach(function(input) {
+            .querySelectorAll(
+                ".actual-mark"
+            )
+            .forEach(function (input) {
+
                 input.addEventListener(
                     "input",
                     calculateTotalMarks
                 );
+
+            });
+
+
+        document
+            .querySelectorAll(
+                ".bonus-mark"
+            )
+            .forEach(function (input) {
+
+                input.addEventListener(
+                    "input",
+                    calculateTotalMarks
+                );
+
             });
 
 
@@ -592,37 +1159,45 @@
 
         courseSelect.addEventListener(
             "change",
-            async function() {
+            async function () {
+
+
                 const courseId =
                     this.value;
 
 
-                // Clear current topics
-                topicContainer.innerHTML = "";
+                // Clear topics
+                topicContainer.innerHTML =
+                    "";
 
 
-                // Clear current questions
+                // Clear questions
                 questionContainer.innerHTML =
                     '<div class="alert alert-info">' +
                     'Select one or more topics to display their questions.' +
                     '</div>';
 
 
+                // Reset total
                 totalMarksElement.textContent =
-                    "0";
+                    "0.00";
 
 
                 if (!courseId) {
+
                     topicContainer.innerHTML =
                         '<div class="alert alert-info">' +
                         'Select a course first to display its topics.' +
                         '</div>';
 
                     return;
+
                 }
 
 
                 try {
+
+
                     const response =
                         await fetch(
                             `/Exam/GetTopicsByCourse?courseId=${courseId}`
@@ -630,9 +1205,11 @@
 
 
                     if (!response.ok) {
+
                         throw new Error(
                             "Failed to load topics."
                         );
+
                     }
 
 
@@ -641,61 +1218,86 @@
 
 
                     if (topics.length === 0) {
+
                         topicContainer.innerHTML =
                             '<div class="alert alert-warning">' +
                             'No topics found for this course.' +
                             '</div>';
 
                         return;
+
                     }
 
 
-                    topics.forEach(function(topic) {
-                        const wrapper =
-                            document.createElement("div");
-
-                        wrapper.className =
-                            "form-check mb-2";
+                    topics.forEach(
+                        function (topic) {
 
 
-                        wrapper.innerHTML = `
-                                    <input
-                                        class="form-check-input topic-checkbox"
-                                        type="checkbox"
-                                        name="TopicIds"
-                                        value="${topic.id}"
-                                        id="topic_${topic.id}"
-                                    />
-
-                                    <label
-                                        class="form-check-label"
-                                        for="topic_${topic.id}">
-                                        ${escapeHtml(topic.name)}
-                                    </label>
-                                `;
+                            const wrapper =
+                                document.createElement(
+                                    "div"
+                                );
 
 
-                        topicContainer.appendChild(wrapper);
+                            wrapper.className =
+                                "form-check mb-2";
 
 
-                        wrapper
-                            .querySelector(".topic-checkbox")
-                            .addEventListener(
-                                "change",
-                                loadQuestions
+                            wrapper.innerHTML = `
+
+                                <input
+                                    class="form-check-input topic-checkbox"
+                                    type="checkbox"
+                                    name="TopicIds"
+                                    value="${topic.id}"
+                                    id="topic_${topic.id}"
+                                />
+
+
+                                <label
+                                    class="form-check-label"
+                                    for="topic_${topic.id}">
+
+                                    ${escapeHtml(topic.name)}
+
+                                </label>
+
+                            `;
+
+
+                            topicContainer.appendChild(
+                                wrapper
                             );
-                    });
+
+
+                            wrapper
+                                .querySelector(
+                                    ".topic-checkbox"
+                                )
+                                .addEventListener(
+                                    "change",
+                                    loadQuestions
+                                );
+
+                        }
+                    );
 
                 }
                 catch (error) {
+
+
                     console.error(error);
+
 
                     topicContainer.innerHTML =
                         '<div class="alert alert-danger">' +
                         'Unable to load topics.' +
                         '</div>';
+
                 }
+
             }
+
         );
 
 
@@ -704,32 +1306,42 @@
         // =========================================================
 
         async function loadQuestions() {
+
+
             const selectedTopics =
                 Array.from(
                     document.querySelectorAll(
                         ".topic-checkbox:checked"
                     )
                 )
-                    .map(x => x.value);
+                .map(
+                    x => x.value
+                );
 
 
-            questionContainer.innerHTML = "";
+            questionContainer.innerHTML =
+                "";
+
 
             totalMarksElement.textContent =
-                "0";
+                "0.00";
 
 
             if (selectedTopics.length === 0) {
+
                 questionContainer.innerHTML =
                     '<div class="alert alert-info">' +
                     'Select one or more topics to display their questions.' +
                     '</div>';
 
                 return;
+
             }
 
 
             try {
+
+
                 const topicIds =
                     selectedTopics.join(",");
 
@@ -741,9 +1353,11 @@
 
 
                 if (!response.ok) {
+
                     throw new Error(
                         "Failed to load questions."
                     );
+
                 }
 
 
@@ -752,34 +1366,45 @@
 
 
                 if (questions.length === 0) {
+
                     questionContainer.innerHTML =
                         '<div class="alert alert-warning">' +
                         'No questions found for the selected topics.' +
                         '</div>';
 
                     return;
+
                 }
 
 
-                questions.forEach(function(question, index) {
-                    createQuestionRow(
-                        question,
-                        index
-                    );
-                });
+                questions.forEach(
+                    function (question, index) {
+
+                        createQuestionRow(
+                            question,
+                            index
+                        );
+
+                    }
+                );
 
 
                 calculateTotalMarks();
 
             }
             catch (error) {
+
+
                 console.error(error);
+
 
                 questionContainer.innerHTML =
                     '<div class="alert alert-danger">' +
                     'Unable to load questions.' +
                     '</div>';
+
             }
+
         }
 
 
@@ -787,21 +1412,30 @@
         // CREATE QUESTION ROW
         // =========================================================
 
-        function createQuestionRow(question, index) {
+        function createQuestionRow(
+            question,
+            index
+        ) {
+
+
             const wrapper =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             wrapper.className =
                 "card mb-3 question-card";
 
 
-            // ---------------------------------------------
-            // Check whether this question already belongs
-            // to the exam
-            // ---------------------------------------------
+            // =============================================
+            // EXISTING QUESTION
+            // =============================================
 
             const existing =
-                existingQuestions[question.id];
+                existingQuestions[
+                    question.id
+                ];
 
 
             const isSelected =
@@ -820,128 +1454,266 @@
                     : 0;
 
 
+            const isBonus =
+                isSelected
+                    ? existing.isBonus
+                    : false;
+
+
             wrapper.innerHTML = `
 
-                        <div class="card-body">
-
-                            <div class="form-check mb-2">
-
-                                <!-- Question ID -->
-                                <input
-                                    type="hidden"
-                                    name="Questions[${index}].QuestionId"
-                                    value="${question.id}"
-                                />
-
-                                <!--
-                                    IMPORTANT:
-                                    Only this hidden input is submitted
-                                    for IsSelected.
-                                -->
-                                <input
-                                    type="hidden"
-                                    class="is-selected"
-                                    name="Questions[${index}].IsSelected"
-                                    value="${isSelected ? "true" : "false"}"
-                                />
-
-                                <!-- Checkbox -->
-                                <input
-                                    class="form-check-input question-checkbox"
-                                    type="checkbox"
-                                    ${isSelected ? "checked" : ""}
-                                />
-
-                                <label class="form-check-label fw-bold">
-                                    ${escapeHtml(question.questionText)}
-                                </label>
-
-                            </div>
+                <div class="card-body">
 
 
-                            <div class="mb-2">
+                    <!-- QUESTION -->
 
-                                <span class="badge bg-secondary">
-                                    ${escapeHtml(question.questionFormat)}
-                                </span>
-
-                            </div>
+                    <div class="form-check mb-3">
 
 
-                            <div class="row question-details"
-                                 style="display:${isSelected ? "flex" : "none"};">
-
-                                <div class="col-md-6">
-
-                                    <label class="form-label">
-                                        Actual Mark
-                                    </label>
-
-                                    <input
-                                        type="number"
-                                        step="0.5"
-                                        min="0"
-                                        class="form-control actual-mark"
-                                        name="Questions[${index}].ActualMark"
-                                        value="${actualMark}"
-                                        ${isSelected ? "" : "disabled"}
-                                    />
-
-                                </div>
+                        <input
+                            type="hidden"
+                            name="Questions[${index}].QuestionId"
+                            value="${question.id}"
+                        />
 
 
-                                <div class="col-md-6">
+                        <!-- IsSelected -->
 
-                                    <label class="form-label">
-                                        Bonus Mark
-                                    </label>
+                        <input
+                            type="hidden"
+                            class="is-selected"
+                            name="Questions[${index}].IsSelected"
+                            value="${isSelected ? "true" : "false"}"
+                        />
 
-                                    <input
-                                        type="number"
-                                        step="0.5"
-                                        min="0"
-                                        class="form-control bonus-mark"
-                                        name="Questions[${index}].BonusMark"
-                                        value="${bonusMark}"
-                                        ${isSelected ? "" : "disabled"}
-                                    />
 
-                                </div>
+                        <!-- Question checkbox -->
 
-                            </div>
+                        <input
+                            class="form-check-input question-checkbox"
+                            type="checkbox"
+                            ${isSelected ? "checked" : ""}
+                        />
+
+
+                        <label class="form-check-label fw-bold">
+
+                            ${escapeHtml(
+                                question.questionText
+                            )}
+
+                        </label>
+
+
+                    </div>
+
+
+                    <!-- QUESTION TYPE -->
+
+                    <div class="mb-3">
+
+                        <span class="badge bg-secondary">
+
+                            ${escapeHtml(
+                                question.questionFormat
+                            )}
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- QUESTION DETAILS -->
+
+                    <div
+                        class="question-details"
+                        style="display:${isSelected ? "block" : "none"};"
+                    >
+
+
+                        <!-- BONUS CHECKBOX -->
+
+                        <div class="form-check mb-3">
+
+
+                            <!-- Hidden false value -->
+
+                            <input
+    class="form-check-input bonus-checkbox"
+    type="checkbox"
+    name="Questions[${index}].IsBonus"
+    value="true"
+    id="bonus_${question.id}"
+/>
+
+<input
+    type="hidden"
+    name="Questions[${index}].IsBonus"
+    value="false"
+/>
+
+
+                            <label
+                                class="form-check-label fw-semibold"
+                                for="bonus_${question.id}"
+                            >
+
+                                Bonus Question
+
+                            </label>
+
 
                         </div>
-                    `;
 
 
-            questionContainer.appendChild(wrapper);
+                        <!-- MARKS -->
+
+                        <div class="row">
 
 
-            // ---------------------------------------------
-            // Setup checkbox
-            // ---------------------------------------------
+                            <!-- ACTUAL MARK -->
 
-            const checkbox =
+                            <div
+                                class="col-md-6 actual-mark-container"
+                                style="display:${isBonus ? "none" : "block"};"
+                            >
+
+                                <label class="form-label fw-semibold">
+
+                                    Actual Mark
+
+                                </label>
+
+
+                                <input
+                                    type="number"
+                                    step="0.5"
+                                    min="0.5"
+                                    class="form-control actual-mark"
+                                    name="Questions[${index}].ActualMark"
+                                    value="${actualMark}"
+                                    ${isSelected && !isBonus ? "" : "disabled"}
+                                />
+
+
+                                <small class="text-muted">
+
+                                    Mark awarded normally.
+                                    Wrong answer loses this mark.
+
+                                </small>
+
+                            </div>
+
+
+                            <!-- BONUS MARK -->
+
+                            <div
+                                class="col-md-6 bonus-mark-container"
+                                style="display:${isBonus ? "block" : "none"};"
+                            >
+
+                                <label class="form-label fw-semibold">
+
+                                    Bonus Mark
+
+                                </label>
+
+
+                                <input
+                                    type="number"
+                                    step="0.5"
+                                    min="0.5"
+                                    class="form-control bonus-mark"
+                                    name="Questions[${index}].BonusMark"
+                                    value="${bonusMark}"
+                                    ${isSelected && isBonus ? "" : "disabled"}
+                                />
+
+
+                                <small class="text-muted">
+
+                                    Correct answer adds this bonus.
+                                    Wrong answer gives 0.
+
+                                </small>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            `;
+
+
+            questionContainer.appendChild(
+                wrapper
+            );
+
+
+            // =============================================
+            // SETUP QUESTION CHECKBOX
+            // =============================================
+
+            const questionCheckbox =
                 wrapper.querySelector(
                     ".question-checkbox"
                 );
 
 
-            setupQuestionCheckbox(checkbox);
+            setupQuestionCheckbox(
+                questionCheckbox
+            );
 
 
-            // ---------------------------------------------
-            // Setup actual mark
-            // ---------------------------------------------
+            // =============================================
+            // SETUP BONUS CHECKBOX
+            // =============================================
+
+            const bonusCheckbox =
+                wrapper.querySelector(
+                    ".bonus-checkbox"
+                );
+
+
+            setupBonusCheckbox(
+                bonusCheckbox
+            );
+
+
+            // =============================================
+            // MARK EVENTS
+            // =============================================
 
             const actualMarkInput =
-                wrapper.querySelector(".actual-mark");
+                wrapper.querySelector(
+                    ".actual-mark"
+                );
+
+
+            const bonusMarkInput =
+                wrapper.querySelector(
+                    ".bonus-mark"
+                );
 
 
             actualMarkInput.addEventListener(
                 "input",
                 calculateTotalMarks
             );
+
+
+            bonusMarkInput.addEventListener(
+                "input",
+                calculateTotalMarks
+            );
+
         }
 
 
@@ -950,13 +1722,20 @@
         // =========================================================
 
         function escapeHtml(text) {
+
+
             const div =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             div.textContent =
                 text;
 
+
             return div.innerHTML;
+
         }
 
 
@@ -965,13 +1744,20 @@
         // =========================================================
 
         document
-            .querySelectorAll(".topic-checkbox")
-            .forEach(function(checkbox) {
-                checkbox.addEventListener(
-                    "change",
-                    loadQuestions
-                );
-            });
+            .querySelectorAll(
+                ".topic-checkbox"
+            )
+            .forEach(
+                function (checkbox) {
+
+                    checkbox.addEventListener(
+                        "change",
+                        loadQuestions
+                    );
+
+                }
+            );
 
     </script>
+
 }
