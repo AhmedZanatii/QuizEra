@@ -310,6 +310,8 @@ namespace QuizEra.BLL.Services.Implementation
             var examQuestions = await _examQuestionsRepository.Get(
                 filter: eq => eq.ExamId == id);
 
+            model.QuestionsCount = examQuestions.Count();
+
             foreach (var examQuestion in examQuestions)
             {
                 var question = await _questionRepository.GetBy(

@@ -7,6 +7,7 @@ namespace QuizEra.BLL.ModelVM.Feedback
         public int Id { get; set; }
         public string StudentID { get; set; }
         public int CourseID { get; set; }
+        [MaxLength(1000, ErrorMessage = "Comment cannot exceed 1000 characters.")]
         public string Comment { get; set; }
         [Required]
         [Range(0, 5, ErrorMessage = "Rate has to be between 0 and 5 :(")]

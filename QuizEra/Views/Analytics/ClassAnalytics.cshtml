@@ -41,6 +41,11 @@
                 </div>
                 <h2 class="fw-bold text-dark m-0">@Model.ExamTitle</h2>
             </div>
+            <div>
+                <a asp-controller="Complaints" asp-action="InstructorComplaints" asp-route-examId="@Model.ExamId" class="btn btn-purple-soft rounded-3 fw-semibold px-3 py-2">
+                    <i class="fa-solid fa-shield-halved me-2"></i>Review Exam Disputes
+                </a>
+            </div>
         </div>
 
         <!-- TOP STATS CARDS -->

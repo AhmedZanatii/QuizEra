@@ -81,7 +81,7 @@ namespace QuizEra.Web.Controllers
                 if (question == null)
                     continue;
 
-                // 1. Handle Shuffling based on QuestionFormat
+                // Shuffle based on QuestionFormat
                 List<QuestionOptionVM> orderedOptions = question.Options.ToList();
 
                 if (question.QuestionFormat == QuizEra.DAL.Entities.Enums.QuestionFormat.MCQ)

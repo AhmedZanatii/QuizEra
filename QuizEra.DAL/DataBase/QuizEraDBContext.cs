@@ -20,6 +20,7 @@ namespace QuizEra.DAL.DataBase
         public DbSet<StudentExamAttempt> StudentExamAttempts { get; set; }
         public DbSet<StudentExamQuestionAnswer> StudentExamQuestionAnswers { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Complaint> Complaints { get; set; }
 
         public QuizEraDBContext(
             DbContextOptions<QuizEraDBContext> options)

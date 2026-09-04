@@ -3,6 +3,10 @@
 @{
     ViewData["Title"] = Model.CourseName;
     Layout = "~/Views/Shared/_InstructorLayout.cshtml";
+
+    // Extract reviews and calculate the average rating for the instructor view
+    var reviews = Model.Reviews.ToList();
+    var averageRating = reviews.Any() ? Math.Round(reviews.Average(r => r.Rate), 1) : 0;
 }
 
 <style>
@@ -63,6 +67,7 @@
             }
 </style>
 
+<!-- Header & Join Code -->
 <div class="mb-4">
     <div class="card dashboard-card border-0 shadow-sm p-4 p-md-5 mb-4 position-relative">
         <div class="d-flex justify-content-between align-items-start">
@@ -116,60 +121,121 @@
             <i class="fa-solid fa-circle-check me-1"></i> Course code copied to clipboard!
         </div>
     </div>
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h4 class="fw-bold text-dark mb-1">Topics</h4>
-            <p class="text-muted small mb-0">Organize the content of your course into structured topics.</p>
-        </div>
-        <button type="button" class="btn btn-qe-primary btn-sm px-3 fw-semibold rounded-3" data-bs-toggle="modal" data-bs-target="#addTopicModal">
-            <i class="fa-solid fa-plus me-1"></i> Add Topic
-        </button>
-    </div>
-
-    @if (!Model.Topics.Any())
-    {
-        <div class="card dashboard-card border-0 shadow-sm p-5 text-center border-dashed">
-            <div class="text-muted mb-3">
-                <i class="fa-solid fa-folder-open fs-1 text-secondary opacity-50"></i>
-            </div>
-            <h5 class="fw-bold text-dark">No Topics Yet</h5>
-            <p class="text-muted small mb-3">Start organizing your course content by adding your first topic.</p>
-            <div>
-                <button type="button" class="btn btn-qe-primary btn-sm px-4 fw-semibold rounded-3" data-bs-toggle="modal" data-bs-target="#addTopicModal">
-                    <i class="fa-solid fa-plus me-1"></i> Add First Topic
-                </button>
-            </div>
-        </div>
-    }
-    else
-    {
-        <div class="d-flex flex-column gap-2">
-            @{
-                var topics = Model.Topics.ToList();
-            }
-            @for (int i = 0; i < topics.Count; i++)
-            {
-                var topic = topics[i];
-                <a asp-controller="Topic" asp-action="Details" asp-route-id="@topic.Id" class="text-decoration-none">
-                    <div class="card dashboard-card border-0 shadow-sm topic-card p-3 rounded-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="icon-shape badge-qe-purple fw-bold rounded-3 p-2 px-3">
-                                @(i + 1)
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-semibold text-dark mb-0">@topic.Name</h6>
-                                <span class="text-muted small">Topic @(i + 1)</span>
-                            </div>
-                            <i class="fa-solid fa-chevron-right text-muted transition-icon"></i>
-                        </div>
-                    </div>
-                </a>
-            }
-        </div>
-    }
 </div>
 
+<div class="row g-4 mb-4">
+    <!-- Left Column: Topics -->
+    <div class="col-12 col-lg-7">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h4 class="fw-bold text-dark mb-1">Topics</h4>
+                <p class="text-muted small mb-0">Organize the content of your course into structured topics.</p>
+            </div>
+            <button type="button" class="btn btn-qe-primary btn-sm px-3 fw-semibold rounded-3" data-bs-toggle="modal" data-bs-target="#addTopicModal">
+                <i class="fa-solid fa-plus me-1"></i> Add Topic
+            </button>
+        </div>
+
+        @if (!Model.Topics.Any())
+        {
+            <div class="card dashboard-card border-0 shadow-sm p-5 text-center border-dashed">
+                <div class="text-muted mb-3">
+                    <i class="fa-solid fa-folder-open fs-1 text-secondary opacity-50"></i>
+                </div>
+                <h5 class="fw-bold text-dark">No Topics Yet</h5>
+                <p class="text-muted small mb-3">Start organizing your course content by adding your first topic.</p>
+                <div>
+                    <button type="button" class="btn btn-qe-primary btn-sm px-4 fw-semibold rounded-3" data-bs-toggle="modal" data-bs-target="#addTopicModal">
+                        <i class="fa-solid fa-plus me-1"></i> Add First Topic
+                    </button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column gap-2">
+                @{
+                    var topics = Model.Topics.ToList();
+                }
+                @for (int i = 0; i < topics.Count; i++)
+                {
+                    var topic = topics[i];
+                    <a asp-controller="Topic" asp-action="Details" asp-route-id="@topic.Id" class="text-decoration-none">
+                        <div class="card dashboard-card border-0 shadow-sm topic-card p-3 rounded-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="icon-shape badge-qe-purple fw-bold rounded-3 p-2 px-3">
+                                    @(i + 1)
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-semibold text-dark mb-0">@topic.Name</h6>
+                                    <span class="text-muted small">Topic @(i + 1)</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-muted transition-icon"></i>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Right Column: Student Reviews -->
+    <div class="col-12 col-lg-5">
+        <div class="card dashboard-card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                    <div>
+                        <h5 class="fw-bold mb-1 text-dark">Student Reviews</h5>
+                        <p class="text-muted small mb-0">@reviews.Count reviews</p>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-bold text-warning fs-4">@averageRating <i class="fa-solid fa-star fs-6"></i></div>
+                        <div class="text-muted small">Average rating</div>
+                    </div>
+                </div>
+
+                @if (!reviews.Any())
+                {
+                    <div class="text-center py-5 border rounded-3 bg-light">
+                        <i class="fa-regular fa-comment-dots text-muted fs-2 mb-3 d-block"></i>
+                        <p class="text-muted mb-0 small">No feedback provided yet.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex flex-column gap-3 overflow-auto" style="max-height: 400px;">
+                        @foreach (var review in reviews)
+                        {
+                            <div class="border rounded-3 p-3 bg-light">
+                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+                                    <div class="fw-semibold text-dark small">
+                                        Student Feedback
+                                    </div>
+                                    <div class="text-warning small">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= review.Rate)
+                                            {
+                                                <i class="fa-solid fa-star"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa-regular fa-star text-muted opacity-50"></i>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                <p class="text-muted small mb-0">@review.Comment</p>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
 <div class="modal fade" id="deleteCourseModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">

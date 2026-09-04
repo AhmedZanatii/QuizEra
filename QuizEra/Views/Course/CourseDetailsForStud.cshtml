@@ -1,8 +1,14 @@
 @model QuizEra.BLL.ModelVM.Course.CourseDetailsVM
+@using System.Security.Claims
 
 @{
     ViewData["Title"] = Model.CourseName;
     Layout = "~/Views/Shared/_StudentLayout.cshtml";
+
+    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var reviews = Model.Reviews.ToList();
+    var existingReview = reviews.FirstOrDefault(r => r.StudentID == currentUserId);
+    var averageRating = reviews.Any() ? Math.Round(reviews.Average(r => r.Rate), 1) : 0;
 }
 
 <style>
@@ -91,19 +97,25 @@
                     <a asp-controller="Student" asp-action="Exams" class="btn btn-qe-primary w-100 py-2.5 fw-semibold rounded-3">
                         <i class="fa-solid fa-file-pen me-2"></i>View Available Exams
                     </a>
-                    <a asp-controller="Feedback" asp-action="Create" asp-route-courseId="@Model.Id" class="btn btn-qe-outline w-100 py-2.5 fw-semibold rounded-3">
-                        <i class="fa-solid fa-star me-2"></i>Give Feedback
-                    </a>
+
+                    @if (existingReview != null)
+                    {
+                        <a asp-controller="Feedback" asp-action="Edit" asp-route-id="@existingReview.Id" class="btn btn-qe-outline w-100 py-2.5 fw-semibold rounded-3">
+                            <i class="fa-solid fa-pen-to-square me-2"></i>Edit Your Feedback
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Feedback" asp-action="Create" asp-route-courseId="@Model.Id" class="btn btn-qe-outline w-100 py-2.5 fw-semibold rounded-3">
+                            <i class="fa-solid fa-star me-2"></i>Give Feedback
+                        </a>
+                    }
                 </div>
             </div>
         </div>
     </div>
 
     <div class="col-12 col-lg-5">
-        @{
-            var reviews = Model.Reviews.ToList();
-            var averageRating = reviews.Any() ? Math.Round(reviews.Average(r => r.Rate), 1) : 0;
-        }
         <div class="card dashboard-card border-0 shadow-sm h-100">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
@@ -129,9 +141,12 @@
                     <div class="d-flex flex-column gap-3 overflow-auto" style="max-height: 400px;">
                         @foreach (var review in reviews)
                         {
+                            var isOwnReview = review.StudentID == currentUserId;
                             <div class="border rounded-3 p-3 bg-light">
                                 <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <div class="fw-semibold text-dark small">Student</div>
+                                    <div class="fw-semibold text-dark small">
+                                        @(isOwnReview ? "You" : "Student")
+                                    </div>
                                     <div class="text-warning small">
                                         @for (int i = 1; i <= 5; i++)
                                         {
@@ -147,6 +162,20 @@
                                     </div>
                                 </div>
                                 <p class="text-muted small mb-0">@review.Comment</p>
+
+                                @if (isOwnReview)
+                                {
+                                    <div class="d-flex justify-content-end gap-2 border-top pt-2 mt-2">
+                                        <a asp-controller="Feedback" asp-action="Edit" asp-route-id="@review.Id" class="btn btn-sm btn-outline-primary py-0 px-2">
+                                            <i class="fa-solid fa-pen me-1"></i>Edit
+                                        </a>
+                                        <form asp-controller="Feedback" asp-action="Delete" asp-route-id="@review.Id" asp-route-courseId="@Model.Id" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="return confirm('Are you sure you want to delete your feedback?')">
+                                                <i class="fa-solid fa-trash me-1"></i>Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
                             </div>
                         }
                     </div>

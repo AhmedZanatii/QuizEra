@@ -99,6 +99,7 @@ builder.Services.AddScoped<IExamAttemptResultService, ExamAttemptResultService>(
 builder.Services.AddHttpClient<IAIEvaluationService, GeminiEvaluationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IRealTimeNotificationService, RealTimeNotificationService>();
+builder.Services.AddScoped<IComplaintService, ComplaintService>();
 var app = builder.Build();
 // Role and Admin seeding
 using (var scope = app.Services.CreateScope())

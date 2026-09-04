@@ -319,6 +319,12 @@
                         <span>My Results</span>
                     </a>
                 </li>
+                <li>
+                    <a asp-controller="Complaints" asp-action="StudentComplaints" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "StudentComplaints" ? "active" : "")">
+                        <i class="fa-solid fa-flag"></i>
+                        <span>My Complaints</span>
+                    </a>
+                </li>
             </ul>
         </nav>
 
@@ -472,6 +478,21 @@
                         if (!text) return '';
                         return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
                     }
+    </script>
+
+    <!-- Only submit forms once -->
+    <script>
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            
+            if (submitBtn) {
+                setTimeout(() => {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Saving...';
+                }, 0);
+            }
+        });
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

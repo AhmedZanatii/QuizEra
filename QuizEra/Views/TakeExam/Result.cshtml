@@ -51,6 +51,7 @@
 </style>
 
 <div class="container-fluid px-3 px-lg-4 py-4">
+
     <!-- Result Header -->
     <div class="card dashboard-card border-0 shadow-sm rounded-4 mb-4">
         <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
@@ -176,13 +177,17 @@
                                                 class="btn btn-sm btn-qe-outline question-detail-btn fw-semibold rounded-2 px-3"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#questionDetailModal"
-                                                data-question-number=@($"Q{question.QuestionNumber}")
+                                                data-attempt-id="@Model.AttemptId" 
+                                                data-question-number="@question.QuestionNumber"
+                                                data-question-id="@question.QuestionId"
+                                                data-exam-question-id="@question.ExamQuestionId"
                                                 data-question-text="@question.QuestionText"
                                                 data-question-format="@question.QuestionFormat"
                                                 data-correct-answer="@(string.IsNullOrWhiteSpace(question.CorrectAnswer) ? "No correct answer recorded." : question.CorrectAnswer)"
                                                 data-student-answer="@(string.IsNullOrWhiteSpace(question.StudentAnswer) ? "No answer recorded." : question.StudentAnswer)"
                                                 data-ai-justification="@(string.IsNullOrWhiteSpace(question.AIJustification) ? "No AI justification available." : question.AIJustification)"
                                                 data-is-correct="@question.IsCorrect.ToString().ToLowerInvariant()"
+                                                data-has-complaint="@(question.HasComplaint.ToString().ToLowerInvariant())"
                                                 data-options='@System.Text.Json.JsonSerializer.Serialize(question.Options)'>
                                             <i class="fa-solid fa-eye me-1"></i>Details
                                         </button>
@@ -251,6 +256,30 @@
                             <div class="text-body small" id="modalAiJustification">-</div>
                         </div>
                     </div>
+                    
+                    <div class="col-12 mt-2" id="complaintBlock" style="display:none;">
+                        <!-- State 1: Form available -->
+                        <div id="complaintFormContainer" class="border border-warning-subtle rounded-3 p-3 bg-warning bg-opacity-10">
+                            <label class="text-warning-emphasis small fw-bold mb-2"><i class="fa-solid fa-flag me-1"></i> Dispute this grade</label>
+                            
+                            <form asp-controller="Complaints" asp-action="Submit" method="post">
+                                <!-- Hidden inputs to pass the IDs to the controller -->
+                                <input type="hidden" name="ExamAttemptId" id="formAttemptId" value="" />
+                                <input type="hidden" name="ExamQuestionId" id="formQuestionId" value="" />
+                                
+                                <textarea name="Comment" class="form-control rounded-3 mb-2" rows="2" placeholder="Explain why your answer is correct..." required></textarea>
+                                <button type="submit" class="btn btn-sm btn-warning fw-bold px-3">Submit Complaint</button>
+                            </form>
+                        </div>
+                        
+                        <!-- State 2: Already submitted -->
+                        <div id="complaintSubmittedMsg" style="display:none;" class="border border-info-subtle rounded-3 p-3 bg-info bg-opacity-10">
+                            <span class="text-info-emphasis small fw-bold">
+                                <i class="fa-solid fa-circle-check me-1"></i> A complaint has already been submitted for this question.
+                            </span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="modal-footer border-top p-3 px-4">
@@ -276,6 +305,13 @@
             const correctAnswerBlock = document.getElementById('correctAnswerBlock');
             const studentAnswerBlock = document.getElementById('studentAnswerBlock');
 
+            // COMPLAINT VARIABLES
+            const complaintBlock = document.getElementById('complaintBlock');
+            const complaintFormContainer = document.getElementById('complaintFormContainer');
+            const complaintSubmittedMsg = document.getElementById('complaintSubmittedMsg');
+            const formAttemptId = document.getElementById('formAttemptId');
+            const formQuestionId = document.getElementById('formQuestionId');
+
             document.querySelectorAll('.question-detail-btn').forEach(function(button) {
                 button.addEventListener('click', function() {
                     const questionNumber = button.getAttribute('data-question-number');
@@ -285,9 +321,14 @@
                     const studentAnswer = button.getAttribute('data-student-answer');
                     const aiJustification = button.getAttribute('data-ai-justification');
                     const isCorrect = button.getAttribute('data-is-correct') === 'true';
+                    const hasComplaint = button.getAttribute('data-has-complaint') === 'true';
                     const optionsJson = button.getAttribute('data-options');
-                    let options = [];
+                    
+                    // Assign IDs directly to the form's hidden inputs
+                    formAttemptId.value = button.getAttribute('data-attempt-id');
+                    formQuestionId.value = button.getAttribute('data-exam-question-id');
 
+                    let options = [];
                     try {
                         options = JSON.parse(optionsJson) || [];
                     } catch (e) {
@@ -353,6 +394,21 @@
 
                     resultBadge.textContent = isCorrect ? 'Correct' : 'Incorrect';
                     resultBadge.className = 'badge rounded-pill px-3 py-2 ' + (isCorrect ? 'bg-success bg-opacity-10 text-success' : 'bg-danger bg-opacity-10 text-danger');
+                
+                    // SHOW/HIDE COMPLAINT FORM
+                    if (questionFormat.toLowerCase() === 'essay') {
+                        complaintBlock.style.display = 'block';
+                        
+                        if (hasComplaint) {
+                            complaintFormContainer.style.display = 'none';
+                            complaintSubmittedMsg.style.display = 'block';
+                        } else {
+                            complaintFormContainer.style.display = 'block';
+                            complaintSubmittedMsg.style.display = 'none';
+                        }
+                    } else {
+                        complaintBlock.style.display = 'none';
+                    }
                 });
             });
         });

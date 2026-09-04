@@ -3,6 +3,7 @@ namespace QuizEra.BLL.ModelVM.ExamAttempt
     public class ExamAttemptResultVM
     {
         public int AttemptId { get; set; }
+        public int ExamId { get; set; }
         public string ExamTitle { get; set; } = string.Empty;
         public int TotalScore { get; set; }
         public decimal Percentage { get; set; }
@@ -15,11 +16,14 @@ namespace QuizEra.BLL.ModelVM.ExamAttempt
 
     public class QuestionResultDetailVM
     {
+        public int QuestionId { get; set; }
+        public int ExamQuestionId { get; set; }
         public int QuestionNumber { get; set; }
         public string QuestionText { get; set; } = string.Empty;
         public string QuestionFormat { get; set; } = string.Empty;
         public string CorrectAnswer { get; set; } = string.Empty;
         public string StudentAnswer { get; set; } = string.Empty;
+        public bool HasComplaint { get; set; }
         public int QuestionMark { get; set; }
         public string? AIJustification { get; set; }
         public bool IsCorrect { get; set; }

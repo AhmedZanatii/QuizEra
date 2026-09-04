@@ -1,0 +1,205 @@
+@model IEnumerable<QuizEra.BLL.ModelVM.Complaint.ComplaintVM>
+
+@{
+    ViewData["Title"] = "Review Complaints";
+    Layout = "~/Views/Shared/_InstructorLayout.cshtml";
+}
+
+<div class="container-fluid py-4 px-md-4">
+    <!-- Top Navigation / Back Link -->
+    <div class="mb-3">
+        @if (ViewBag.ExamId != null && (int)ViewBag.ExamId > 0)
+        {
+            <a asp-controller="Instructor" asp-action="ClassAnalytics" asp-route-examId="@ViewBag.ExamId" class="text-decoration-none text-muted small fw-semibold">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back to Class Analytics
+            </a>
+        }
+        else
+        {
+            <a asp-controller="Instructor" asp-action="Index" class="text-decoration-none text-muted small fw-semibold">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard
+            </a>
+        }
+    </div>
+
+    <!-- Header -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <span class="badge bg-purple-subtle text-purple border border-purple-subtle rounded-pill px-3 py-1 fw-semibold mb-2">
+                    <i class="fa-solid fa-shield-halved me-1"></i> Review Panel
+                </span>
+                <h3 class="fw-bold text-dark mb-1">Student Question Complaints</h3>
+                <p class="text-muted small mb-0">Review student disputes, update question grades, and send feedback.</p>
+            </div>
+        </div>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <!-- Empty State -->
+        <div class="card border-0 shadow-sm rounded-4 text-center py-5 bg-light">
+            <div class="card-body">
+                <div class="icon-shape bg-purple-subtle text-purple mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 64px; height: 64px;">
+                    <i class="fa-solid fa-circle-check fs-2"></i>
+                </div>
+                <h4 class="fw-bold text-dark">No Pending Complaints</h4>
+                <p class="text-muted mb-0">All question complaints for this exam have been reviewed.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Complaints Table -->
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light border-bottom">
+                            <tr>
+                                <th class="ps-4 py-3 text-muted text-uppercase fs-7 fw-bold">Question Details</th>
+                                <th class="py-3 text-muted text-uppercase fs-7 fw-bold">Student Argument</th>
+                                <th class="py-3 text-center text-muted text-uppercase fs-7 fw-bold">Status</th>
+                                <th class="pe-4 py-3 text-center text-muted text-uppercase fs-7 fw-bold">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 py-4" style="max-width: 320px;">
+                                        <div class="fw-bold text-dark text-truncate mb-1" title="@item.ExamQuestion?.QuestionText">
+                                            @item.ExamQuestion?.QuestionText
+                                        </div>
+                                    </td>
+                                    <td class="py-4 text-muted small" style="max-width: 380px; white-space: normal;">
+                                        <blockquote class="blockquote fs-7 text-dark mb-0 bg-light p-2 rounded-3 border-start border-3 border-purple">
+                                            "@item.Comment"
+                                        </blockquote>
+                                    </td>
+                                    <td class="py-4 text-center">
+                                        @if (item.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="badge bg-warning bg-opacity-10 text-warning-emphasis border border-warning-subtle px-3 py-2 rounded-pill fw-semibold">
+                                                <i class="fa-solid fa-clock me-1"></i>Pending
+                                            </span>
+                                        }
+                                        else if (item.Status.Equals("Approved", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle px-3 py-2 rounded-pill fw-semibold">
+                                                <i class="fa-solid fa-check me-1"></i>@item.Status
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle px-3 py-2 rounded-pill fw-semibold">
+                                                <i class="fa-solid fa-xmark me-1"></i>@item.Status
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="pe-4 py-4 text-center">
+                                        <button type="button" class="btn btn-purple-solid btn-sm rounded-3 px-3 fw-semibold" data-bs-toggle="modal" data-bs-target="#respondModal-@item.Id">
+                                            <i class="fa-solid fa-reply me-1"></i> Respond / Grade
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modals placed outside table -->
+        @foreach (var item in Model)
+        {
+            <div class="modal fade text-start" id="respondModal-@item.Id" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg rounded-4">
+                        <form asp-controller="Complaints" asp-action="UpdateResponse" method="post">
+                            <div class="modal-header border-bottom p-4">
+                                <h5 class="modal-title fw-bold text-dark">Review Student Complaint</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <!-- Hidden inputs mapping to ComplaintsController.UpdateResponse action -->
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <input type="hidden" name="examId" value="@item.ExamAttempt.ExamId" />
+                                <input type="hidden" name="attemptId" value="@item.ExamAttemptId" />
+                                <input type="hidden" name="questionId" value="@(item.ExamQuestionId)" />
+
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small fw-bold text-uppercase">Question</label>
+                                    <p class="fw-semibold text-dark p-2 bg-light rounded-3 mb-0">@item.ExamQuestion?.QuestionText</p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small fw-bold text-uppercase">Student's Argument</label>
+                                    <p class="small text-muted p-2 bg-light rounded-3 mb-0">@item.Comment</p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small fw-bold text-uppercase">Complaint Status</label>
+                                    <select name="status" class="form-select rounded-3" required>
+                                        <option value="Approved">Approve Complaint (Grant Mark)</option>
+                                        <option value="Rejected">Reject Complaint</option>
+                                    </select>
+                                </div>
+
+                                <!-- MARK DISPLAY AND INPUT SECTION UPDATED HERE -->
+                                <div class="mb-3 d-flex gap-3">
+                                    <div class="p-3 bg-light rounded-3 border flex-fill">
+                                        <label class="text-muted small fw-bold text-uppercase d-block">Current Mark</label>
+                                        <span class="fs-5 fw-bold text-danger">@item.CurrentMark</span>
+                                    </div>
+                                    <div class="p-3 bg-light rounded-3 border flex-fill">
+                                        <label class="text-muted small fw-bold text-uppercase d-block">Max Possible</label>
+                                        <span class="fs-5 fw-bold text-success">@item.ExamQuestion?.ActualMark</span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small fw-bold text-uppercase">New Question Grade</label>
+                                    <input type="number" min="0" name="adjustedScore" value="@item.CurrentMark" class="form-control rounded-3" placeholder="Enter new total points for this question" />
+                                    <div class="form-text">Sets the total grade for this question in the student's attempt.</div>
+                                </div>
+                                <!-- END OF UPDATED SECTION -->
+
+                                <div class="mb-2">
+                                    <label class="form-label text-muted small fw-bold text-uppercase">Instructor Feedback</label>
+                                    <textarea name="response" class="form-control rounded-3" rows="3" placeholder="Explain your decision..."></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-top p-3 px-4">
+                                <button type="button" class="btn btn-secondary px-4 fw-semibold rounded-3" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-purple-solid px-4 fw-semibold rounded-3">Submit Decision</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<style>
+    .fs-7 { font-size: 0.75rem; }
+    .bg-purple-subtle { background-color: rgba(111, 66, 193, 0.1) !important; }
+    .border-purple-subtle { border-color: rgba(111, 66, 193, 0.2) !important; }
+    .border-purple { border-color: #6f42c1 !important; }
+    .text-purple { color: #6f42c1 !important; }
+    .btn-purple-solid {
+        background-color: #6f42c1;
+        color: #ffffff;
+        border: none;
+        transition: all 0.2s ease;
+    }
+    .btn-purple-solid:hover {
+        background-color: #5a2898;
+        color: #ffffff;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

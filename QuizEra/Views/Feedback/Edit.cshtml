@@ -1,7 +1,7 @@
 @model QuizEra.BLL.ModelVM.Feedback.FeedbackVM
 
 @{
-    ViewData["Title"] = "Leave Feedback";
+    ViewData["Title"] = "Edit Feedback";
     Layout = "~/Views/Shared/_StudentLayout.cshtml";
 }
 
@@ -13,18 +13,11 @@
         transition: all 0.25s ease;
     }
 
-        .btn-qe-primary:hover:not(:disabled) {
+        .btn-qe-primary:hover {
             background-color: var(--qe-active-bg);
             border-color: var(--qe-active-bg);
             color: #ffffff;
             box-shadow: 0 4px 15px rgba(80, 49, 184, 0.3);
-        }
-
-        .btn-qe-primary:disabled {
-            background-color: var(--qe-primary-purple);
-            border-color: var(--qe-primary-purple);
-            opacity: 0.5;
-            cursor: not-allowed;
         }
 
     .form-control:focus {
@@ -69,12 +62,13 @@
                     <a asp-controller="Course" asp-action="CourseDetailsForStud" asp-route-id="@Model.CourseID" class="text-decoration-none text-muted small fw-semibold">
                         <i class="fa-solid fa-arrow-left me-1"></i> Back to Course
                     </a>
-                    <h3 class="fw-bold text-dark mt-2 mb-1">Leave a Review</h3>
-                    <p class="text-muted small mb-0">Help us improve by sharing your experience and feedback on this course.</p>
+                    <h3 class="fw-bold text-dark mt-2 mb-1">Edit Your Review</h3>
+                    <p class="text-muted small mb-0">Update your rating or comments for this course below.</p>
                 </div>
 
-                <form asp-controller="Feedback" asp-action="Create" method="post">
+                <form asp-controller="Feedback" asp-action="Edit" method="post">
                     @Html.AntiForgeryToken()
+                    <input asp-for="Id" type="hidden" />
                     <input asp-for="CourseID" type="hidden" />
                     <input asp-for="StudentID" type="hidden" />
 
@@ -104,8 +98,8 @@
                         <a asp-controller="Course" asp-action="CourseDetailsForStud" asp-route-id="@Model.CourseID" class="btn btn-light fw-semibold px-4 py-2 rounded-3 border-0">
                             Cancel
                         </a>
-                        <button type="submit" id="submitFeedbackBtn" class="btn btn-qe-primary fw-bold px-4 py-2 rounded-3" disabled>
-                            <i class="fa-solid fa-paper-plane me-2"></i>Submit Feedback
+                        <button type="submit" class="btn btn-qe-primary fw-bold px-4 py-2 rounded-3">
+                            <i class="fa-solid fa-pen-to-square me-2"></i>Update Feedback
                         </button>
                     </div>
                 </form>
@@ -117,21 +111,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const submitBtn = document.getElementById("submitFeedbackBtn");
-            const ratingInputs = document.querySelectorAll('input[name="Rate"]');
-
-            function toggleSubmitButton() {
-                const isChecked = Array.from(ratingInputs).some(input => input.checked);
-                submitBtn.disabled = !isChecked;
-            }
-
-            toggleSubmitButton();
-
-            ratingInputs.forEach(input => {
-                input.addEventListener("change", toggleSubmitButton);
-            });
-        });
-    </script>
 }

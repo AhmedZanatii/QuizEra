@@ -4,7 +4,7 @@ using QuizEra.BLL.ModelVM.Feedback;
 using QuizEra.BLL.Services.Abstraction;
 using System.Security.Claims;
 
-namespace QuizEra.Controllers
+namespace QuizEra.PL.Controllers
 {
     [Authorize(Roles = "Student")]
     public class FeedbackController : Controller
@@ -17,41 +17,61 @@ namespace QuizEra.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create(int courseId)
+        public async Task<IActionResult> Create(int courseId)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                return Unauthorized();
-            }
+            var userId = GetCurrentUserId();
+            var userFeedbacks = await _feedbackService.GetByStudentIdAsync(userId);
+            var existing = userFeedbacks.FirstOrDefault(f => f.CourseID == courseId);
 
-            return View(new FeedbackVM
-            {
-                CourseID = courseId,
-                StudentID = userId
-            });
+            if (existing != null)
+                return RedirectToAction(nameof(Edit), new { id = existing.Id });
+
+            return View(new FeedbackVM { CourseID = courseId, StudentID = userId });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(FeedbackVM model)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                return Unauthorized();
-            }
-
-            model.StudentID = userId;
-
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
-            await _feedbackService.AddAsync(model, User.Identity?.Name ?? userId);
-
+            await _feedbackService.AddAsync(model, User.Identity?.Name ?? "Student");
             return RedirectToAction("CourseDetailsForStud", "Course", new { id = model.CourseID });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var feedback = await _feedbackService.GetByIdAsync(id);
+            if (feedback == null)
+                return NotFound();
+
+            return View(feedback);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(FeedbackVM model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await _feedbackService.UpdateAsync(model, User.Identity?.Name ?? "Student");
+            return RedirectToAction("CourseDetailsForStud", "Course", new { id = model.CourseID });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id, int courseId)
+        {
+            await _feedbackService.DeleteAsync(id, User.Identity?.Name ?? "Student");
+            return RedirectToAction("CourseDetailsForStud", "Course", new { id = courseId });
+        }
+
+        private string GetCurrentUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UnauthorizedAccessException();
         }
     }
 }

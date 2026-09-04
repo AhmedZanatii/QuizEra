@@ -90,5 +90,29 @@ namespace QuizEra.BLL.Services.Implementation
             _attemptRepository.Update(attempt);
             await _attemptRepository.SaveAsync();
         }
+
+        public async Task UpdateStudentAnswerGrade(int attemptId, int questionId, int newGrade, string modifierUser)
+        {
+            var attempt = await _attemptRepository.GetBy(
+                a => a.Id == attemptId && !a.IsDeleted,
+                [a => a.StudentExamQuestionAnswers]);
+
+            if (attempt == null)
+                throw new ArgumentException($"Attempt {attemptId} was not found.");
+
+            var answer = attempt.StudentExamQuestionAnswers.FirstOrDefault(a => a.ExamQuestionsId == questionId);
+            if (answer == null)
+                throw new ArgumentException($"Answer for question {questionId} in attempt {attemptId} was not found.");
+
+            // Update the answer with the new grade
+            answer.Update(newGrade, answer.QuestionAnswer, modifierUser, newGrade > 0, answer.TimeSpent);
+
+            // Recalculate total score
+            var totalScore = attempt.StudentExamQuestionAnswers.Sum(a => a.StudQMarks);
+            attempt.UpdateResult(totalScore, modifierUser);
+
+            _attemptRepository.Update(attempt);
+            await _attemptRepository.SaveAsync();
+        }
     }
 }

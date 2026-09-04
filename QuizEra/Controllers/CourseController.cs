@@ -107,6 +107,7 @@ namespace QuizEra.PL.Controllers
             }
 
             var topics = await _topicService.GetTopicsByCourseAsync(id);
+            var reviews = await _feedbackService.GetByCourseIdAsync(id);
 
             var model = new CourseDetailsVM
             {
@@ -115,7 +116,8 @@ namespace QuizEra.PL.Controllers
                 CourseCode = course.CourseCode,
                 CourseLevel = course.CourseLevel,
                 Description = course.CourseDescription,
-                Topics = topics
+                Topics = topics,
+                Reviews = reviews
             };
 
             return View(model);

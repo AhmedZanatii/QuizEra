@@ -28,20 +28,20 @@ namespace QuizEra.BLL.Services.Implementation
                 return Enumerable.Empty<FeedbackVM>();
             }
 
-            var feedbacks = (await FeedbackRepo.Get(a => a.StudentID == student.Id)).Where(a => !a.IsDeleted).ToList();
+            var feedbacks = (await FeedbackRepo.Get(a => a.StudentID == student.Id, [a => a.Student])).Where(a => !a.IsDeleted).ToList();
             return feedbacks.Select(MapToVM);
         }
 
         public async Task<IEnumerable<FeedbackVM>> GetByCourseIdAsync(int id)
         {
-            var feedbacks = (await FeedbackRepo.Get(a => a.CourseID == id)).Where(a => !a.IsDeleted).ToList();
+            var feedbacks = (await FeedbackRepo.Get(a => a.CourseID == id, [a => a.Student])).Where(a => !a.IsDeleted).ToList();
             return feedbacks.Select(MapToVM);
         }
 
         public async Task<FeedbackVM> GetByIdAsync(int id)
         {
             // Retrieve feedback for the given Id
-            var feedback = (await FeedbackRepo.Get(a => a.Id == id)).FirstOrDefault(a => !a.IsDeleted);
+            var feedback = (await FeedbackRepo.Get(a => a.Id == id, [a => a.Student])).FirstOrDefault(a => !a.IsDeleted);
 
             // Check if feedback were found
             if(feedback == null)
@@ -67,6 +67,12 @@ namespace QuizEra.BLL.Services.Implementation
                 noTrack: true
             );
 
+            var existing = (await FeedbackRepo.Get(f => f.StudentID == student.Id && f.CourseID == feedback.CourseID && !f.IsDeleted)).FirstOrDefault();
+            if (existing != null)
+            {
+                throw new InvalidOperationException("You have already submitted feedback for this course.");
+            }
+
             // Create a new Feedback and add it to the repository
             await FeedbackRepo.Create(new Feedback(student.Id, feedback.CourseID, 
                                 feedback.Comment, feedback.Rate, creatorUser));
@@ -81,7 +87,7 @@ namespace QuizEra.BLL.Services.Implementation
             }
 
             // Retrieve the existing Feedback from the repository
-            var existingFeedback = (await FeedbackRepo.Get(a => a.Id == feedback.Id)).FirstOrDefault();
+            var existingFeedback = (await FeedbackRepo.Get(a => a.Id == feedback.Id, [a => a.Student])).FirstOrDefault();
             if (existingFeedback == null)
             {
                 throw new Exception($"Feedback not found for ID {feedback.Id}");
@@ -115,6 +121,7 @@ namespace QuizEra.BLL.Services.Implementation
             {
                 Id = a.Id,
                 CourseID = a.CourseID,
+                StudentID = a.Student?.AppUserId ?? string.Empty,
                 Comment = a.Comment,
                 Rate = a.Rate
             };

@@ -9,13 +9,16 @@ namespace QuizEra.BLL.Services.Implementation
     {
         private readonly IGenericRepository<StudentExamAttempt> _attemptRepository;
         private readonly IGenericRepository<ExamQuestions> _examQuestionRepository;
+        private readonly IGenericRepository<Complaint> _complaintRepository;
 
         public ExamAttemptResultService(
             IGenericRepository<StudentExamAttempt> attemptRepository,
-            IGenericRepository<ExamQuestions> examQuestionRepository)
+            IGenericRepository<ExamQuestions> examQuestionRepository,
+            IGenericRepository<Complaint> complaintRepository)
         {
             _attemptRepository = attemptRepository;
             _examQuestionRepository = examQuestionRepository;
+            _complaintRepository = complaintRepository;
         }
 
         public async Task<ExamAttemptResultVM> GetAttemptResultAsync(int attemptId)
@@ -37,6 +40,7 @@ namespace QuizEra.BLL.Services.Implementation
             var result = new ExamAttemptResultVM
             {
                 AttemptId = attempt.Id,
+                ExamId = attempt.ExamId,
                 ExamTitle = attempt.Exam?.Title ?? string.Empty,
                 TotalScore = attempt.StudResult,
                 CompletionTime = attempt.EndTime.HasValue ? attempt.EndTime.Value - attempt.StartTime : null,
@@ -55,6 +59,17 @@ namespace QuizEra.BLL.Services.Implementation
                 result.Percentage = 0;
                 result.IsPassed = false;
             }
+
+            // Pre-fetch complaints for this attempt to prevent N+1 database queries inside the loop
+            var attemptComplaints = await _complaintRepository.Get(
+                c => c.ExamAttemptId == attempt.Id && !c.IsDeleted,
+                noTrack: true
+            );
+
+            // Store question IDs with complaints in a HashSet for O(1) memory lookup
+            var questionsWithComplaints = attemptComplaints
+                .Select(c => c.ExamQuestionId)
+                .ToHashSet();
 
             var questionAnswers = attempt.StudentExamQuestionAnswers
                 .OrderBy(a => a.ExamQuestionsId)
@@ -82,6 +97,8 @@ namespace QuizEra.BLL.Services.Implementation
 
                 var questionDetail = new QuestionResultDetailVM
                 {
+                    QuestionId = question.Id,
+                    ExamQuestionId = answer.ExamQuestionsId,
                     QuestionNumber = questionNumber,
                     QuestionText = question.QuestionText,
                     QuestionFormat = question.QuestionFormat.ToString(),
@@ -91,6 +108,7 @@ namespace QuizEra.BLL.Services.Implementation
                     AIJustification = answer.AIJustification,
                     IsCorrect = isCorrect,
                     TimeSpent = answer.TimeSpent,
+                    HasComplaint = questionsWithComplaints.Contains(answer.ExamQuestionsId),
                     Options = question.Options?.Select(o => new OptionResultVM
                     {
                         OptionText = o.OptionText,
