@@ -101,7 +101,6 @@ namespace QuizEra.BLL.Services.Implementation
                 Email = model.Email,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                EmailConfirmed = true
             };
 
             var result = await _userManager.CreateAsync(
