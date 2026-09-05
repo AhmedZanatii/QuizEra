@@ -134,6 +134,13 @@
                                 </div>
 
                                 <div class="mb-3">
+                                    <label class="form-label text-muted small fw-bold text-uppercase">Student's Submitted Answer</label>
+                                    <p class="fw-semibold text-dark p-2 bg-light rounded-3 mb-0">
+                                        @item.StudentAnswer
+                                    </p>
+                                </div>
+
+                                <div class="mb-3">
                                     <label class="form-label text-muted small fw-bold text-uppercase">Student's Argument</label>
                                     <p class="small text-muted p-2 bg-light rounded-3 mb-0">@item.Comment</p>
                                 </div>
@@ -153,7 +160,7 @@
                                         <span class="fs-5 fw-bold text-danger">@item.CurrentMark</span>
                                     </div>
                                     <div class="p-3 bg-light rounded-3 border flex-fill">
-                                        <label class="text-muted small fw-bold text-uppercase d-block">Max Possible</label>
+                                        <label class="text-muted small fw-bold text-uppercase d-block">Full Mark</label>
                                         <span class="fs-5 fw-bold text-success">@item.ExamQuestion?.ActualMark</span>
                                     </div>
                                 </div>

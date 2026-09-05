@@ -10,6 +10,7 @@ namespace QuizEra.BLL.ModelVM.Complaint
         public int ExamAttemptId { get; set; }
         public int ExamQuestionId { get; set; }
         public string UserStudentId { get; set; }
+        public string StudentAnswer { get; set; }
 
         [Required(ErrorMessage = "Comment is required.")]
         [MinLength(2, ErrorMessage = "Comment must contain at least 2 characters.")]

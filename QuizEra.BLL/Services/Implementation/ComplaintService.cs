@@ -196,7 +196,7 @@ namespace QuizEra.BLL.Services.Implementation
         private static ComplaintVM MapToVM(Complaint complaint)
         {
             var studentAnswer = complaint.ExamAttempt?.StudentExamQuestionAnswers?
-                .FirstOrDefault(a => a.ExamQuestions?.QuestionId == complaint.ExamQuestion.QuestionId);
+                .FirstOrDefault(a => a.ExamQuestionsId == complaint.ExamQuestionId);
 
             return new ComplaintVM
             {
@@ -204,6 +204,7 @@ namespace QuizEra.BLL.Services.Implementation
                 ExamAttemptId = complaint.ExamAttemptId,
                 ExamQuestionId = complaint.ExamQuestionId,
                 Comment = complaint.Comment,
+                StudentAnswer = string.IsNullOrWhiteSpace(studentAnswer?.QuestionAnswer) ? "No answer provided." : studentAnswer.QuestionAnswer,
                 Status = complaint.Status.ToString(),
                 Response = complaint.Response,
                 CurrentMark = studentAnswer?.StudQMarks ?? 0,
